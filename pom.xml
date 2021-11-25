@@ -1,0 +1,398 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+	<modelVersion>4.0.0</modelVersion>
+
+	<groupId>com.levi9</groupId>
+	<artifactId>functional-test</artifactId>
+	<version>1.0.0-SNAPSHOT</version>
+	<packaging>jar</packaging>
+
+	<name>functional-tests</name>
+	<description>Functional Tests</description>
+
+	<organization>
+		<name>Levi9</name>
+		<url>https://www.levi9.com/</url>
+	</organization>
+
+	<properties>
+
+		<!-- Java Version -->
+		<java.vesion>11</java.vesion>
+
+		<!-- Tags -->
+		<tags>@sanity</tags>
+		<skipTags>not @skip</skipTags>
+
+		<!-- Environment -->
+		<env>development</env>
+
+		<!-- How many scenarios in parallel-->
+		<parallelCount>3</parallelCount>
+
+		<!-- Dependencies Versions -->
+		<cucumber.version>6.9.1</cucumber.version>
+		<assertj.version>3.18.1</assertj.version>
+		<rest-assured.version>4.3.3</rest-assured.version>
+		<awaitility.version>4.0.3</awaitility.version>
+		<selenium.version>3.141.59</selenium.version>
+		<ngwebdriver.version>1.1.6</ngwebdriver.version>
+		<logback.version>1.3.0-alpha5</logback.version>
+		<lombok.version>1.18.16</lombok.version>
+		<junit.version>4.13.1</junit.version>
+		<slf4j.version>2.0.0-alpha1</slf4j.version>
+		<spring.version>5.3.3</spring.version>
+		<apache.commons-lang3.version>3.11</apache.commons-lang3.version>
+		<apache.commons-email.version>1.5</apache.commons-email.version>
+		<apache.commons-io.version>2.8.0</apache.commons-io.version>
+		<apache.pdfbox.version>2.0.22</apache.pdfbox.version>
+		<jackson.version>2.12.1</jackson.version>
+
+		<!-- Maven Plugins Versions -->
+		<maven.compiler.version>3.8.1</maven.compiler.version>
+		<maven.failsafe.plugin.version>2.22.2</maven.failsafe.plugin.version>
+		<cucable.version>1.9.0</cucable.version>
+		<maven-cucumber-reporting.version>5.4.0</maven-cucumber-reporting.version>
+		<maven.build.helper.plugin.version>3.2.0</maven.build.helper.plugin.version>
+		<cluecumber.report.version>2.3.4</cluecumber.report.version>
+
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+	</properties>
+
+	<dependencies>
+
+		<!-- JUnit -->
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>${junit.version}</version>
+			<scope>test</scope>
+		</dependency>
+
+		<!-- Spring -->
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-context</artifactId>
+			<version>${spring.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-test</artifactId>
+			<version>${spring.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-context-support</artifactId>
+			<version>${spring.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-jdbc</artifactId>
+			<version>${spring.version}</version>
+		</dependency>
+
+		<!-- Cucumber -->
+		<dependency>
+			<groupId>io.cucumber</groupId>
+			<artifactId>cucumber-java</artifactId>
+			<version>${cucumber.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>io.cucumber</groupId>
+			<artifactId>cucumber-junit</artifactId>
+			<version>${cucumber.version}</version>
+			<scope>test</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>io.cucumber</groupId>
+			<artifactId>cucumber-spring</artifactId>
+			<version>${cucumber.version}</version>
+			<scope>test</scope>
+		</dependency>
+
+		<!-- Logging -->
+		<dependency>
+			<groupId>ch.qos.logback</groupId>
+			<artifactId>logback-core</artifactId>
+			<version>${logback.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>ch.qos.logback</groupId>
+			<artifactId>logback-classic</artifactId>
+			<version>${logback.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-api</artifactId>
+			<version>${slf4j.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.projectlombok</groupId>
+			<artifactId>lombok</artifactId>
+			<version>${lombok.version}</version>
+			<scope>provided</scope>
+		</dependency>
+
+		<!-- AssertJ -->
+		<dependency>
+			<groupId>org.assertj</groupId>
+			<artifactId>assertj-core</artifactId>
+			<version>${assertj.version}</version>
+			<scope>test</scope>
+		</dependency>
+
+		<!-- REST-assured -->
+		<dependency>
+			<groupId>io.rest-assured</groupId>
+			<artifactId>rest-assured</artifactId>
+			<version>${rest-assured.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>com.fasterxml.jackson.datatype</groupId>
+			<artifactId>jackson-datatype-jdk8</artifactId>
+			<version>${jackson.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>com.fasterxml.jackson.datatype</groupId>
+			<artifactId>jackson-datatype-jsr310</artifactId>
+			<version>${jackson.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>com.fasterxml.jackson.datatype</groupId>
+			<artifactId>jackson-datatype-joda</artifactId>
+			<version>${jackson.version}</version>
+		</dependency>
+
+		<!-- Awaitility -->
+		<dependency>
+			<groupId>org.awaitility</groupId>
+			<artifactId>awaitility</artifactId>
+			<version>${awaitility.version}</version>
+		</dependency>
+
+		<!-- Selenium -->
+		<dependency>
+			<groupId>org.seleniumhq.selenium</groupId>
+			<artifactId>selenium-java</artifactId>
+			<version>${selenium.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>com.paulhammant</groupId>
+			<artifactId>ngwebdriver</artifactId>
+			<version>${ngwebdriver.version}</version>
+			<exclusions>
+				<exclusion>
+					<groupId>org.seleniumhq.selenium</groupId>
+					<artifactId>selenium-java</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>org.hamcrest</groupId>
+					<artifactId>hamcrest-all</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>org.testng</groupId>
+					<artifactId>testng</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>org.seleniumhq.selenium.fluent</groupId>
+					<artifactId>fluent-selenium</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+
+		<!-- Apache -->
+		<dependency>
+			<groupId>org.apache.commons</groupId>
+			<artifactId>commons-lang3</artifactId>
+			<version>${apache.commons-lang3.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.apache.commons</groupId>
+			<artifactId>commons-email</artifactId>
+			<version>${apache.commons-email.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>commons-io</groupId>
+			<artifactId>commons-io</artifactId>
+			<version>${apache.commons-io.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.apache.pdfbox</groupId>
+			<artifactId>pdfbox</artifactId>
+			<version>${apache.pdfbox.version}</version>
+		</dependency>
+	</dependencies>
+
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>${maven.compiler.version}</version>
+				<configuration>
+					<target>${java.vesion}</target>
+					<source>${java.vesion}</source>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-failsafe-plugin</artifactId>
+				<version>${maven.failsafe.plugin.version}</version>
+				<executions>
+					<execution>
+						<id>Run parallel tests</id>
+						<phase>integration-test</phase>
+						<goals>
+							<goal>integration-test</goal>
+						</goals>
+					</execution>
+				</executions>
+				<configuration>
+					<!-- How many scenarios to run in parallel -->
+					<forkCount>${parallelCount}</forkCount>
+					<!-- How many times to retry failing test -->
+					<rerunFailingTestsCount>2</rerunFailingTestsCount>
+					<!-- Run all tests regardless of their result, otherwise the plugin execution will stop on failing tests -->
+					<!-- ! However with this, the build will not fail in case of failing tests! -->
+					<testFailureIgnore>true</testFailureIgnore>
+					<!-- If there are not tests executed do not fail build -->
+					<failIfNoSpecifiedTests>false</failIfNoSpecifiedTests>
+					<!-- Use existing processes or create new ones -->
+					<reuseForks>true</reuseForks>
+					<argLine>-Dfile.encoding=UTF-8</argLine>
+					<disableXmlReport>true</disableXmlReport>
+					<excludes>
+						<exclude>**/DryRunRunnerIT.java</exclude>
+					</excludes>
+				</configuration>
+			</plugin>
+			<!-- Because Cucable is set to auto generate runners in target, to them as test sources build-helper-maven-plugin is used -->
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>build-helper-maven-plugin</artifactId>
+				<version>${maven.build.helper.plugin.version}</version>
+				<executions>
+					<execution>
+						<id>add-test-source</id>
+						<phase>generate-test-sources</phase>
+						<goals>
+							<goal>add-test-source</goal>
+						</goals>
+						<configuration>
+							<sources>
+								<source>${project.build.directory}/cucumber/cucable-generated/runners</source>
+							</sources>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+			<!-- Cucable plugin is used to auto generate runners based on features -->
+			<plugin>
+				<groupId>com.trivago.rta</groupId>
+				<artifactId>cucable-plugin</artifactId>
+				<version>${cucable.version}</version>
+				<executions>
+					<execution>
+						<id>generate-test-resources</id>
+						<phase>generate-test-resources</phase>
+						<goals>
+							<goal>parallel</goal>
+						</goals>
+					</execution>
+				</executions>
+				<configuration>
+					<!-- This can be either a Java class file or a text based template -->
+					<sourceRunnerTemplateFile>src/test/resources/cucable.template</sourceRunnerTemplateFile>
+					<!-- Process all features in the given directory -->
+					<sourceFeatures>src/test/resources/features</sourceFeatures>
+					<generatedFeatureDirectory>${project.build.directory}/cucumber/cucable-generated/features</generatedFeatureDirectory>
+					<generatedRunnerDirectory>${project.build.directory}/cucumber/cucable-generated/runners</generatedRunnerDirectory>
+					<!-- Default parallelization mode is scenarios, but it can be changed to features -->
+					<parallelizationMode>scenarios</parallelizationMode>
+					<numberOfTestRuns>1</numberOfTestRuns>
+					<!-- Example: include scenarios that are not tagged with @scenario1 but tagged with scenario2 or scenario3 -->
+					<!-- <includeScenarioTags>not @scenario1 and (@scenario2 or scenario3)</includeScenarioTags> -->
+					<includeScenarioTags>(${skipTags}) and (${tags})</includeScenarioTags>
+					<!-- Possible log levels default|compact|minimal|off -->
+					<logLevel>compact</logLevel>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>com.trivago.rta</groupId>
+				<artifactId>cluecumber-report-plugin</artifactId>
+				<version>${cluecumber.report.version}</version>
+				<executions>
+					<execution>
+						<id>report</id>
+						<phase>post-integration-test</phase>
+						<goals>
+							<goal>reporting</goal>
+						</goals>
+					</execution>
+				</executions>
+				<configuration>
+					<sourceJsonReportDirectory>${project.build.directory}/cucumber/json</sourceJsonReportDirectory>
+					<generatedHtmlReportDirectory>${project.build.directory}/cucumber/cluecumber-report</generatedHtmlReportDirectory>
+					<customPageTitle>Functional Tests Report</customPageTitle>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>net.masterthought</groupId>
+				<artifactId>maven-cucumber-reporting</artifactId>
+				<version>${maven-cucumber-reporting.version}</version>
+				<executions>
+					<execution>
+						<id>execution</id>
+						<phase>verify</phase>
+						<goals>
+							<goal>generate</goal>
+						</goals>
+						<configuration>
+							<checkBuildResult>false</checkBuildResult>
+							<projectName>functional-tests</projectName>
+							<outputDirectory>${project.build.directory}/cucumber</outputDirectory>
+							<jsonFiles>
+								<param>**/*.json</param>
+							</jsonFiles>
+							<skipEmptyJSONFiles>true</skipEmptyJSONFiles>
+							<mergeFeaturesById>true</mergeFeaturesById>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+		</plugins>
+		<resources>
+			<resource>
+				<filtering>true</filtering>
+				<directory>src/main/resources</directory>
+				<excludes>
+					<exclude>drivers/**</exclude>
+				</excludes>
+			</resource>
+			<resource>
+				<filtering>false</filtering>
+				<directory>src/main/resources</directory>
+				<includes>
+					<include>drivers/**</include>
+				</includes>
+			</resource>
+		</resources>
+	</build>
+</project>

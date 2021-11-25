@@ -1,0 +1,17 @@
+package com.levi9.functionaltests.template;
+
+import org.junit.runner.RunWith;
+
+import io.cucumber.junit.Cucumber;
+import io.cucumber.junit.CucumberOptions;
+
+@RunWith(Cucumber.class)
+@CucumberOptions(
+	glue = "com.levi9.functionaltests",
+	features = { "target/cucumber/cucable-generated/features/[CUCABLE:FEATURE].feature" },
+	plugin = { "json:target/cucumber/json/[CUCABLE:RUNNER].json", "pretty" },
+	strict = true
+)
+public class [CUCABLE:RUNNER] {
+
+}

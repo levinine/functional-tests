@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+
+	<property name="APPLICATION_NAME" value="functional-tests"/>
+	<property name="DEFAULT_LOG_PATH" value="./logs"/>
+
+	<appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+		<encoder>
+			<pattern>%date{yyyy.MM.dd;HH:mm:ss} [%thread] %-5level %logger{36} %ex{short} - %msg%n</pattern>
+		</encoder>
+	</appender>
+
+	<appender name="FILE_APPENDER" class="ch.qos.logback.core.rolling.RollingFileAppender">
+		<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+			<fileNamePattern>${DEFAULT_LOG_PATH}/${APPLICATION_NAME}-${HOSTNAME}.%d{yyyy-MM-dd}.%i.zip</fileNamePattern>
+			<timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+				<maxFileSize>100MB</maxFileSize>
+			</timeBasedFileNamingAndTriggeringPolicy>
+		</rollingPolicy>
+		<encoder>
+			<pattern>%date{yyyy.MM.dd;HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</pattern>
+		</encoder>
+	</appender>
+
+	<logger name="com.levi9.functionaltests.rest.client" level="info" additivity="false">
+		<appender-ref ref="STDOUT"/>
+		<appender-ref ref="FILE_APPENDER"/>
+	</logger>
+
+	<logger name="org.springframework" level="off">
+		<appender-ref ref="STDOUT"/>
+		<appender-ref ref="FILE_APPENDER"/>
+	</logger>
+
+	<root level="info">
+		<appender-ref ref="STDOUT"/>
+		<appender-ref ref="FILE_APPENDER"/>
+	</root>
+
+</configuration>
