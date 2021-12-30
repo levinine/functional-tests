@@ -76,22 +76,6 @@ mvn clean verify -Dtags='@ui or @api' -DparallelCount=5 -Denv=development -Dbrow
                 <activeProfile>alwaysActiveProfile</activeProfile>
             </activeProfiles>
         </settings>
-		
-## Codding standards and rules
-
-### Coding Standards
-
-- To have all coding standards and formatting just import settings file into chosen IDE
-- IntelliJ
-	- Go to `File > Settings > Editor > Code Style` and import code formatter `codestyle/intellij/Code Style.xml`
-	- Go to `File > Settings > Editor > File and Code Templates` select `Includes` tab and configure it as displayed on `codestyle/intellij/File and Code Templates - Includes - File Header example.PNG` and replace author data with your name and email
-	- Go to `File > Settings > Other Settings > Save Actions` and configure it as displayed on `codestyle/intellij/Save Actions plugin.PNG`
-- Eclipse
-	- Go to `Window > Preferences > Java > Code Style > Formatter` and import `codestyle/eclipse/formatter.xml`
-	- Go to `Window > Preferences > Java > Code Style > Code Templates` and import `codestyle/eclipse/codetemplates.xml`
-		- After import is done expand `Comments > Types` and replace author data with your name and email
-	- Go to `Window > Preferences > Java > Code Style > Cleanup` and import `codestyle/eclipse/cleanup.xml`
-	- Go to `Window > Preferences > Java > Code Style > Organize Imports` and import `codestyle/eclipse/importorder.importorder`
 
 ## Codding standards and rules
 
