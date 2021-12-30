@@ -31,7 +31,6 @@ public class MyAccountPage extends BasePage<MyAccountPage> {
 
 	@Override
 	protected void isLoaded() {
-		getWaitHelper().waitForAngularToFinish();
 		getWaitHelper().waitForElementToBeVisibleByDefaultTimeout(pageId);
 	}
 

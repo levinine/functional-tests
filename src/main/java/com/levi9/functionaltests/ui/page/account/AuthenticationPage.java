@@ -33,7 +33,6 @@ public class AuthenticationPage extends BasePage<AuthenticationPage> {
 
 	@Override
 	protected void isLoaded() {
-		getWaitHelper().waitForAngularToFinish();
 		getWaitHelper().waitForElementToBeVisibleByDefaultTimeout(pageId);
 	}
 

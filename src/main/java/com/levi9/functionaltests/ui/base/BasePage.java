@@ -5,10 +5,11 @@ import com.levi9.functionaltests.ui.helper.UploadHelper;
 import com.levi9.functionaltests.ui.helper.WaitHelper;
 
 import org.openqa.selenium.By;
+import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.TimeoutException;
+import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.PageFactory;
-import org.openqa.selenium.support.events.EventFiringWebDriver;
 import org.openqa.selenium.support.ui.Select;
 import org.springframework.beans.factory.annotation.Value;
 
@@ -23,17 +24,18 @@ import lombok.extern.slf4j.Slf4j;
 public abstract class BasePage<T> {
 
 	public static final String ELEMENT_NOT_FOUND = "Element not found! {}";
-
-	@Value("${ui.automationpractice.url}")
-	private String automationPracticeUrl;
-
-	protected final EventFiringWebDriver driver;
+	private final WebDriver driver;
+	private final JavascriptExecutor js;
 	private final WaitHelper waitHelper;
 	private final UploadHelper uploadHelper;
 	private final ActionsHelper actionsHelper;
 
-	public BasePage(final BaseDriver baseDriver) {
+	@Value("${ui.automationpractice.url}")
+	private String automationPracticeUrl;
+
+	protected BasePage(final BaseDriver baseDriver) {
 		this.driver = baseDriver.getDriver();
+		this.js = (JavascriptExecutor) baseDriver.getDriver();
 		this.waitHelper = new WaitHelper(baseDriver.getDriver());
 		this.uploadHelper = new UploadHelper(baseDriver.getDriver());
 		this.actionsHelper = new ActionsHelper(baseDriver.getDriver());
@@ -81,7 +83,6 @@ public abstract class BasePage<T> {
 	 */
 	public T refresh() {
 		getDriver().navigate().refresh();
-		getWaitHelper().waitForAngularToFinish();
 		return (T) this;
 	}
 
@@ -205,7 +206,7 @@ public abstract class BasePage<T> {
 	 */
 	public boolean doesUrlContains(final String text, final long timeoutInSeconds) {
 		try {
-			getWaitHelper().waitForUrlToConatin(text, timeoutInSeconds);
+			getWaitHelper().waitForUrlToContain(text, timeoutInSeconds);
 			return true;
 		} catch (final TimeoutException e) {
 			log.info(ELEMENT_NOT_FOUND, e.getMessage());
@@ -214,20 +215,19 @@ public abstract class BasePage<T> {
 	}
 
 	/**
-	 * Waits for Angular and element to be visible and clickable.
+	 * Wait for element to be visible and clickable.
 	 *
 	 * @param element web element
 	 *
 	 * @throws TimeoutException if element not found.
 	 */
 	public void waitForElement(final WebElement element) {
-		getWaitHelper().waitForAngularToFinish();
-		getWaitHelper().waitForElementToBeVisible(element, 5);
-		getWaitHelper().waitForElementToBeClickable(element, 5);
+		getWaitHelper().waitForElementToBeVisible(element, 15);
+		getWaitHelper().waitForElementToBeClickable(element, 15);
 	}
 
 	/**
-	 * Waits for Angular and element to be visible and clickable before performing click.
+	 * Wait for element to be visible and clickable before performing click.
 	 *
 	 * @param element web element
 	 *
@@ -236,11 +236,10 @@ public abstract class BasePage<T> {
 	public void waitAndClick(final WebElement element) {
 		waitForElement(element);
 		element.click();
-		getWaitHelper().waitForAngularToFinish();
 	}
 
 	/**
-	 * Waits for Angular and element to be visible and clickable before clearing and sending text to it.
+	 * Wait for element to be visible and clickable before clearing and sending text to it.
 	 *
 	 * @param element web element
 	 *
@@ -250,26 +249,22 @@ public abstract class BasePage<T> {
 		waitForElement(element);
 		element.clear();
 		element.sendKeys(keysToSend);
-		getWaitHelper().waitForAngularToFinish();
 	}
 
 	/**
-	 * Waits for Angular and element to be visible and clickable.
+	 * Wait for element to be visible and clickable.
 	 *
 	 * @param by locator used to find the element
 	 *
 	 * @throws TimeoutException if element not found.
 	 */
 	public void waitForElement(final By by) {
-		if (isByAngular(by)) {
-			getWaitHelper().waitForAngularToFinish();
-		}
-		getWaitHelper().waitForElementToBeDisplayed(by, 5);
+		getWaitHelper().waitForElementToBeDisplayed(by, 15);
 
 	}
 
 	/**
-	 * Waits for Angular and element to be visible and clickable before performing click.
+	 * Wait for element to be visible and clickable before performing click.
 	 *
 	 * @param by locator used to find the element used
 	 *
@@ -281,7 +276,7 @@ public abstract class BasePage<T> {
 	}
 
 	/**
-	 * Waits for Angular and element to be visible and clickable before clearing and sending text to it.
+	 * Wait for element to be visible and clickable before clearing and sending text to it.
 	 *
 	 * @param by         locator used to find the element
 	 * @param keysToSend keys to send
@@ -294,7 +289,7 @@ public abstract class BasePage<T> {
 	}
 
 	/**
-	 * Waits for Angular and element to be visible and clickable before selecting by visible text.
+	 * Wait for element to be visible and clickable before selecting by visible text.
 	 *
 	 * @param element     web element
 	 * @param visibleText visible text
@@ -305,11 +300,10 @@ public abstract class BasePage<T> {
 		waitForElement(element);
 		final Select select = new Select(element);
 		select.selectByVisibleText(visibleText);
-		getWaitHelper().waitForAngularToFinish();
 	}
 
 	/**
-	 * Waits for Angular and element to be visible and clickable before selecting by index.
+	 * Wait for element to be visible and clickable before selecting by index.
 	 *
 	 * @param by    locator used to find the element
 	 * @param index select index (index in dropdown)
@@ -322,7 +316,7 @@ public abstract class BasePage<T> {
 	}
 
 	/**
-	 * Waits for Angular and element to be visible and clickable before selecting by index.
+	 * Wait for element to be visible and clickable before selecting by index.
 	 *
 	 * @param element web element
 	 * @param index   select index (index in dropdown)
@@ -333,11 +327,10 @@ public abstract class BasePage<T> {
 		waitForElement(element);
 		final Select select = new Select(element);
 		select.selectByIndex(index);
-		getWaitHelper().waitForAngularToFinish();
 	}
 
 	/**
-	 * Waits for Angular and element to be visible and clickable before selecting by visible text.
+	 * Wait for element to be visible and clickable before selecting by visible text.
 	 *
 	 * @param by          locator used to find the element
 	 * @param visibleText visible text
@@ -350,7 +343,7 @@ public abstract class BasePage<T> {
 	}
 
 	/**
-	 * Waits for Angular and element to be visible and clickable before getting its text.
+	 * Wait for element to be visible and clickable before getting its text.
 	 *
 	 * @param element web element
 	 *
@@ -364,7 +357,7 @@ public abstract class BasePage<T> {
 	}
 
 	/**
-	 * Waits for Angular and element to be visible and clickable before getting its text.
+	 * Wait for element to be visible and clickable before getting its text.
 	 *
 	 * @param by locator used to find the element
 	 *
@@ -378,20 +371,9 @@ public abstract class BasePage<T> {
 	}
 
 	/**
-	 * Checks if By is instance of one of ByAngular*.
-	 *
-	 * @param by locator used to find the element
-	 *
-	 * @return true if By is instance of ByAngular**, false if not
-	 */
-	private boolean isByAngular(final By by) {
-		return by.getClass().getSimpleName().contains("ByAngular");
-	}
-
-	/**
 	 * Opens URL.
 	 *
-	 * @param url
+	 * @param url URL as a {@link String}
 	 *
 	 * @return
 	 */

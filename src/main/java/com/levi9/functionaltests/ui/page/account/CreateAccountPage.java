@@ -63,7 +63,6 @@ public class CreateAccountPage extends BasePage<CreateAccountPage> {
 
 	@Override
 	protected void isLoaded() {
-		getWaitHelper().waitForAngularToFinish();
 		getWaitHelper().waitForElementToBeVisibleByDefaultTimeout(pageId);
 	}
 
@@ -86,7 +85,6 @@ public class CreateAccountPage extends BasePage<CreateAccountPage> {
 		customer.setFirstName(randomAlphabetic(5));
 		customer.setLastName(randomAlphabetic(5));
 		customer.setPassword(randomAlphanumeric(10));
-		getWaitHelper().waitForAngularToFinish();
 		waitAndClick(mrRadioButton);
 		waitAndSendKeys(firstNameInfoInput, customer.getFirstName());
 		waitAndSendKeys(lastNameInfoInput, customer.getLastName());

@@ -10,7 +10,6 @@
 - [REST-Assured](https://github.com/rest-assured/rest-assured/wiki/Usage)
 - [Awaitility](https://github.com/awaitility/awaitility/wiki/Usage)
 - [Selenium](https://www.seleniumhq.org/)
-- [ngWebDriver](https://github.com/paul-hammant/ngWebDriver)
 - [Logback](https://logback.qos.ch/)
 
 ## Project usage
@@ -22,21 +21,25 @@ mvn clean verify
 Additional parameters:
 
 - `-Denv` - environment on which to execute tests i.e ```-Denv=test```, if not specified `development` will be used.
-- `-Dtags` - scenario tags to execute, can be one or multiple (separated with 'or' ,) i.e. ```-Dtags=@sanity``` or ```-Dtags='@api or @ui'```, if not specified `@sanity` will be used.
-- `-Dgrid` - grid on which browsers should be started i.e. ```-Dgrid=none```, possible values `none`, `remote`.
+- `-Dtags` - scenario tags to execute, can be one or multiple (separated with 'or' ,) i.e. ```-Dtags=@sanity``` or ```-Dtags='@api or @ui'```, if not
+  specified `@sanity` will be used.
+- `-Dremote` - defines if execution is done locally or remotely i.e. ```-Dremote=false``` execute using local browsers and drivers
+  or ```-Dremote=true``` execute remotely using Selenium Grid (URL of Selenium Grid per environment is located in environment properties files).
 - `-Dbrowser` - browser on which UI test will be used i.e. ```-Dbrowser=firefox```, if not specified `chrome` will be used
 - `-DparallelCount` - maximum number of scenarios executed in parallel i.e. ```-DparallelCount=5```, if not specified `3` will be used.
- 
-For example to execute @api tests with 2 features in parallel one development environment with chrome browser and none grid command will look like:
+
+For example to execute @api tests with 2 features in parallel one development environment with chrome browser and not using Selenium Grid command will
+look like:
 ```console 
-mvn clean verify -Dtags='@ui or @api' -DparallelCount=5 -Denv=development -Dbrowser=chrome -Dgrid=none
+mvn clean verify -Dtags='@ui or @api' -DparallelCount=5 -Denv=development -Dbrowser=chrome -Dremote=false
 ```
 
 ## Local Development Setup
 
 ### Download and install
 
-- [Java 11](http://www.oracle.com/technetwork/java/javase/downloads/index.html) and installed as described [here](https://docs.oracle.com/en/java/javase/13/install/overview-jdk-installation.html)
+- [Java 11+](http://www.oracle.com/technetwork/java/javase/downloads/index.html) and installed as
+  described [here](https://docs.oracle.com/en/java/javase/13/install/overview-jdk-installation.html)
 - [Maven 3.8+](https://maven.apache.org/download.cgi) and installed as described [here](https://maven.apache.org/install.html)
 - IDE of choice, [IntelliJ IDEA](https://www.jetbrains.com/idea/download) or [Eclipse](https://www.eclipse.org/downloads/)
 - [Lombok](https://projectlombok.org/download) and configured on chosen IDE, [IntelliJ IDEA](https://projectlombok.org/setup/intellij) or [Eclipse](https://projectlombok.org/setup/eclipse)
@@ -166,11 +169,10 @@ To automate actions on some new page:
 
 1. Create Page Object(s) for it in `com.levi9.functionaltests.ui.page` (it can also be multiple page objects if page is complex)
 	- Order of priority for Selenium selectors is:
-		1. ByAngular locator
-		2. ID locator
-		3. CSS locator
-		4. Name locator
-		5. Link locator
+		1. ID locator
+		2. CSS locator
+		3. Name locator
+		4. Link locator
 		5. XPath locator
 2. Call its methods from step definitions
 
@@ -202,14 +204,26 @@ When used correctly, Given-When-Then helps teams design specifications and check
 To prevents most of accidental misuse of Given-When-Then use:
 
 - Write *Given* in Past tense as Passive sentences - these statements are describing preconditions and parameters (values rather than actions)
-- Write *When* in Present tense as Active sentences -  these statements are describing action under test
+- Write *When* in Present tense as Active sentences - these statements are describing action under test
 - Write *Then* in Future tense as Passive sentences - these statements are describing post-conditions and expectations (values rather than actions)
 
 Make sure that there is only **one** *When* statement for each scenario.
 
 Also make sure that there are no **and** conjunctions in sentences. If there is, it must be split into separate step.
 
-### Matching Step Definition with Regular Expressions 
+### Matching Step Definition with Regular Expressions
+
 - To match Gherkin Scenario Step text regular expression are used
-- When writing regular expression matchers always make sure that at least similar words and plurals are covered and will be matchted
+- When writing regular expression matchers always make sure that at least similar words and plurals are covered and will be matched
 	- Tool which can help you write and match regular expression [Regexr](https://regexr.com/)
+
+## Maintenance
+
+### Local Selenium Driver Files
+
+New Selenium Drivers and Browser version are being released more often than any other dependencies. Whenever new browser version is released there is
+high possibility that previous Driver version will not work with it, causing that UI test will not work anymore.
+
+As Local Selenium Drivers are stored inside project it is **important** that they are always kept up-to-date with current Browser version. They are
+located in ```src/main/resources/drivers``` folder. _Recommendation when updating drivers is to update them for all OS variants present in project,
+just to be consistent._

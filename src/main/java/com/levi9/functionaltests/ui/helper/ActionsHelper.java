@@ -1,46 +1,40 @@
-/**
- *
- */
 package com.levi9.functionaltests.ui.helper;
 
 import org.openqa.selenium.By;
+import org.openqa.selenium.JavascriptExecutor;
+import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.interactions.Actions;
-import org.openqa.selenium.support.events.EventFiringWebDriver;
 
 import groovy.util.logging.Slf4j;
+import lombok.Getter;
 
 /**
  * @author Milos Pujic (m.pujic@levi9.com)
  */
 @Slf4j
+@Getter
 public class ActionsHelper {
 
-	private final EventFiringWebDriver driver;
+	private final WebDriver driver;
+
+	private final JavascriptExecutor js;
 
 	private final Actions actions;
 
 	private final WaitHelper waitHelper;
 
-	public ActionsHelper(final EventFiringWebDriver driver) {
+	public ActionsHelper(final WebDriver driver) {
 		this.driver = driver;
+		this.js = (JavascriptExecutor) driver;
 		this.actions = new Actions(driver);
 		this.waitHelper = new WaitHelper(driver);
 	}
 
 	/**
-	 * Gets Actions.
-	 *
-	 * @return {@link Actions}
-	 */
-	public Actions getActions() {
-		return actions;
-	}
-
-	/**
 	 * Moves the mouse to the middle of the element.
 	 *
-	 * @param element
+	 * @param element {@link WebElement}
 	 */
 	public void moveToElement(final WebElement element) {
 		getActions().moveToElement(element).perform();
@@ -49,37 +43,36 @@ public class ActionsHelper {
 	/**
 	 * Moves the mouse to the middle of the element.
 	 *
-	 * @param by
+	 * @param by {@link By}
 	 */
 	public void moveToElement(final By by) {
-		getActions().moveToElement(driver.findElement(by)).perform();
+		getActions().moveToElement(getDriver().findElement(by)).perform();
 	}
 
 	/**
 	 * Move to element and click
 	 *
-	 * @param by
+	 * @param by {@link By}
 	 */
 	public void moveToElementAndClick(final By by) {
-		getActions().moveToElement(driver.findElement(by)).click().perform();
-		waitHelper.waitForAngularToFinish();
+		getActions().moveToElement(getDriver().findElement(by)).click().perform();
 	}
 
 	/**
 	 * Scroll down to the element.
 	 *
-	 * @param by
+	 * @param by {@link By}
 	 */
 	public void scrollToElement(final By by) {
-		driver.executeScript("arguments[0].scrollIntoView(true);", by);
+		getJs().executeScript("arguments[0].scrollIntoView(true);", by);
 	}
 
 	/**
 	 * Scroll down to the element.
 	 *
-	 * @param element
+	 * @param element {@link WebElement}
 	 */
 	public void scrollToElement(final WebElement element) {
-		driver.executeScript("arguments[0].scrollIntoView(true);", element);
+		getJs().executeScript("arguments[0].scrollIntoView(true);", element);
 	}
 }

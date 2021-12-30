@@ -32,7 +32,6 @@ public class ShippingPage extends BasePage<ShippingPage> {
 
 	@Override
 	protected void isLoaded() throws Error {
-		getWaitHelper().waitForAngularToFinish();
 		getWaitHelper().waitForElementToBeVisibleByDefaultTimeout(pageId);
 	}
 

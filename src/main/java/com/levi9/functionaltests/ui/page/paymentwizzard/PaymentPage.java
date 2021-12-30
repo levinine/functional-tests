@@ -39,7 +39,6 @@ public class PaymentPage extends BasePage<PaymentPage> {
 
 	@Override
 	protected void isLoaded() {
-		getWaitHelper().waitForAngularToFinish();
 		getWaitHelper().waitForElementToBeVisibleByDefaultTimeout(pageId);
 	}
 
@@ -52,7 +51,6 @@ public class PaymentPage extends BasePage<PaymentPage> {
 	 * Click on pay by bank wire to checkout button
 	 */
 	public void clickOnPayByBankWireButton() {
-		getWaitHelper().waitForAngularToFinish();
 		waitAndClick(payByBankWire);
 	}
 

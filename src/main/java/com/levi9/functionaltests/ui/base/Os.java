@@ -15,7 +15,8 @@ public enum Os {
 	WINDOWS64("drivers/win64/", Constants.GECKODRIVER, Constants.CHROMEDRIVER, ".exe"),
 	LINUX32("drivers/linux32/", Constants.GECKODRIVER, Constants.CHROMEDRIVER, ""),
 	LINUX64("drivers/linux64/", Constants.GECKODRIVER, Constants.CHROMEDRIVER, ""),
-	MACOS("drivers/macos/", Constants.GECKODRIVER, Constants.CHROMEDRIVER, "");
+	MACOS_INTEL("drivers/macos_x86_64/", Constants.GECKODRIVER, Constants.CHROMEDRIVER, ""),
+	MACOS_APPLE_SILICON("drivers/macos_aarch64/", Constants.GECKODRIVER, Constants.CHROMEDRIVER, "");
 
 	@Getter
 	public final String geckoPath;
@@ -52,7 +53,7 @@ public enum Os {
 		} else if (SystemUtils.IS_OS_LINUX) {
 			return SystemUtils.OS_ARCH.contains("32") ? Os.LINUX32 : Os.LINUX64;
 		} else if (SystemUtils.IS_OS_MAC_OSX || SystemUtils.IS_OS_MAC) {
-			return Os.MACOS;
+			return SystemUtils.OS_ARCH.equals("x86_64") ? Os.MACOS_INTEL : Os.MACOS_APPLE_SILICON;
 		}
 		throw new IllegalStateException("Unknown OS: " + SystemUtils.OS_NAME);
 	}

@@ -1,6 +1,6 @@
 package com.levi9.functionaltests.hooks;
 
-import static java.util.concurrent.TimeUnit.*;
+import static java.time.Duration.ofSeconds;
 
 import com.levi9.functionaltests.config.SpringConfig;
 import com.levi9.functionaltests.storage.ScenarioEntity;
@@ -44,10 +44,10 @@ public class Hooks {
 
 	@Before(value = "@ui", order = 1)
 	public void setupDriver() {
-		log.info("Setting up Selenium Driver.");
+		log.info("Setting up Selenium WebDriver.");
 		baseDriver.initialize();
-		baseDriver.getDriver().manage().timeouts().pageLoadTimeout(30, SECONDS);
-		baseDriver.getDriver().manage().timeouts().setScriptTimeout(30, SECONDS);
+		baseDriver.getDriver().manage().timeouts().pageLoadTimeout(ofSeconds(30));
+		baseDriver.getDriver().manage().timeouts().scriptTimeout(ofSeconds(30));
 		baseDriver.getDriver().manage().window().maximize();
 	}
 
@@ -58,7 +58,7 @@ public class Hooks {
 
 	@After(value = "@ui", order = 1)
 	public void tearDownDriver() {
-		log.info("Closing Selenium Driver");
+		log.info("Tearing Down Selenium WebDriver");
 		baseDriver.tearDown();
 	}
 

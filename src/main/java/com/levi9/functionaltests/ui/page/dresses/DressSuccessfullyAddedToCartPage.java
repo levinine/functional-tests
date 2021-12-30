@@ -33,7 +33,6 @@ public class DressSuccessfullyAddedToCartPage extends BasePage<DressSuccessfully
 
 	@Override
 	protected void isLoaded() {
-		getWaitHelper().waitForAngularToFinish();
 		getWaitHelper().waitForElementToBeVisibleByDefaultTimeout(pageId);
 	}
 

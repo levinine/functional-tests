@@ -33,30 +33,29 @@
 		<parallelCount>3</parallelCount>
 
 		<!-- Dependencies Versions -->
-		<cucumber.version>6.11.0</cucumber.version>
+		<cucumber.version>7.1.0</cucumber.version>
 		<assertj.version>3.21.0</assertj.version>
 		<rest-assured.version>4.4.0</rest-assured.version>
 		<awaitility.version>4.1.1</awaitility.version>
-		<selenium.version>3.141.59</selenium.version>
-		<ngwebdriver.version>1.1.6</ngwebdriver.version>
-		<logback.version>1.3.0-alpha10</logback.version>
+		<selenium.version>4.1.1</selenium.version>
+		<logback.version>1.3.0-alpha12</logback.version>
 		<lombok.version>1.18.22</lombok.version>
 		<junit.version>4.13.1</junit.version>
 		<slf4j.version>2.0.0-alpha5</slf4j.version>
-		<spring.version>5.3.13</spring.version>
+		<spring.version>5.3.14</spring.version>
 		<apache.commons-lang3.version>3.12.0</apache.commons-lang3.version>
 		<apache.commons-email.version>1.5</apache.commons-email.version>
 		<apache.commons-io.version>2.11.0</apache.commons-io.version>
 		<apache.pdfbox.version>2.0.22</apache.pdfbox.version>
-		<jackson.version>2.13.0</jackson.version>
+		<jackson.version>2.13.1</jackson.version>
 
 		<!-- Maven Plugins Versions -->
 		<maven.compiler.version>3.8.1</maven.compiler.version>
 		<maven.failsafe.plugin.version>2.22.2</maven.failsafe.plugin.version>
 		<cucable.version>1.9.0</cucable.version>
-		<maven-cucumber-reporting.version>5.4.0</maven-cucumber-reporting.version>
+		<maven-cucumber-reporting.version>5.6.2</maven-cucumber-reporting.version>
 		<maven.build.helper.plugin.version>3.2.0</maven.build.helper.plugin.version>
-		<cluecumber.report.version>2.3.4</cluecumber.report.version>
+		<cluecumber.report.version>2.7.1</cluecumber.report.version>
 
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
@@ -188,30 +187,6 @@
 			<groupId>org.seleniumhq.selenium</groupId>
 			<artifactId>selenium-java</artifactId>
 			<version>${selenium.version}</version>
-		</dependency>
-
-		<dependency>
-			<groupId>com.paulhammant</groupId>
-			<artifactId>ngwebdriver</artifactId>
-			<version>${ngwebdriver.version}</version>
-			<exclusions>
-				<exclusion>
-					<groupId>org.seleniumhq.selenium</groupId>
-					<artifactId>selenium-java</artifactId>
-				</exclusion>
-				<exclusion>
-					<groupId>org.hamcrest</groupId>
-					<artifactId>hamcrest-all</artifactId>
-				</exclusion>
-				<exclusion>
-					<groupId>org.testng</groupId>
-					<artifactId>testng</artifactId>
-				</exclusion>
-				<exclusion>
-					<groupId>org.seleniumhq.selenium.fluent</groupId>
-					<artifactId>fluent-selenium</artifactId>
-				</exclusion>
-			</exclusions>
 		</dependency>
 
 		<!-- Apache -->

@@ -19,16 +19,17 @@ import org.apache.commons.io.FileUtils;
 import org.openqa.selenium.NoSuchSessionException;
 import org.openqa.selenium.OutputType;
 import org.openqa.selenium.TakesScreenshot;
+import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.firefox.FirefoxOptions;
 import org.openqa.selenium.firefox.FirefoxProfile;
-import org.openqa.selenium.remote.DesiredCapabilities;
+import org.openqa.selenium.remote.AbstractDriverOptions;
 import org.openqa.selenium.remote.LocalFileDetector;
 import org.openqa.selenium.remote.RemoteWebDriver;
-import org.openqa.selenium.support.events.EventFiringWebDriver;
-import org.openqa.selenium.support.events.WebDriverEventListener;
+import org.openqa.selenium.support.events.EventFiringDecorator;
+import org.openqa.selenium.support.events.WebDriverListener;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Scope;
@@ -51,39 +52,42 @@ public class BaseDriver {
 	/**
 	 * Initialization.
 	 */
-	private final ThreadLocal<EventFiringWebDriver> driver = new ThreadLocal<>();
-	private final ChromeOptions chromeOptions = new ChromeOptions();
-	private final FirefoxOptions firefoxOptions = new FirefoxOptions();
+	private final ThreadLocal<WebDriver> driver = new ThreadLocal<>();
+
 	@Getter(AccessLevel.PUBLIC)
 	private final Browser browser;
-	private final WebDriverEventListener eventListener = new BaseDriverEventListener();
+	private final WebDriverListener eventListener = new BaseDriverListener();
+	private final boolean remote;
+	@Value("${selenium.grid.url}")
+	private String remoteWebDriverUrl;
 	@Autowired
 	private Storage storage;
-	private DesiredCapabilities capability = new DesiredCapabilities();
-	private boolean useRemoteWebDriver = false;
-	private String remoteWebDriverUrl = null;
 
 	/**
 	 * Setup method with browser and Selenium grid.
 	 *
-	 * @param browser possible values "chrome" and "firefox" (case insensitive)
-	 * @param grid    Selenium Grid, possible values "none", "local" and "cloud" (case insensitive)
+	 * @param browser possible values "chrome" and "firefox" (case-insensitive)
+	 * @param remote  true to execute remotely on Selenium Grid, false otherwise
 	 */
-	public BaseDriver(@Value("${browser:chrome}") final String browser, @Value("${grid:none}") final String grid) {
+	public BaseDriver(@Value("${browser:chrome}") final String browser, @Value("${remote:false}") final boolean remote) {
 		this.browser = Browser.getEnum(browser);
-		if (Grid.getEnum(grid).equals(Grid.NONE)) {
-			this.useRemoteWebDriver = false;
-		} else {
-			this.useRemoteWebDriver = true;
-			this.remoteWebDriverUrl = Grid.getEnum(grid).url;
-		}
+		this.remote = remote;
+	}
+
+	/**
+	 * Get driver.
+	 *
+	 * @return {@link WebDriver}
+	 */
+	public WebDriver getDriver() {
+		return driver.get();
 	}
 
 	/**
 	 * Do Initialization of Driver / WebDriver.
 	 */
 	public void initialize() {
-		if (!useRemoteWebDriver) {
+		if (!remote) {
 			final Os os = getEnum();
 			if (getBrowser().equals(FIREFOX)) {
 				initializeDriver(FIREFOX.getSystemVariable(), os, os.geckoPath);
@@ -93,15 +97,6 @@ public class BaseDriver {
 			}
 		}
 		initializeWebDriver(getBrowser());
-	}
-
-	/**
-	 * Get driver.
-	 *
-	 * @return {@link EventFiringWebDriver}
-	 */
-	public EventFiringWebDriver getDriver() {
-		return driver.get();
 	}
 
 	/**
@@ -136,32 +131,30 @@ public class BaseDriver {
 	 * @param browser browser
 	 */
 	private void initializeWebDriver(final Browser browser) {
-		if (this.useRemoteWebDriver) {
+		final AbstractDriverOptions browserOptions = getBrowserOptions(browser);
+		final String browserName = browserOptions.getBrowserName().toUpperCase();
+		if (this.remote) {
 			log.info("Using Remote Webdriver");
-			if (browser.equals(FIREFOX)) {
-				setFirefoxCapabilities();
-			} else if (browser.equals(CHROME)) {
-				setChromeCapabilities();
-			}
 			try {
-				final RemoteWebDriver remoteDriver = new RemoteWebDriver(new URL(remoteWebDriverUrl), capability);
+				final RemoteWebDriver remoteDriver = new RemoteWebDriver(new URL(remoteWebDriverUrl), browserOptions);
 				remoteDriver.setFileDetector(new LocalFileDetector());
-				log.info("Initializing remote webdriver with url {} and with browser {} ", remoteWebDriverUrl,
-					capability.getBrowserName().toUpperCase());
-				driver.set(new EventFiringWebDriver(remoteDriver).register(eventListener));
+				log.info("Initializing remote WebDriver with url {} and with browser {} ", remoteWebDriverUrl, browserName);
+				driver.set(new EventFiringDecorator(eventListener).decorate(remoteDriver));
 			} catch (final MalformedURLException e) {
 				final String msg = "Error while initializing remote webdriver with url: " + remoteWebDriverUrl.toUpperCase();
 				log.error(msg, e);
 				throw new FunctionalTestsException(msg, e);
 			}
 		} else if (browser.equals(FIREFOX)) {
-			setFirefoxCapabilities();
-			log.info("Initializing webdriver with browser {}", firefoxOptions.getBrowserName().toUpperCase());
-			driver.set(new EventFiringWebDriver(new FirefoxDriver(firefoxOptions)).register(eventListener));
+			final FirefoxOptions firefoxOptions = (FirefoxOptions) browserOptions;
+			final FirefoxDriver firefoxDriver = new FirefoxDriver(firefoxOptions);
+			log.info("Initializing Local WebDriver with {} browser", browserName);
+			driver.set(new EventFiringDecorator(eventListener).decorate(firefoxDriver));
 		} else if (browser.equals(CHROME)) {
-			setChromeCapabilities();
-			log.info("Initializing webdriver with browser {}", chromeOptions.getBrowserName().toUpperCase());
-			driver.set(new EventFiringWebDriver(new ChromeDriver(chromeOptions)).register(eventListener));
+			log.info("Initializing Local WebDriver with {} browser", browserName);
+			final ChromeOptions chromeOptions = (ChromeOptions) browserOptions;
+			final ChromeDriver chromeDriver = new ChromeDriver(chromeOptions);
+			driver.set(new EventFiringDecorator(eventListener).decorate(chromeDriver));
 		} else {
 			final String msg = "No proper browser setting is found!";
 			log.error(msg);
@@ -170,44 +163,55 @@ public class BaseDriver {
 	}
 
 	/**
-	 * Sets Firefox capabilities.
+	 * Get Browser Options depending on Browser.
+	 *
+	 * @param browser {@link Browser}
+	 * @param <T>
+	 *
+	 * @return {@link FirefoxOptions} or {@link ChromeOptions}
 	 */
-	private void setFirefoxCapabilities() {
-		capability = DesiredCapabilities.firefox();
-		final FirefoxProfile firefoxProfile = new FirefoxProfile();
-		firefoxProfile.setPreference("dom.forms.number", false);
-		firefoxOptions.setProfile(firefoxProfile);
-		capability.merge(firefoxOptions);
+	private <T extends AbstractDriverOptions> T getBrowserOptions(final Browser browser) {
+		if (browser.equals(FIREFOX)) {
+			return (T) getFirefoxOptions();
+		} else {
+			return (T) getChromeOptions();
+		}
 	}
 
 	/**
-	 * Sets Chrome capabilities.
+	 * Get Firefox Options.
 	 */
-	private void setChromeCapabilities() {
+	private FirefoxOptions getFirefoxOptions() {
+		final FirefoxOptions browserOptions = new FirefoxOptions();
+		final FirefoxProfile firefoxProfile = new FirefoxProfile();
+		firefoxProfile.setPreference("dom.forms.number", false);
+		browserOptions.setProfile(firefoxProfile);
+		return browserOptions;
+	}
+
+	/**
+	 * Get Chrome Options.
+	 */
+	private ChromeOptions getChromeOptions() {
+		final ChromeOptions browserOptions = new ChromeOptions();
 		//chromeOptions.addArguments("window-size=1920,1080");
 		//chromeOptions.addArguments("headless");
 		//chromeOptions.addArguments("no-sandbox");
-		chromeOptions.addArguments("verbose");
-		chromeOptions.addArguments("whitelisted-ips=");
-		chromeOptions.addArguments("disable-extensions");
-		capability = DesiredCapabilities.chrome();
-		capability.setCapability(ChromeOptions.CAPABILITY, chromeOptions);
+		browserOptions.addArguments("verbose");
+		browserOptions.addArguments("whitelisted-ips=");
+		browserOptions.addArguments("disable-extensions");
+		return browserOptions;
 	}
 
 	/**
 	 * Tear down driver and clear all cookies.
 	 */
 	public void tearDown() {
-		log.info("Closing Selenium Driver");
 		if (null != getDriver()) {
 			try {
-				log.info("Deleting Cookies");
 				getDriver().manage().deleteAllCookies();
-				log.info("Executing Driver Close");
 				getDriver().close();
-				log.info("Executing Driver Quit");
 				getDriver().quit();
-				log.info("Closed Selenium Driver");
 			} catch (final Exception e) {
 				log.info("Error with Closing Selenium Driver: {}", e.getMessage());
 			}
@@ -223,7 +227,7 @@ public class BaseDriver {
 		final String timestamp = new SimpleDateFormat("yyyy-MM-dd HH-mm-ss-SSS").format(now.getTime());
 		final String fileName = timestamp + "_" + storage.getTestScenario().getScreenshotCounter();
 		final String fileExtension = ".png";
-		final TakesScreenshot screenshot = getDriver();
+		final TakesScreenshot screenshot = (TakesScreenshot) getDriver();
 		final String screenShotSaveLocationPath = storage.getTestScenario().getScenarioScreenshotsLocationPath() + fileName + fileExtension;
 		try {
 			final byte[] screenShootByteArray = screenshot.getScreenshotAs(OutputType.BYTES);

@@ -39,7 +39,6 @@ public class HomePage extends BasePage<HomePage> {
 
 	@Override
 	protected void isLoaded() {
-		getWaitHelper().waitForAngularToFinish();
 		getWaitHelper().waitForElementToBeVisibleByDefaultTimeout(pageId);
 	}
 
@@ -73,17 +72,10 @@ public class HomePage extends BasePage<HomePage> {
 	public void clickOnDressesSubMenuItem(final String typeOfDress) {
 		getActionsHelper().moveToElement(dressesMenuItem);
 		switch (typeOfDress.toLowerCase()) {
-		case "casual":
-			waitAndClick(casualDressesSubMenuItem);
-			break;
-		case "evening":
-			waitAndClick(eveningDressesSubMenuItem);
-			break;
-		case "summer":
-			waitAndClick(summerDressesSubMenuItem);
-			break;
-		default:
-			throw new FunctionalTestsException("Dress category does not exist!");
+		case "casual" -> waitAndClick(casualDressesSubMenuItem);
+		case "evening" -> waitAndClick(eveningDressesSubMenuItem);
+		case "summer" -> waitAndClick(summerDressesSubMenuItem);
+		default -> throw new FunctionalTestsException("Dress category does not exist!");
 		}
 	}
 }

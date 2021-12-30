@@ -30,7 +30,6 @@ public class ShoppingCartSummaryPage extends BasePage<ShoppingCartSummaryPage> {
 
 	@Override
 	protected void isLoaded() throws Error {
-		getWaitHelper().waitForAngularToFinish();
 		getWaitHelper().waitForElementToBeVisibleByDefaultTimeout(pageId);
 	}
 

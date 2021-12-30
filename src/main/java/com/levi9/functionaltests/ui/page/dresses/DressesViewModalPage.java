@@ -20,8 +20,6 @@ public class DressesViewModalPage extends BasePage<DressesViewModalPage> {
 
 	// Page identification
 	private final By pageId = By.className("fancybox-iframe");
-	// Close Modal frame
-	private final By closeDressModalFrameIcon = By.className("fancybox-item fancybox-close");
 
 	// Dress parameters
 	private final By quantityInput = By.name("qty");
@@ -37,24 +35,12 @@ public class DressesViewModalPage extends BasePage<DressesViewModalPage> {
 
 	@Override
 	protected void isLoaded() {
-		getWaitHelper().waitForAngularToFinish();
 		getWaitHelper().waitForElementToBeVisibleByDefaultTimeout(pageId);
 	}
 
 	@Override
 	protected void load() {
 		openPage(getAutomationPracticeUrl() + "", pageId);
-	}
-
-	/**
-	 * Close Dress Modal Frame if it is opened
-	 */
-	public void closeDressModalFrame() {
-		if (isElementClickable(closeDressModalFrameIcon, 5)) {
-			waitAndClick(closeDressModalFrameIcon);
-		} else {
-			log.info("Dress modal is not open nothing to close!");
-		}
 	}
 
 	/**

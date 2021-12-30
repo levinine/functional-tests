@@ -1,13 +1,13 @@
 package com.levi9.functionaltests.ui.helper;
 
-import com.paulhammant.ngwebdriver.NgWebDriver;
+import static java.time.Duration.ofSeconds;
 
 import java.util.Arrays;
 
 import org.openqa.selenium.By;
 import org.openqa.selenium.TimeoutException;
+import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.support.events.EventFiringWebDriver;
 import org.openqa.selenium.support.ui.ExpectedCondition;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
@@ -22,45 +22,32 @@ import groovy.util.logging.Slf4j;
 @Slf4j
 public class WaitHelper {
 
-	private final EventFiringWebDriver driver;
-	private final NgWebDriver ngDriver;
+	private final WebDriver driver;
 
-	public WaitHelper(final EventFiringWebDriver driver) {
+	public WaitHelper(final WebDriver driver) {
 		this.driver = driver;
-		this.ngDriver = new NgWebDriver(driver);
 	}
 
 	/**
-	 * Waits for Angular to finish.
-	 *
-	 * @return {@link WaitHelper}
-	 */
-	public WaitHelper waitForAngularToFinish() {
-		ngDriver.waitForAngularRequestsToFinish();
-		return this;
-	}
-
-	/**
-	 * Wait for some Expected condition. Do not wait for Angular.
+	 * Wait for some Expected condition.
 	 *
 	 * @param expectedCondition expected condition
 	 * @param timeoutInSeconds  timeout in seconds
 	 *
 	 * @throws TimeoutException If the timeout expires.
 	 */
-	public void waitForExpectedCondition(final ExpectedCondition<?> expectedCondition, final long timeoutInSeconds) {
-		final WebDriverWait driverWait = new WebDriverWait(driver, timeoutInSeconds);
+	private void waitForExpectedCondition(final ExpectedCondition<?> expectedCondition, final long timeoutInSeconds) {
+		final WebDriverWait driverWait = new WebDriverWait(driver, ofSeconds(timeoutInSeconds));
 		driverWait.until(expectedCondition);
 	}
 
 	/**
-	 * Waits for Angular to finish and than wait for some Expected condition.
+	 * Wait for some Expected condition.
 	 *
 	 * @param expectedCondition expected condition
 	 * @param timeoutInSeconds  timeout in seconds
 	 */
 	private void driverWaitFor(final ExpectedCondition<?> expectedCondition, final long timeoutInSeconds) {
-		waitForAngularToFinish();
 		waitForExpectedCondition(expectedCondition, timeoutInSeconds);
 	}
 
@@ -158,7 +145,7 @@ public class WaitHelper {
 	 *
 	 * @throws TimeoutException If the timeout expires.
 	 */
-	public void waitForUrlToConatin(final String text, final long timeoutInSeconds) {
+	public void waitForUrlToContain(final String text, final long timeoutInSeconds) {
 		driverWaitFor(ExpectedConditions.urlContains(text), timeoutInSeconds);
 	}
 

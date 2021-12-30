@@ -4,7 +4,6 @@ import com.levi9.functionaltests.ui.base.BaseDriver;
 import com.levi9.functionaltests.ui.base.BasePage;
 
 import org.openqa.selenium.By;
-import org.openqa.selenium.JavascriptExecutor;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
@@ -31,7 +30,6 @@ public class DressesPage extends BasePage<DressesPage> {
 
 	@Override
 	protected void isLoaded() {
-		getWaitHelper().waitForAngularToFinish();
 		getWaitHelper().waitForElementToBeVisibleByDefaultTimeout(pageId);
 	}
 
@@ -41,8 +39,7 @@ public class DressesPage extends BasePage<DressesPage> {
 	}
 
 	public void clickOnFirstDress() {
-		final JavascriptExecutor js = driver;
-		js.executeScript("javascript:window.scrollBy(250,550)");
+		getJs().executeScript("javascript:window.scrollBy(250,550)");
 		getActionsHelper().moveToElement(summerDress);
 		getActionsHelper().moveToElement(summerDressMoveButton);
 		waitAndClick(summerDressMoveButton);
