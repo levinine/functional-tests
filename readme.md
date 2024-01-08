@@ -21,14 +21,14 @@ mvn clean verify
 Additional parameters:
 
 - `-Denv` - environment on which to execute tests i.e ```-Denv=test```, if not specified `development` will be used.
-- `-Dtags` - scenario tags to execute, can be one or multiple (separated with 'or' ,) i.e. ```-Dtags=@sanity``` or ```-Dtags='@api or @ui'```, if not
+- `-Dtags` - scenario tags to execute, can be one or multiple (separated with 'or') i.e. ```-Dtags=@sanity``` or ```-Dtags='@api or @ui'```, if not
   specified `@sanity` will be used.
 - `-Dremote` - defines if execution is done locally or remotely i.e. ```-Dremote=false``` execute using local browsers and drivers
   or ```-Dremote=true``` execute remotely using Selenium Grid (URL of Selenium Grid per environment is located in environment properties files).
 - `-Dbrowser` - browser on which UI test will be used i.e. ```-Dbrowser=firefox```, if not specified `chrome` will be used
 - `-DparallelCount` - maximum number of scenarios executed in parallel i.e. ```-DparallelCount=5```, if not specified `3` will be used.
 
-For example to execute @api tests with 2 features in parallel one development environment with chrome browser and not using Selenium Grid command will
+For example to execute @api tests with 2 features in parallel one development environment with Chrome browser and not using Selenium Grid command will
 look like:
 ```console 
 mvn clean verify -Dtags='@ui or @api' -DparallelCount=5 -Denv=development -Dbrowser=chrome -Dremote=false
@@ -38,16 +38,16 @@ mvn clean verify -Dtags='@ui or @api' -DparallelCount=5 -Denv=development -Dbrow
 
 ### Download and install
 
-- [Java 11+](http://www.oracle.com/technetwork/java/javase/downloads/index.html) and installed as
-  described [here](https://docs.oracle.com/en/java/javase/13/install/overview-jdk-installation.html)
-- [Maven 3.8+](https://maven.apache.org/download.cgi) and installed as described [here](https://maven.apache.org/install.html)
+- [Java 21+](http://www.oracle.com/technetwork/java/javase/downloads/index.html) and installed as
+  described [here](https://docs.oracle.com/en/java/javase/21/install/overview-jdk-installation.html)
+- [Maven 3.9+](https://maven.apache.org/download.cgi) and installed as described [here](https://maven.apache.org/install.html)
 - IDE of choice, [IntelliJ IDEA](https://www.jetbrains.com/idea/download) or [Eclipse](https://www.eclipse.org/downloads/)
 - [Lombok](https://projectlombok.org/download) and configured on chosen IDE, [IntelliJ IDEA](https://projectlombok.org/setup/intellij) or [Eclipse](https://projectlombok.org/setup/eclipse)
 - Cucumber plug-ins for chosen IDE, [IntelliJ IDEA Cucumber for Java plug-in](https://plugins.jetbrains.com/plugin/7212-cucumber-for-java) or [Cucumber Eclipse plug-in](https://cucumber.github.io/cucumber-eclipse/)
 	- More information about Cucumber Plug-ins usage
 		- [IntelliJ IDEA Cucumber for Java plug-in](https://www.jetbrains.com/help/idea/cucumber-support.html)
 		- [Cucumber Eclipse plug-in](https://github.com/cucumber/cucumber-eclipse/blob/master/README.md)
-- [IntelliJ IDEA Save Actions plug-in](https://plugins.jetbrains.com/plugin/7642-save-actions) to apply code formatting on save action (this is not needed for Eclipse as it comes built-in)
+- [IntelliJ IDEA Save Actions plug-in](https://plugins.jetbrains.com/plugin/22113-save-actions--xdev-edition) to apply code formatting on save action (this is not needed for Eclipse as it comes built-in)
 - SonarLint plug-in for chosen IDE [IntelliJ IDEA SonarLint plug-in](https://plugins.jetbrains.com/plugin/7973-sonarlint) or [Eclipse SonarLint plug-in](https://marketplace.eclipse.org/content/sonarlint)
 
 ### Maven Settings 
@@ -98,12 +98,12 @@ mvn clean verify -Dtags='@ui or @api' -DparallelCount=5 -Denv=development -Dbrow
 - Always apply code formatting before committing code
 - Always fix all Sonar issues stated in Sonar analysis of IDE before committing code
 - All Java Classes must have author data
-- String place holder in log messages and exceptions is `{}` where in assert messages is `%s`
+- String placeholder in log messages and exceptions is `{}` where in assert messages is `%s`
  Test data is passed between tests using `Storage`
 	- `Storage` is comprised of lists with domain entity objects (Pets, Orders, etc.)
 	- When creating new entity object make sure that it represent functional domain entity
 	- When creating new entity object use only builders as way to create those objects, not constructors 
-	- Extending existing entities is encouraged when additional data for them is needed but it must make sure that new fields are updated accordingly in steps
+	- Extending existing entities is encouraged when additional data for them is needed, but it must make sure that new fields are updated accordingly in steps
 	- When working with Storage, always if otherwise not needed, use latest stored values for entity you need
 - When testing some asynchronous operation test must wait for some condition to be fulfilled, **NEVER** for some predefined time.
 	- To implement conditional waits Awaitility is used in one of its formats.
@@ -132,23 +132,23 @@ Always make sure that test is developed in most optimized way for fast and relia
 
 To add new Rest API calls to App back end next steps must be followed:
 
-1. Create Proxy class for that domain of App in `rest/proxy/{servicename}` where all REST calls to that endpoint will be located
+1. Create Service class for that domain of App in `rest/service/{servicename}` where all REST calls to that endpoint will be located
 2. Data Source (Transfer) Objects must be created in `rest/data` package
-3. Call created proxy class from step definitions
+3. Call created Service class from step definitions
 
-To add new communication interface with any of micro-services next steps must be followed:
+To add new communication interface with any of microservices next steps must be followed:
 
-1. Add Micro-Service API dependency in `pom.xml` with parametrized version
-2. Create new RESTS Client class in `rest/client` package for that micro-service, by extending BaseRestClient
+1. (optionally) Add Microservice API dependency in `pom.xml` with parametrized version
+2. Create new REST Client class in `rest/client` package for that microservice, by extending BaseRestClient
 3. Add micro-service URL to all `application-[environment].properties` files
-4. Create Proxy Class in `rest/proxy/{servicename}` package to Communicate with service
-	- All direct communication with Micro-Service should be done in Proxy classes which are called from step definitions
-5. Adding Data Source (Transfer) Objects is not needed in case communication is done directly with Micro-Service as all existing ones can be used from included API
-6. Call created proxy class from step definitions
+4. Create Service Class in `rest/service/{servicename}` package to Communicate with service
+	- All direct communication with Microservice should be done in Service classes which are called from step definitions
+5. Adding Data Source (Transfer) Objects is needed for proper Serialization and Deserialization of payloads, however if Microservice API dependency is added to `pom.xml`, than they are not needed
+6. Call created Service class from step definitions
 
 ### UI Interface
 
-To add new UI interface, Page Object pattern is used, meaning that for each application page Page Object class which represents it must exists in Test Automation framework.
+To add new UI interface, Page Object pattern is used, meaning that for each application page, a Page Object class which represents it must exist in Test Automation framework.
 To automate actions on some new page:
 
 1. Create Page Object(s) for it in `com.levi9.functionaltests.ui.page` (it can also be multiple page objects if page is complex)
@@ -164,7 +164,7 @@ To automate actions on some new page:
 
 ### Describing Features
 
-Every feature must only contain scenarios related to that it. When grouping scenarios under one feature make sure that `@Background` for that feature is common for all of scenarios.
+Every feature must only contain scenarios related to that it. When grouping scenarios under one feature make sure that `@Background` for that feature is common for all scenarios.
 If some feature is complex and there are different `@Background` for group them in multiple feature file.
 
 If you have problems describing feature you can use next template, known as a Feature Injection template:
@@ -200,14 +200,3 @@ Also make sure that there are no **and** conjunctions in sentences. If there is,
 - To match Gherkin Scenario Step text regular expression are used
 - When writing regular expression matchers always make sure that at least similar words and plurals are covered and will be matched
 	- Tool which can help you write and match regular expression [Regexr](https://regexr.com/)
-
-## Maintenance
-
-### Local Selenium Driver Files
-
-New Selenium Drivers and Browser version are being released more often than any other dependencies. Whenever new browser version is released there is
-high possibility that previous Driver version will not work with it, causing that UI test will not work anymore.
-
-As Local Selenium Drivers are stored inside project it is **important** that they are always kept up-to-date with current Browser version. They are
-located in ```src/main/resources/drivers``` folder. _Recommendation when updating drivers is to update them for all OS variants present in project,
-just to be consistent._

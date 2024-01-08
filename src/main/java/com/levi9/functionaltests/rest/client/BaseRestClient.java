@@ -78,7 +78,7 @@ public abstract class BaseRestClient {
 	@Getter(AccessLevel.PRIVATE)
 	private final RequestSpecBuilder defaultRequestSpecBuilder = new RequestSpecBuilder();
 
-	public BaseRestClient(final String baseUrl) {
+	protected BaseRestClient(final String baseUrl) {
 		setBaseUri(baseUrl);
 		configSetup();
 		setCommonHeaders();

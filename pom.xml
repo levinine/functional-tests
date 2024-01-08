@@ -20,7 +20,7 @@
 	<properties>
 
 		<!-- Java Version -->
-		<java.vesion>17</java.vesion>
+		<java.version>21</java.version>
 
 		<!-- Tags -->
 		<tags>@sanity</tags>
@@ -33,28 +33,28 @@
 		<parallelCount>3</parallelCount>
 
 		<!-- Dependencies Versions -->
-		<cucumber.version>7.1.0</cucumber.version>
-		<assertj.version>3.21.0</assertj.version>
-		<rest-assured.version>4.4.0</rest-assured.version>
-		<awaitility.version>4.1.1</awaitility.version>
-		<selenium.version>4.1.1</selenium.version>
-		<logback.version>1.3.0-alpha12</logback.version>
-		<lombok.version>1.18.22</lombok.version>
-		<junit.version>4.13.1</junit.version>
-		<slf4j.version>2.0.0-alpha5</slf4j.version>
-		<spring.version>5.3.14</spring.version>
-		<apache.commons-lang3.version>3.12.0</apache.commons-lang3.version>
-		<apache.commons-email.version>1.5</apache.commons-email.version>
-		<apache.commons-io.version>2.11.0</apache.commons-io.version>
-		<apache.pdfbox.version>2.0.24</apache.pdfbox.version>
-		<jackson.version>2.13.1</jackson.version>
+		<cucumber.version>7.15.0</cucumber.version>
+		<assertj.version>3.25.1</assertj.version>
+		<rest-assured.version>5.4.0</rest-assured.version>
+		<awaitility.version>4.2.0</awaitility.version>
+		<selenium.version>4.16.1</selenium.version>
+		<logback.version>1.4.14</logback.version>
+		<lombok.version>1.18.30</lombok.version>
+		<junit.version>4.13.2</junit.version>
+		<slf4j.version>2.0.9</slf4j.version>
+		<spring.version>6.1.2</spring.version>
+		<apache.commons-lang3.version>3.14.0</apache.commons-lang3.version>
+		<apache.commons-email.version>1.6.0</apache.commons-email.version>
+		<apache.commons-io.version>2.15.1</apache.commons-io.version>
+		<apache.pdfbox.version>3.0.1</apache.pdfbox.version>
+		<jackson.version>2.16.1</jackson.version>
 
 		<!-- Maven Plugins Versions -->
-		<maven.compiler.version>3.8.1</maven.compiler.version>
-		<maven.failsafe.plugin.version>2.22.2</maven.failsafe.plugin.version>
-		<cucable.version>1.9.0</cucable.version>
-		<maven-cucumber-reporting.version>5.6.2</maven-cucumber-reporting.version>
-		<maven.build.helper.plugin.version>3.2.0</maven.build.helper.plugin.version>
+		<maven.compiler.version>3.12.1</maven.compiler.version>
+		<maven.failsafe.plugin.version>3.2.3</maven.failsafe.plugin.version>
+		<cucable.version>1.11.0</cucable.version>
+		<maven-cucumber-reporting.version>5.7.7</maven-cucumber-reporting.version>
+		<maven.build.helper.plugin.version>3.5.0</maven.build.helper.plugin.version>
 		<cluecumber.report.version>2.7.1</cluecumber.report.version>
 
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -222,14 +222,21 @@
 				<artifactId>maven-compiler-plugin</artifactId>
 				<version>${maven.compiler.version}</version>
 				<configuration>
-					<target>${java.vesion}</target>
-					<source>${java.vesion}</source>
+					<source>${java.version}</source>
+					<target>${java.version}</target>
 				</configuration>
 			</plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-failsafe-plugin</artifactId>
 				<version>${maven.failsafe.plugin.version}</version>
+				<dependencies>
+					<dependency>
+						<groupId>org.apache.maven.surefire</groupId>
+						<artifactId>surefire-junit47</artifactId>
+						<version>3.2.3</version>
+					</dependency>
+				</dependencies>
 				<executions>
 					<execution>
 						<id>Run parallel tests</id>
@@ -252,7 +259,6 @@
 					<!-- Use existing processes or create new ones -->
 					<reuseForks>true</reuseForks>
 					<argLine>-Dfile.encoding=UTF-8</argLine>
-					<disableXmlReport>true</disableXmlReport>
 					<excludes>
 						<exclude>**/DryRunRunnerIT.java</exclude>
 					</excludes>
@@ -302,11 +308,10 @@
 					<!-- Default parallelization mode is scenarios, but it can be changed to features -->
 					<parallelizationMode>scenarios</parallelizationMode>
 					<numberOfTestRuns>1</numberOfTestRuns>
-					<!-- Example: include scenarios that are not tagged with @scenario1 but tagged with scenario2 or scenario3 -->
-					<!-- <includeScenarioTags>not @scenario1 and (@scenario2 or scenario3)</includeScenarioTags> -->
 					<includeScenarioTags>(${skipTags}) and (${tags})</includeScenarioTags>
 					<!-- Possible log levels default|compact|minimal|off -->
 					<logLevel>compact</logLevel>
+					<desiredNumberOfRunners>-1</desiredNumberOfRunners>
 				</configuration>
 			</plugin>
 			<plugin>
@@ -353,21 +358,5 @@
 				</executions>
 			</plugin>
 		</plugins>
-		<resources>
-			<resource>
-				<filtering>true</filtering>
-				<directory>src/main/resources</directory>
-				<excludes>
-					<exclude>drivers/**</exclude>
-				</excludes>
-			</resource>
-			<resource>
-				<filtering>false</filtering>
-				<directory>src/main/resources</directory>
-				<includes>
-					<include>drivers/**</include>
-				</includes>
-			</resource>
-		</resources>
 	</build>
 </project>

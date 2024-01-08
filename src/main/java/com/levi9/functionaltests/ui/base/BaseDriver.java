@@ -2,16 +2,14 @@ package com.levi9.functionaltests.ui.base;
 
 import static com.levi9.functionaltests.ui.base.Browser.CHROME;
 import static com.levi9.functionaltests.ui.base.Browser.FIREFOX;
-import static com.levi9.functionaltests.ui.base.Os.getEnum;
 
 import com.levi9.functionaltests.exceptions.FunctionalTestsException;
 import com.levi9.functionaltests.storage.Storage;
 
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
 import java.net.MalformedURLException;
-import java.net.URL;
+import java.net.URI;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
@@ -21,10 +19,13 @@ import org.openqa.selenium.OutputType;
 import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.chrome.ChromeDriverService;
 import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.firefox.FirefoxDriver;
+import org.openqa.selenium.firefox.FirefoxDriverService;
 import org.openqa.selenium.firefox.FirefoxOptions;
 import org.openqa.selenium.firefox.FirefoxProfile;
+import org.openqa.selenium.firefox.GeckoDriverService;
 import org.openqa.selenium.remote.AbstractDriverOptions;
 import org.openqa.selenium.remote.LocalFileDetector;
 import org.openqa.selenium.remote.RemoteWebDriver;
@@ -60,8 +61,8 @@ public class BaseDriver {
 	private final boolean remote;
 	@Value("${selenium.grid.url}")
 	private String remoteWebDriverUrl;
-	@Autowired
-	private Storage storage;
+	private final Storage storage;
+
 
 	/**
 	 * Setup method with browser and Selenium grid.
@@ -69,9 +70,11 @@ public class BaseDriver {
 	 * @param browser possible values "chrome" and "firefox" (case-insensitive)
 	 * @param remote  true to execute remotely on Selenium Grid, false otherwise
 	 */
-	public BaseDriver(@Value("${browser:chrome}") final String browser, @Value("${remote:false}") final boolean remote) {
+	@Autowired
+	public BaseDriver(@Value("${browser:chrome}") final String browser, @Value("${remote:false}") final boolean remote, final Storage storage) {
 		this.browser = Browser.getEnum(browser);
 		this.remote = remote;
+		this.storage = storage;
 	}
 
 	/**
@@ -87,42 +90,7 @@ public class BaseDriver {
 	 * Do Initialization of Driver / WebDriver.
 	 */
 	public void initialize() {
-		if (!remote) {
-			final Os os = getEnum();
-			if (getBrowser().equals(FIREFOX)) {
-				initializeDriver(FIREFOX.getSystemVariable(), os, os.geckoPath);
-			}
-			if (getBrowser().equals(CHROME)) {
-				initializeDriver(CHROME.getSystemVariable(), os, os.chromePath);
-			}
-		}
 		initializeWebDriver(getBrowser());
-	}
-
-	/**
-	 * Initialize driver file.
-	 *
-	 * @param browserSystemVariable the browser system variable
-	 * @param os                    the os
-	 * @param browserPath           the browser path
-	 */
-	private void initializeDriver(final String browserSystemVariable, final Os os, final String browserPath) {
-		if (browserPath != null) {
-			try (final InputStream inputStream = getClass().getClassLoader().getResourceAsStream(os.getPrefix() + browserPath + os.getSuffix())) {
-				final File temp = File.createTempFile(browserPath, os.getSuffix());
-				log.trace("Set Executable on driver file returned {}", temp.setExecutable(true));
-				FileUtils.copyInputStreamToFile(inputStream, temp);
-				System.setProperty(browserSystemVariable, temp.getAbsolutePath());
-			} catch (final NullPointerException npe) {
-				final String msg = "File not found! {}";
-				log.error(msg, npe.getMessage());
-				throw new FunctionalTestsException(msg, npe);
-			} catch (final IOException ioe) {
-				final String msg = "Error while copying driver executable! {}";
-				log.error(msg, ioe.getMessage());
-				throw new FunctionalTestsException(msg, ioe);
-			}
-		}
 	}
 
 	/**
@@ -136,7 +104,7 @@ public class BaseDriver {
 		if (this.remote) {
 			log.info("Using Remote Webdriver");
 			try {
-				final RemoteWebDriver remoteDriver = new RemoteWebDriver(new URL(remoteWebDriverUrl), browserOptions);
+				final RemoteWebDriver remoteDriver = new RemoteWebDriver(URI.create(remoteWebDriverUrl).toURL(), browserOptions);
 				remoteDriver.setFileDetector(new LocalFileDetector());
 				log.info("Initializing remote WebDriver with url {} and with browser {} ", remoteWebDriverUrl, browserName);
 				driver.set(new EventFiringDecorator(eventListener).decorate(remoteDriver));
@@ -146,14 +114,16 @@ public class BaseDriver {
 				throw new FunctionalTestsException(msg, e);
 			}
 		} else if (browser.equals(FIREFOX)) {
-			final FirefoxOptions firefoxOptions = (FirefoxOptions) browserOptions;
-			final FirefoxDriver firefoxDriver = new FirefoxDriver(firefoxOptions);
 			log.info("Initializing Local WebDriver with {} browser", browserName);
+			final FirefoxDriverService firefoxService = new GeckoDriverService.Builder().build();
+			final FirefoxOptions firefoxOptions = (FirefoxOptions) browserOptions;
+			final FirefoxDriver firefoxDriver = new FirefoxDriver(firefoxService, firefoxOptions);
 			driver.set(new EventFiringDecorator(eventListener).decorate(firefoxDriver));
 		} else if (browser.equals(CHROME)) {
 			log.info("Initializing Local WebDriver with {} browser", browserName);
+			final ChromeDriverService chromeService = new ChromeDriverService.Builder().build();
 			final ChromeOptions chromeOptions = (ChromeOptions) browserOptions;
-			final ChromeDriver chromeDriver = new ChromeDriver(chromeOptions);
+			final ChromeDriver chromeDriver = new ChromeDriver(chromeService, chromeOptions);
 			driver.set(new EventFiringDecorator(eventListener).decorate(chromeDriver));
 		} else {
 			final String msg = "No proper browser setting is found!";
@@ -212,6 +182,7 @@ public class BaseDriver {
 				getDriver().manage().deleteAllCookies();
 				getDriver().close();
 				getDriver().quit();
+				driver.remove();
 			} catch (final Exception e) {
 				log.info("Error with Closing Selenium Driver: {}", e.getMessage());
 			}

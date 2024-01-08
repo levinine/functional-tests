@@ -1,8 +1,8 @@
 package com.levi9.functionaltests.storage.domain.petstore;
 
-import com.levi9.functionaltests.rest.data.pet.CategoryDSO;
-import com.levi9.functionaltests.rest.data.pet.PetStatus;
-import com.levi9.functionaltests.rest.data.pet.TagDSO;
+import com.levi9.functionaltests.rest.data.petstore.CategoryDSO;
+import com.levi9.functionaltests.rest.data.petstore.PetStatus;
+import com.levi9.functionaltests.rest.data.petstore.TagDSO;
 
 import java.util.List;
 

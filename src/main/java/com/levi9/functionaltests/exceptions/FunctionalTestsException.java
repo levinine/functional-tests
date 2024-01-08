@@ -1,5 +1,7 @@
 package com.levi9.functionaltests.exceptions;
 
+import java.io.Serial;
+
 import org.slf4j.helpers.MessageFormatter;
 
 /**
@@ -9,6 +11,7 @@ import org.slf4j.helpers.MessageFormatter;
  */
 public class FunctionalTestsException extends RuntimeException {
 
+	@Serial
 	private static final long serialVersionUID = 1L;
 
 	/**

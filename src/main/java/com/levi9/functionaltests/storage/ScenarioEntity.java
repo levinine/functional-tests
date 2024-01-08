@@ -8,7 +8,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.Objects;
@@ -101,7 +100,7 @@ public class ScenarioEntity {
 	 * Embed picture to a scenario step definition by image url
 	 */
 	public void embedPicture(final String imageUrl) {
-		try (final InputStream in = new BufferedInputStream(new URL(imageUrl).openStream());
+		try (final InputStream in = new BufferedInputStream(URI.create(imageUrl).toURL().openStream());
 			 final ByteArrayOutputStream out = new ByteArrayOutputStream()) {
 			final String mediaType = "image/jpeg";
 			final byte[] buf = new byte[1024];

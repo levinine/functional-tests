@@ -6,7 +6,7 @@ import static org.assertj.core.api.SoftAssertions.assertSoftly;
 import com.levi9.functionaltests.exceptions.FunctionalTestsException;
 import com.levi9.functionaltests.rest.data.store.OrderDSO;
 import com.levi9.functionaltests.rest.data.store.OrderStatus;
-import com.levi9.functionaltests.rest.proxy.storeservice.StoreServiceProxy;
+import com.levi9.functionaltests.rest.service.petstore.StoreOrderService;
 import com.levi9.functionaltests.storage.Storage;
 import com.levi9.functionaltests.storage.domain.petstore.OrderEntity;
 import com.levi9.functionaltests.storage.domain.petstore.PetEntity;
@@ -29,20 +29,20 @@ public class StoreStepdef {
 	private Storage storage;
 
 	@Autowired
-	private StoreServiceProxy storeServiceProxy;
+	private StoreOrderService storeOrderService;
 
 	@When("^Place[sd] order for a pet with quantity of (\\d+), ship date in (\\d+) ([Dd]ays?|[Mm]onths?) with status (placed|approved|delivered)$")
 	public void orderPet(final int quantity, final int shipDateOffset, final String shipDateOffsetUnit, final String status) {
 		final PetEntity pet = storage.getLastPet();
 		final LocalDateTime shipDate = determineShipDate(LocalDateTime.now().withNano(0), shipDateOffset, shipDateOffsetUnit);
 		final OrderStatus orderStatus = OrderStatus.getEnum(status);
-		storeServiceProxy.placeAnOrderForPet(pet, quantity, shipDate, orderStatus);
+		storeOrderService.placeAnOrderForPet(pet, quantity, shipDate, orderStatus);
 	}
 
 	@Then("^[Oo]rder (?:will be|is)? placed$")
 	public void validateOrderIsPlaced() {
 		final OrderEntity expectedOrder = storage.getLastOrder();
-		final OrderDSO actualOrder = storeServiceProxy.getOrder(expectedOrder);
+		final OrderDSO actualOrder = storeOrderService.getOrder(expectedOrder);
 
 		assertSoftly(softly -> {
 			softly.assertThat(actualOrder.getId()).as("Order id is not correct!").isEqualTo(expectedOrder.getId());
@@ -58,7 +58,7 @@ public class StoreStepdef {
 	public void removeOrder() {
 		final OrderEntity order = storage.getLastOrder();
 		final Integer orderId = order.getId();
-		if (storeServiceProxy.removeOrder(order)) {
+		if (storeOrderService.removeOrder(order)) {
 			log.info("Order with ID {} successfully removed from pet store.", orderId);
 		} else {
 			throw new FunctionalTestsException("Order with ID {} not unsuccessfully removed!", orderId);
@@ -69,7 +69,7 @@ public class StoreStepdef {
 	@Then("^Order (?:is|will be) successfully removed$")
 	public void validateOrderRemoved() {
 		final OrderEntity order = storage.getLastOrder();
-		assertThat(storeServiceProxy.getUnavailableOrder(order)).as("Order is found!").isTrue();
+		assertThat(storeOrderService.getUnavailableOrder(order)).as("Order is found!").isTrue();
 		storage.getTestScenario().embedHtml("<marquee>Some text passing by</marquee>");
 	}
 
