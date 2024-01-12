@@ -3,9 +3,13 @@ package com.levi9.functionaltests.hooks;
 import static java.time.Duration.ofSeconds;
 
 import com.levi9.functionaltests.config.SpringConfig;
+import com.levi9.functionaltests.rest.service.restfulbooker.RoomService;
 import com.levi9.functionaltests.storage.ScenarioEntity;
 import com.levi9.functionaltests.storage.Storage;
+import com.levi9.functionaltests.storage.domain.restfulbooker.RoomEntity;
 import com.levi9.functionaltests.ui.base.BaseDriver;
+
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
@@ -32,6 +36,9 @@ public class Hooks {
 
 	@Autowired
 	private BaseDriver baseDriver;
+
+	@Autowired
+	private RoomService roomService;
 
 	@Before(order = 0)
 	public void scenarioStart(final Scenario scenario) {
@@ -62,7 +69,15 @@ public class Hooks {
 		baseDriver.tearDown();
 	}
 
-	@After(value = "@ui", order = 2)
+	@After(order = 2)
+	public void cleanUp() {
+		log.info("Cleaning up created rooms");
+		final List<RoomEntity> createdRooms = storage.getRooms().stream().filter((room) -> null != room.getRoomId()).toList();
+		log.info("Found {} room(s) that needs deleting! Room names: {}", createdRooms.size(), createdRooms.stream().map(RoomEntity::getRoomName).toList());
+		createdRooms.forEach(room -> roomService.deleteRoom(room));
+	}
+
+	@After(value = "@ui", order = 3)
 	public void embedScenarioFailedScreenshot(final Scenario scenario) {
 		log.info("Will take screenshot if test failed.");
 		if (scenario.isFailed()) {

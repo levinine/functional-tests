@@ -11,7 +11,7 @@ import org.springframework.stereotype.Component;
 @Scope("cucumber-glue")
 public class PetStoreRestClient extends BaseRestClient {
 
-	public PetStoreRestClient(@Value("${service.petstore.url}") final String serviceUrl) {
+	public PetStoreRestClient(@Value("${api.pet-store.url}") final String serviceUrl) {
 		super(serviceUrl);
 	}
 }

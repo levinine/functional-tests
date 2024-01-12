@@ -5,13 +5,14 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
 /**
- * @author Nikola Komazec (n.komazec@levi9.com)
+ * @author Milos Pujic (m.pujic@levi9.com)
  */
 @Component
 @Scope("cucumber-glue")
-public class RandomDogRestClient extends BaseRestClient {
+public class RestfulBookerRestClient extends BaseRestClient {
 
-	public RandomDogRestClient(@Value("${api.random.dog.url}") final String serviceUrl) {
+	public RestfulBookerRestClient(@Value("${api.restful-booker-platform.url}") final String serviceUrl) {
 		super(serviceUrl);
 	}
+
 }

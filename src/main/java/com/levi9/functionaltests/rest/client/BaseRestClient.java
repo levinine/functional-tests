@@ -107,7 +107,7 @@ public abstract class BaseRestClient {
 	}
 
 	/**
-	 * Set Commonly user headers in deafault request specification.
+	 * Set Commonly user headers in default request specification.
 	 */
 	private void setCommonHeaders() {
 		getDefaultRequestSpecBuilder()

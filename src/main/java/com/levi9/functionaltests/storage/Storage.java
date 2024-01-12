@@ -1,11 +1,9 @@
 package com.levi9.functionaltests.storage;
 
 import com.levi9.functionaltests.exceptions.FunctionalTestsException;
-import com.levi9.functionaltests.storage.domain.automationpractice.CustomerEntity;
-import com.levi9.functionaltests.storage.domain.automationpractice.DressEntity;
-import com.levi9.functionaltests.storage.domain.automationpractice.PaymentEntity;
 import com.levi9.functionaltests.storage.domain.petstore.OrderEntity;
 import com.levi9.functionaltests.storage.domain.petstore.PetEntity;
+import com.levi9.functionaltests.storage.domain.restfulbooker.RoomEntity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -31,9 +29,7 @@ public class Storage {
 	private final List<OrderEntity> orders = new ArrayList<>();
 
 	// Used for UI tests
-	private final List<CustomerEntity> customers = new ArrayList<>();
-	private final List<DressEntity> dresses = new ArrayList<>();
-	private final List<PaymentEntity> payments = new ArrayList<>();
+	private final List<RoomEntity> rooms = new ArrayList<>();
 
 	/**
 	 * Get last pet from storage
@@ -54,39 +50,12 @@ public class Storage {
 	}
 
 	/**
-	 * Get last customer from storage
+	 * Get last room from storage
 	 *
-	 * @return last customer {@link CustomerEntity}
+	 * @return last room {@link RoomEntity}
 	 */
-	public CustomerEntity getLastCustomer() {
-		return customers.stream().reduce((first, last) -> last).orElseThrow(() -> new FunctionalTestsException("Customer not found!"));
-	}
-
-	/**
-	 * Get first customer from storage
-	 *
-	 * @return first customer {@link CustomerEntity}
-	 */
-	public CustomerEntity getFirstCustomer() {
-		return customers.stream().reduce((first, last) -> first).orElseThrow(() -> new FunctionalTestsException("Customer not found!"));
-	}
-
-	/**
-	 * Get last dress from storage
-	 *
-	 * @return last dress {@link DressEntity}
-	 */
-	public DressEntity getLastDress() {
-		return dresses.stream().reduce((first, last) -> last).orElseThrow(() -> new FunctionalTestsException("Dress not found!"));
-	}
-
-	/**
-	 * Get last payment from storage
-	 *
-	 * @return last payment {@link PaymentEntity}
-	 */
-	public PaymentEntity getLastPayment() {
-		return payments.stream().reduce((first, last) -> last).orElseThrow(() -> new FunctionalTestsException("Payment not found!"));
+	public RoomEntity getLastRoom() {
+		return rooms.stream().reduce((first, last) -> last).orElseThrow(() -> new FunctionalTestsException("Room not found!"));
 	}
 
 }

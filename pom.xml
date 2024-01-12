@@ -23,8 +23,8 @@
 		<java.version>21</java.version>
 
 		<!-- Tags -->
-		<tags>@sanity</tags>
-		<skipTags>not @skip</skipTags>
+		<!--suppress UnresolvedMavenProperty -->
+		<tags>(@sanity) and (not @skip or not @bug)</tags>
 
 		<!-- Environment -->
 		<env>development</env>
@@ -308,7 +308,7 @@
 					<!-- Default parallelization mode is scenarios, but it can be changed to features -->
 					<parallelizationMode>scenarios</parallelizationMode>
 					<numberOfTestRuns>1</numberOfTestRuns>
-					<includeScenarioTags>(${skipTags}) and (${tags})</includeScenarioTags>
+					<includeScenarioTags>${tags}</includeScenarioTags>
 					<!-- Possible log levels default|compact|minimal|off -->
 					<logLevel>compact</logLevel>
 					<desiredNumberOfRunners>-1</desiredNumberOfRunners>

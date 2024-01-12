@@ -4,8 +4,6 @@ import javax.annotation.Nullable;
 
 import org.apache.commons.lang3.StringUtils;
 
-import lombok.Getter;
-
 /**
  * Browser Enum.
  *
@@ -13,29 +11,21 @@ import lombok.Getter;
  */
 public enum Browser {
 
-	CHROME("webdriver.chrome.driver"),
-	FIREFOX("webdriver.gecko.driver");
-
-	@Getter
-	private final String systemVariable;
-
-	Browser(final String systemVariable) {
-		this.systemVariable = systemVariable;
-	}
+	CHROME,
+	FIREFOX;
 
 	/**
 	 * Gets Browser option from String. If Browser is not found for passed string, default one (CHROME) is returned.
 	 *
-	 * @param browser
+	 * @param browser browser
 	 *
 	 * @return {@link Browser}
 	 */
 	public static Browser getEnum(@Nullable final String browser) {
 		if (!StringUtils.isBlank(browser)) {
-			return (null != Browser.valueOf(browser.toUpperCase())) ? Browser.valueOf(browser.toUpperCase()) : CHROME;
+			return Browser.valueOf(browser.toUpperCase());
 		} else {
 			return CHROME;
 		}
 	}
-
 }

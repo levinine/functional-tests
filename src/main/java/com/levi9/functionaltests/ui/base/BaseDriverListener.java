@@ -26,41 +26,43 @@ public class BaseDriverListener implements WebDriverListener {
 
 	@Override
 	public void afterFindElement(final WebDriver driver, final By locator, final WebElement result) {
-		highlightElement(driver, result);
+		log.debug("Found WebElement");
+		// highlightElement(driver, result);
 	}
 
 	@Override
 	public void afterFindElements(final WebDriver driver, final By locator, final List<WebElement> result) {
-		result.forEach(element -> highlightElement(driver, element));
+		log.debug("Found WebElements");
+		// result.forEach(element -> highlightElement(driver, element));
 	}
 
 	@Override
 	public void beforeClose(final WebDriver driver) {
-		log.info("Closing Selenium WebDriver");
+		log.debug("Closing Selenium WebDriver");
 	}
 
 	@Override
 	public void afterClose(final WebDriver driver) {
-		log.info("Selenium WebDriver Closed");
+		log.debug("Selenium WebDriver Closed");
 	}
 
 	@Override
 	public void beforeQuit(final WebDriver driver) {
-		log.info("Quiting Selenium WebDriver");
+		log.debug("Quiting Selenium WebDriver");
 	}
 
 	@Override
 	public void afterQuit(final WebDriver driver) {
-		log.info("Selenium WebDriver Quited");
+		log.debug("Selenium WebDriver Quited");
 	}
 
 	@Override
 	public void beforeDeleteAllCookies(final Options options) {
-		log.info("Deleting All Cookies");
+		log.debug("Deleting All Cookies");
 	}
 
 	@Override
 	public void afterDeleteAllCookies(final Options options) {
-		log.info("All Cookies Deleted");
+		log.debug("All Cookies Deleted");
 	}
 }

@@ -63,7 +63,6 @@ public class BaseDriver {
 	private String remoteWebDriverUrl;
 	private final Storage storage;
 
-
 	/**
 	 * Setup method with browser and Selenium grid.
 	 *
@@ -99,7 +98,7 @@ public class BaseDriver {
 	 * @param browser browser
 	 */
 	private void initializeWebDriver(final Browser browser) {
-		final AbstractDriverOptions browserOptions = getBrowserOptions(browser);
+		final var browserOptions = getBrowserOptions(browser);
 		final String browserName = browserOptions.getBrowserName().toUpperCase();
 		if (this.remote) {
 			log.info("Using Remote Webdriver");
@@ -164,9 +163,9 @@ public class BaseDriver {
 	 */
 	private ChromeOptions getChromeOptions() {
 		final ChromeOptions browserOptions = new ChromeOptions();
-		//chromeOptions.addArguments("window-size=1920,1080");
-		//chromeOptions.addArguments("headless");
-		//chromeOptions.addArguments("no-sandbox");
+		//browserOptions.addArguments("window-size=1920,1080");
+		//browserOptions.addArguments("--headless=new");
+		//browserOptions.addArguments("no-sandbox");
 		browserOptions.addArguments("verbose");
 		browserOptions.addArguments("whitelisted-ips=");
 		browserOptions.addArguments("disable-extensions");

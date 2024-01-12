@@ -1,6 +1,6 @@
 package com.levi9.functionaltests.storage.domain.petstore;
 
-import com.levi9.functionaltests.rest.data.store.OrderStatus;
+import com.levi9.functionaltests.rest.data.petstore.OrderStatus;
 
 import java.time.LocalDateTime;
 

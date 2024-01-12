@@ -2,8 +2,8 @@ package com.levi9.functionaltests.rest.service.petstore;
 
 import com.levi9.functionaltests.exceptions.FunctionalTestsException;
 import com.levi9.functionaltests.rest.client.PetStoreRestClient;
-import com.levi9.functionaltests.rest.data.store.OrderDSO;
-import com.levi9.functionaltests.rest.data.store.OrderStatus;
+import com.levi9.functionaltests.rest.data.petstore.OrderDSO;
+import com.levi9.functionaltests.rest.data.petstore.OrderStatus;
 import com.levi9.functionaltests.storage.Storage;
 import com.levi9.functionaltests.storage.domain.petstore.OrderEntity;
 import com.levi9.functionaltests.storage.domain.petstore.PetEntity;
@@ -27,7 +27,7 @@ import lombok.extern.slf4j.Slf4j;
 @Scope("cucumber-glue")
 public class StoreOrderService {
 
-	public static final String REST_PATH = "/v2/store/order/";
+	public static final String REST_PATH = "v2/store/order/";
 
 	private final PetStoreRestClient petStoreRestClient;
 	private final Storage storage;

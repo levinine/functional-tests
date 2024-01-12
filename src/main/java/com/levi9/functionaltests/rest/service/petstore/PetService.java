@@ -4,7 +4,7 @@ import static com.levi9.functionaltests.rest.data.petstore.PetStatus.PENDING;
 
 import com.levi9.functionaltests.exceptions.FunctionalTestsException;
 import com.levi9.functionaltests.rest.client.PetStoreRestClient;
-import com.levi9.functionaltests.rest.data.common.MessageDSO;
+import com.levi9.functionaltests.rest.data.petstore.MessageDSO;
 import com.levi9.functionaltests.rest.data.petstore.PetDSO;
 import com.levi9.functionaltests.rest.data.petstore.PetStatus;
 import com.levi9.functionaltests.storage.Storage;
@@ -31,7 +31,7 @@ import lombok.extern.slf4j.Slf4j;
 @Scope("cucumber-glue")
 public class PetService {
 
-	public static final String REST_PATH = "/v2/pet/";
+	public static final String REST_PATH = "v2/pet/";
 
 	private final PetStoreRestClient petStoreRestClient;
 	private final Storage storage;
