@@ -2,6 +2,7 @@ package com.levi9.functionaltests.ui.helpers;
 
 import java.io.File;
 import java.net.URISyntaxException;
+import java.util.Objects;
 
 import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
@@ -34,7 +35,7 @@ public class UploadHelper {
 	 * @param relativeFilePath the relative path to the file
 	 */
 	public void selectFile(final Class<?> clazz, final String xpath, final String relativeFilePath) throws URISyntaxException {
-		final File file = new File(clazz.getClassLoader().getResource(relativeFilePath).toURI());
+		final File file = new File(Objects.requireNonNull(clazz.getClassLoader().getResource(relativeFilePath)).toURI());
 		getJs().executeScript("var element = document.evaluate('" + xpath.replace("'", "\"") +
 			"', document, null, 9, null).singleNodeValue; element.style.visibility='visible';");
 		driver.findElement(By.xpath(xpath)).sendKeys(file.getAbsolutePath());

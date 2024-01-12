@@ -77,6 +77,8 @@ public class ContactStepdef {
 	@Then("Visitor {string} will get Thanks for getting in touch message")
 	public void assertThanksForGettingInTouchMessage(final String fullName) {
 		assertThat(frontPage.isContactSuccessfulConfirmationDisplayed()).as("Contact Successful Confirmation Message is not displayed!").isTrue();
+		assertThat(frontPage.getContactSuccessfulHeaderText()).as("Contact Successful HeaderPage Text is wrong!")
+			.isEqualTo("Thanks for getting in touch " + fullName + "!");
 	}
 
 	@Then("Visitor {string} will get Thanks for getting in touch message regarding subject {string}")

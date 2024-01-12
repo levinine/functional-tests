@@ -2,7 +2,7 @@ package com.levi9.functionaltests.ui.helpers;
 
 import static java.time.Duration.ofSeconds;
 
-import java.util.Arrays;
+import java.util.Collections;
 
 import org.openqa.selenium.By;
 import org.openqa.selenium.TimeoutException;
@@ -170,7 +170,7 @@ public class WaitHelper {
 	 * @throws TimeoutException If the timeout expires.
 	 */
 	public void waitForElementNotToBeVisible(final WebElement element, final long timeoutInSeconds) {
-		driverWaitFor(ExpectedConditions.invisibilityOfAllElements(Arrays.asList(element)), timeoutInSeconds);
+		driverWaitFor(ExpectedConditions.invisibilityOfAllElements(Collections.singletonList(element)), timeoutInSeconds);
 	}
 
 	/**
