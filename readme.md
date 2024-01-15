@@ -34,14 +34,18 @@ Additional parameters:
       executed
 - `-Dremote` - Defines if execution is done locally or remotely i.e. ```-Dremote=false``` execute using local browsers and drivers
   or ```-Dremote=true``` execute remotely using Selenium Grid (URL of Selenium Grid per environment is located in environment properties files).
-- `-Dbrowser` - Browser on which UI test will be used i.e. ```-Dbrowser=firefox```, if not specified `chrome` will be used
+- `-Dbrowser` - Browser on which UI test will be used i.e. ```-Dbrowser=firefox```, if not specified `chrome` will be used. Possible values are:
+    - `chrome`
+    - `chrome_headless`
+    - `firefox`
+    - `firefox_headless`
 - `-DparallelCount` - Maximum number of scenarios executed in parallel i.e. ```-DparallelCount=5```, if not specified `3` will be used.
 
 For example to execute @ui and @api tests, excluding skipped and scenarios with known issues, with 5 features in parallel one development environment
 with Chrome browser and not using Selenium Grid command will look like:
 
 ```console 
-mvn clean verify -Dtags='(@ui or @api) and (not @skip or @bug)' -DparallelCount=5 -Denv=development -Dbrowser=chrome -Dremote=false
+mvn clean verify -Dtags='(@ui or @api) and (not @skip and not @bug)' -DparallelCount=5 -Denv=development -Dbrowser=chrome -Dremote=false
 ```
 
 ## Local Development Setup

@@ -1,7 +1,9 @@
 package com.levi9.functionaltests.ui.base;
 
 import static com.levi9.functionaltests.ui.base.Browser.CHROME;
+import static com.levi9.functionaltests.ui.base.Browser.CHROME_HEADLESS;
 import static com.levi9.functionaltests.ui.base.Browser.FIREFOX;
+import static com.levi9.functionaltests.ui.base.Browser.FIREFOX_HEADLESS;
 
 import com.levi9.functionaltests.exceptions.FunctionalTestsException;
 import com.levi9.functionaltests.storage.Storage;
@@ -112,13 +114,13 @@ public class BaseDriver {
 				log.error(msg, e);
 				throw new FunctionalTestsException(msg, e);
 			}
-		} else if (browser.equals(FIREFOX)) {
+		} else if (browser.equals(FIREFOX) || browser.equals(FIREFOX_HEADLESS)) {
 			log.info("Initializing Local WebDriver with {} browser", browserName);
 			final FirefoxDriverService firefoxService = new GeckoDriverService.Builder().build();
 			final FirefoxOptions firefoxOptions = (FirefoxOptions) browserOptions;
 			final FirefoxDriver firefoxDriver = new FirefoxDriver(firefoxService, firefoxOptions);
 			driver.set(new EventFiringDecorator(eventListener).decorate(firefoxDriver));
-		} else if (browser.equals(CHROME)) {
+		} else if (browser.equals(CHROME) || browser.equals(CHROME_HEADLESS)) {
 			log.info("Initializing Local WebDriver with {} browser", browserName);
 			final ChromeDriverService chromeService = new ChromeDriverService.Builder().build();
 			final ChromeOptions chromeOptions = (ChromeOptions) browserOptions;
@@ -140,20 +142,24 @@ public class BaseDriver {
 	 * @return {@link FirefoxOptions} or {@link ChromeOptions}
 	 */
 	private <T extends AbstractDriverOptions> T getBrowserOptions(final Browser browser) {
-		if (browser.equals(FIREFOX)) {
-			return (T) getFirefoxOptions();
-		} else {
-			return (T) getChromeOptions();
-		}
+		return switch (browser) {
+			case FIREFOX -> (T) getFirefoxOptions(false);
+			case FIREFOX_HEADLESS -> (T) getFirefoxOptions(true);
+			case CHROME -> (T) getChromeOptions(false);
+			case CHROME_HEADLESS -> (T) getChromeOptions(true);
+		};
 	}
 
 	/**
 	 * Get Firefox Options.
 	 */
-	private FirefoxOptions getFirefoxOptions() {
+	private FirefoxOptions getFirefoxOptions(final boolean headless) {
 		final FirefoxOptions browserOptions = new FirefoxOptions();
 		final FirefoxProfile firefoxProfile = new FirefoxProfile();
 		firefoxProfile.setPreference("dom.forms.number", false);
+		if (headless) {
+			browserOptions.addArguments("--headless");
+		}
 		browserOptions.setProfile(firefoxProfile);
 		return browserOptions;
 	}
@@ -161,11 +167,11 @@ public class BaseDriver {
 	/**
 	 * Get Chrome Options.
 	 */
-	private ChromeOptions getChromeOptions() {
+	private ChromeOptions getChromeOptions(final boolean headless) {
 		final ChromeOptions browserOptions = new ChromeOptions();
-		//browserOptions.addArguments("window-size=1920,1080");
-		//browserOptions.addArguments("--headless=new");
-		//browserOptions.addArguments("no-sandbox");
+		if (headless) {
+			browserOptions.addArguments("--headless=new");
+		}
 		browserOptions.addArguments("verbose");
 		browserOptions.addArguments("whitelisted-ips=");
 		browserOptions.addArguments("disable-extensions");

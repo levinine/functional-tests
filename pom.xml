@@ -24,7 +24,7 @@
 
 		<!-- Tags -->
 		<!--suppress UnresolvedMavenProperty -->
-		<tags>(@sanity) and (not @skip or not @bug)</tags>
+		<tags>(@sanity) and (not @skip and not @bug)</tags>
 
 		<!-- Environment -->
 		<env>development</env>
