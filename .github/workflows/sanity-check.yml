@@ -62,7 +62,7 @@ jobs:
           chrome-version: latest
       - name: Run Chrome Tests
         id: run-chrome-tests
-        run: mvn clean verify -Dtags='(@sanity) and (not @bug and not @skip)' -DparallelCount=3 -Denv=github -Dbrowser=chrome -Dremote=false
+        run: mvn clean verify -Dtags='(@sanity) and (not @bug and not @skip)' -DparallelCount=3 -Denv=github -Dbrowser=chrome_headless -Dremote=false
 
   firefox-tests:
     name: Firefox Sanity Check
@@ -87,4 +87,4 @@ jobs:
           firefox-version: latest
       - name: Run Firefox Tests
         id: run-firefox-tests
-        run: mvn clean verify -Dtags='(@sanity) and (not @bug and not @skip)' -DparallelCount=3 -Denv=github -Dbrowser=firefox -Dremote=false
+        run: mvn clean verify -Dtags='(@sanity) and (not @bug and not @skip)' -DparallelCount=3 -Denv=github -Dbrowser=firefox_headless -Dremote=false

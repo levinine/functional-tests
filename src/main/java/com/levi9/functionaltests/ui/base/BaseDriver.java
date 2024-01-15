@@ -174,7 +174,9 @@ public class BaseDriver {
 		}
 		browserOptions.addArguments("verbose");
 		browserOptions.addArguments("whitelisted-ips=");
-		browserOptions.addArguments("disable-extensions");
+		browserOptions.addArguments("--disable-extensions");
+		browserOptions.addArguments("--disable-dev-shm-usage");
+		browserOptions.addArguments("--no-sandbox");
 		return browserOptions;
 	}
 
