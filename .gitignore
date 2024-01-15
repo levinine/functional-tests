@@ -27,8 +27,6 @@ gradle.bat
 # STS CONFIG
 .springBeans
 
-# gradle
-
 # Other
 /logs
 env.properties
@@ -38,3 +36,6 @@ env.properties
 /build/
 **/.mvn
 */.mvn/
+
+# OS
+.DS_Store
