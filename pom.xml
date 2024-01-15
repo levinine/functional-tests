@@ -58,7 +58,7 @@
 		<cucable.version>1.11.0</cucable.version>
 		<maven-cucumber-reporting.version>5.7.7</maven-cucumber-reporting.version>
 		<maven.build.helper.plugin.version>3.5.0</maven.build.helper.plugin.version>
-		<cluecumber.report.version>2.7.1</cluecumber.report.version>
+		<cluecumber.report.version>2.9.4</cluecumber.report.version>
 
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
