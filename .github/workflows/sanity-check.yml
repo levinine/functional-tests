@@ -44,19 +44,6 @@ jobs:
     runs-on: ubuntu-latest
     needs: [ install ]
     timeout-minutes: 30
-    services:
-      selenium-hub:
-        image: selenium/hub:latest
-        ports:
-          - 4442:4442
-          - 4443:4443
-          - 4444:4444
-      chrome-node-1:
-        image: selenium/node-chrome:latest
-        env:
-          SE_EVENT_BUS_HOST: selenium-hub
-          SE_EVENT_BUS_PUBLISH_PORT: 4442
-          SE_EVENT_BUS_SUBSCRIBE_PORT: 4443
     steps:
       - name: Checkout Repository
         id: checkout-repository
@@ -70,26 +57,13 @@ jobs:
           cache: 'maven'
       - name: Run Chrome Tests
         id: run-chrome-tests
-        run: mvn clean verify -Dtags='(@sanity) and (not @bug and not @skip)' -DparallelCount=5 -Denv=github -Dbrowser=chrome -Dremote=true
+        run: mvn clean verify -Dtags='(@sanity) and (not @bug and not @skip)' -DparallelCount=3 -Denv=github -Dbrowser=chrome -Dremote=false
 
   firefox-tests:
-    name: Chrome Firefox Check
+    name: Firefox Sanity Check
     runs-on: ubuntu-latest
     needs: [ install ]
     timeout-minutes: 30
-    services:
-      selenium-hub:
-        image: selenium/hub:latest
-        ports:
-          - 4442:4442
-          - 4443:4443
-          - 4444:4444
-      firefox-node-1:
-        image: selenium/node-firefox:latest
-        env:
-          SE_EVENT_BUS_HOST: selenium-hub
-          SE_EVENT_BUS_PUBLISH_PORT: 4442
-          SE_EVENT_BUS_SUBSCRIBE_PORT: 4443
     steps:
       - name: Checkout Repository
         id: checkout-repository
@@ -101,6 +75,6 @@ jobs:
           java-version: '21'
           distribution: 'temurin'
           cache: 'maven'
-      - name: Run Chrome Tests
-        id: run-chrome-tests
-        run: mvn clean verify -Dtags='(@sanity) and (not @bug and not @skip)' -DparallelCount=5 -Denv=github -Dbrowser=firefox -Dremote=true
+      - name: Run Firefox Tests
+        id: run-firefox-tests
+        run: mvn clean verify -Dtags='(@sanity) and (not @bug and not @skip)' -DparallelCount=3 -Denv=github -Dbrowser=firefox -Dremote=false

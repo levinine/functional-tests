@@ -103,7 +103,7 @@ public class BaseDriver {
 		final var browserOptions = getBrowserOptions(browser);
 		final String browserName = browserOptions.getBrowserName().toUpperCase();
 		if (this.remote) {
-			log.info("Using Remote Webdriver");
+			log.info("Using Remote Webdriver with URL: {}", remoteWebDriverUrl);
 			try {
 				final RemoteWebDriver remoteDriver = new RemoteWebDriver(URI.create(remoteWebDriverUrl).toURL(), browserOptions);
 				remoteDriver.setFileDetector(new LocalFileDetector());
