@@ -25,14 +25,14 @@ import lombok.extern.slf4j.Slf4j;
 public abstract class BasePage<T> {
 
 	public static final String ELEMENT_NOT_FOUND = "Element not found! {}";
-	
+
 	private final WebDriver driver;
 	private final JavascriptExecutor js;
 	private final WaitHelper waitHelper;
 	private final UploadHelper uploadHelper;
 	private final ActionsHelper actionsHelper;
 
-	@Value("${ui.restful-booker-platform.url}")
+	@Value("${restful-booker-platform.url}")
 	private String restfulBookerPlatformUrl;
 
 	protected BasePage(final BaseDriver baseDriver) {

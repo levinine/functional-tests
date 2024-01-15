@@ -11,7 +11,7 @@ import org.springframework.stereotype.Component;
 @Scope("cucumber-glue")
 public class RandomDogRestClient extends BaseRestClient {
 
-	public RandomDogRestClient(@Value("${api.random.dog.url}") final String serviceUrl) {
+	public RandomDogRestClient(@Value("${random.dog.url}") final String serviceUrl) {
 		super(serviceUrl);
 	}
 }

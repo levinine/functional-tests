@@ -11,7 +11,7 @@ import org.springframework.stereotype.Component;
 @Scope("cucumber-glue")
 public class RestfulBookerRestClient extends BaseRestClient {
 
-	public RestfulBookerRestClient(@Value("${api.restful-booker-platform.url}") final String serviceUrl) {
+	public RestfulBookerRestClient(@Value("${restful-booker-platform.url}") final String serviceUrl) {
 		super(serviceUrl);
 	}
 

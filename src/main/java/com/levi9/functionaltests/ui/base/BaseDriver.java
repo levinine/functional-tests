@@ -156,9 +156,8 @@ public class BaseDriver {
 	private FirefoxOptions getFirefoxOptions(final boolean headless) {
 		final FirefoxOptions browserOptions = new FirefoxOptions();
 		final FirefoxProfile firefoxProfile = new FirefoxProfile();
-		firefoxProfile.setPreference("dom.forms.number", false);
 		if (headless) {
-			browserOptions.addArguments("--headless");
+			browserOptions.addArguments("--headless"); // run in headless mode
 		}
 		browserOptions.setProfile(firefoxProfile);
 		return browserOptions;
@@ -170,13 +169,13 @@ public class BaseDriver {
 	private ChromeOptions getChromeOptions(final boolean headless) {
 		final ChromeOptions browserOptions = new ChromeOptions();
 		if (headless) {
-			browserOptions.addArguments("--headless=new");
+			browserOptions.addArguments("--headless=new"); // run in headless mode
 		}
-		browserOptions.addArguments("verbose");
-		browserOptions.addArguments("whitelisted-ips=");
-		browserOptions.addArguments("--disable-extensions");
-		browserOptions.addArguments("--disable-dev-shm-usage");
-		browserOptions.addArguments("--no-sandbox");
+		browserOptions.addArguments("disable-infobars"); // disabling info bars
+		browserOptions.addArguments("--disable-extensions"); // disabling extensions
+		browserOptions.addArguments("--disable-gpu"); // disabling hardware acceleration
+		browserOptions.addArguments("--disable-dev-shm-usage"); // overcome limited resource problems
+		browserOptions.addArguments("--no-sandbox"); // bypass OS security model
 		return browserOptions;
 	}
 
