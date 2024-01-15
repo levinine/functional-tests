@@ -29,48 +29,39 @@ public class ActionsHelper {
 	}
 
 	/**
-	 * Moves the mouse to the middle of the element.
+	 * Scroll Element into view, having it aligned to the top of the view.
+	 *
+	 * @param by {@link By}
+	 */
+	public void scrollElementIntoViewAlignToTop(final By by) {
+		getJs().executeScript("arguments[0].scrollIntoView({block: 'start', inline: 'nearest'});", getDriver().findElement(by));
+	}
+
+	/**
+	 * Scroll Element into view, having it aligned to the top of the view.
 	 *
 	 * @param element {@link WebElement}
 	 */
-	public void moveToElement(final WebElement element) {
-		getActions().moveToElement(element).perform();
+	public void scrollElementIntoViewAlignToTop(final WebElement element) {
+		getJs().executeScript("arguments[0].scrollIntoView({block: 'start', inline: 'nearest'});", element);
 	}
 
 	/**
-	 * Moves the mouse to the middle of the element.
+	 * Scroll Element into view, having it aligned to the bottom of the view.
 	 *
 	 * @param by {@link By}
 	 */
-	public void moveToElement(final By by) {
-		getActions().moveToElement(getDriver().findElement(by)).perform();
+	public void scrollElementIntoViewAlignToBottom(final By by) {
+		getJs().executeScript("arguments[0].scrollIntoView({block: 'end', inline: 'nearest'});", getDriver().findElement(by));
 	}
 
 	/**
-	 * Move to element and click
-	 *
-	 * @param by {@link By}
-	 */
-	public void moveToElementAndClick(final By by) {
-		getActions().moveToElement(getDriver().findElement(by)).click().perform();
-	}
-
-	/**
-	 * Scroll down to the element.
-	 *
-	 * @param by {@link By}
-	 */
-	public void scrollToElement(final By by) {
-		getJs().executeScript("arguments[0].scrollIntoView(true);", by);
-	}
-
-	/**
-	 * Scroll down to the element.
+	 * Scroll Element into view, having it aligned to the bottom of the view.
 	 *
 	 * @param element {@link WebElement}
 	 */
-	public void scrollToElement(final WebElement element) {
-		getJs().executeScript("arguments[0].scrollIntoView(true);", element);
+	public void scrollElementIntoViewAlignToBottom(final WebElement element) {
+		getJs().executeScript("arguments[0].scrollIntoView({block: 'end', inline: 'nearest'});", element);
 	}
 
 	/**
@@ -81,8 +72,7 @@ public class ActionsHelper {
 	 * @param dragToBy   drag to locator {@link By}
 	 */
 	public void dragAndDrop(final By dragFromBy, final By dragToBy) {
-		getActions().clickAndHold(getDriver().findElement(dragFromBy)).moveToElement(getDriver().findElement(dragToBy))
-			.release(getDriver().findElement(dragToBy)).perform();
+		dragAndDrop(getDriver().findElement(dragFromBy), getDriver().findElement(dragToBy));
 	}
 
 	/**
@@ -93,6 +83,7 @@ public class ActionsHelper {
 	 * @param dragToElement   drag to element {@link WebElement}
 	 */
 	public void dragAndDrop(final WebElement dragFromElement, final WebElement dragToElement) {
-		getActions().clickAndHold(dragFromElement).moveToElement(dragToElement).release(dragToElement).perform();
+		scrollElementIntoViewAlignToTop(dragFromElement);
+		getActions().clickAndHold(dragFromElement).moveToElement(dragToElement).release(dragToElement).build().perform();
 	}
 }
