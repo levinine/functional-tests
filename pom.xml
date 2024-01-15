@@ -26,6 +26,9 @@
 		<!--suppress UnresolvedMavenProperty -->
 		<tags>(@sanity) and (not @skip and not @bug)</tags>
 
+		<!-- Skip Generation of Clucumber Report -->
+		<skipReports>false</skipReports>
+
 		<!-- Environment -->
 		<env>development</env>
 
@@ -328,6 +331,7 @@
 					</execution>
 				</executions>
 				<configuration>
+					<skip>${skipReports}</skip>
 					<sourceJsonReportDirectory>${project.build.directory}/cucumber/json</sourceJsonReportDirectory>
 					<generatedHtmlReportDirectory>${project.build.directory}/cucumber/cluecumber-report</generatedHtmlReportDirectory>
 					<customPageTitle>Functional Tests Report</customPageTitle>
@@ -345,6 +349,7 @@
 							<goal>generate</goal>
 						</goals>
 						<configuration>
+							<skip>${skipReports}</skip>
 							<checkBuildResult>false</checkBuildResult>
 							<projectName>functional-tests</projectName>
 							<outputDirectory>${project.build.directory}/cucumber</outputDirectory>

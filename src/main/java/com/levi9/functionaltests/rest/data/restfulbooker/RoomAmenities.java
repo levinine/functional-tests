@@ -7,6 +7,7 @@ import org.apache.commons.lang3.StringUtils;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.Builder.Default;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -21,11 +22,17 @@ import lombok.Setter;
 @Builder(toBuilder = true)
 public class RoomAmenities {
 
+	@Default
 	private boolean wifi = false;
+	@Default
 	private boolean tv = false;
+	@Default
 	private boolean radio = false;
+	@Default
 	private boolean refreshments = false;
+	@Default
 	private boolean safe = false;
+	@Default
 	private boolean views = false;
 
 	public RoomAmenities(final String amenities) {
