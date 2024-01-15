@@ -55,6 +55,11 @@ jobs:
           java-version: '21'
           distribution: 'temurin'
           cache: 'maven'
+      - name: Setup Chrome
+        id: setup-chrome
+        uses: browser-actions/setup-chrome@v1
+        with:
+          chrome-version: latest
       - name: Run Chrome Tests
         id: run-chrome-tests
         run: mvn clean verify -Dtags='(@sanity) and (not @bug and not @skip)' -DparallelCount=3 -Denv=github -Dbrowser=chrome -Dremote=false
@@ -75,6 +80,11 @@ jobs:
           java-version: '21'
           distribution: 'temurin'
           cache: 'maven'
+      - name: Setup Firefox
+        id: setup-firefox
+        uses: browser-actions/setup-firefox@v1
+        with:
+          firefox-version: latest
       - name: Run Firefox Tests
         id: run-firefox-tests
         run: mvn clean verify -Dtags='(@sanity) and (not @bug and not @skip)' -DparallelCount=3 -Denv=github -Dbrowser=firefox -Dremote=false
