@@ -1,0 +1,104 @@
+name: Sanity Check
+
+on:
+  workflow_dispatch:
+#  push:
+#    branches:
+#      - main
+#    paths:
+#      - 'src/**'
+#      - '.github/workflows/sanity-check.yml'
+#      - 'lombok.config'
+#      - 'pom.xml'
+#  pull_request:
+#    branches:
+#      - main
+#    types:
+#      - opened
+#      - reopened
+#      - synchronize
+#      - labeled
+
+jobs:
+  install:
+    name: Install
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - name: Checkout Repository
+        id: checkout-repository
+        uses: actions/checkout@v4
+      - name: Setup Java
+        id: setup-java
+        uses: actions/setup-java@v4
+        with:
+          java-version: '21'
+          distribution: 'temurin'
+          cache: 'maven'
+      - name: Build Project
+        id: build-project
+        run: mvn clean install -DskipTests -DskipReports
+
+  chrome-tests:
+    name: Chrome Sanity Check
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    services:
+      selenium-hub:
+        image: selenium/hub:latest
+        ports:
+          - 4442:4442
+          - 4443:4443
+          - 4444:4444
+      chrome-node-1:
+        image: selenium/node-chrome:latest
+        env:
+          SE_EVENT_BUS_HOST: selenium-hub
+          SE_EVENT_BUS_PUBLISH_PORT: 4442
+          SE_EVENT_BUS_SUBSCRIBE_PORT: 4443
+    steps:
+      - name: Checkout Repository
+        id: checkout-repository
+        uses: actions/checkout@v4
+      - name: Setup Java
+        id: setup-java
+        uses: actions/setup-java@v4
+        with:
+          java-version: '21'
+          distribution: 'temurin'
+          cache: 'maven'
+      - name: Run Chrome Tests
+        id: run-chrome-tests
+        run: mvn clean verify -Dtags='(@sanity) and (not @bug and not @skip)' -DparallelCount=5 -Denv=github -Dbrowser=chrome -Dremote=true
+
+  firefox-tests:
+    name: Chrome Firefox Check
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    services:
+      selenium-hub:
+        image: selenium/hub:latest
+        ports:
+          - 4442:4442
+          - 4443:4443
+          - 4444:4444
+      firefox-node-1:
+        image: selenium/node-firefox:latest
+        env:
+          SE_EVENT_BUS_HOST: selenium-hub
+          SE_EVENT_BUS_PUBLISH_PORT: 4442
+          SE_EVENT_BUS_SUBSCRIBE_PORT: 4443
+    steps:
+      - name: Checkout Repository
+        id: checkout-repository
+        uses: actions/checkout@v4
+      - name: Setup Java
+        id: setup-java
+        uses: actions/setup-java@v4
+        with:
+          java-version: '21'
+          distribution: 'temurin'
+          cache: 'maven'
+      - name: Run Chrome Tests
+        id: run-chrome-tests
+        run: mvn clean verify -Dtags='(@sanity) and (not @bug and not @skip)' -DparallelCount=5 -Denv=github -Dbrowser=firefox -Dremote=true
