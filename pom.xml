@@ -39,6 +39,7 @@
 		<cucumber.version>7.15.0</cucumber.version>
 		<assertj.version>3.25.1</assertj.version>
 		<rest-assured.version>5.4.0</rest-assured.version>
+		<commons-codec.version>1.16.0</commons-codec.version>
 		<awaitility.version>4.2.0</awaitility.version>
 		<selenium.version>4.16.1</selenium.version>
 		<logback.version>1.4.14</logback.version>
@@ -158,6 +159,17 @@
 			<groupId>io.rest-assured</groupId>
 			<artifactId>rest-assured</artifactId>
 			<version>${rest-assured.version}</version>
+			<exclusions>
+				<exclusion>
+					<groupId>commons-codec</groupId>
+					<artifactId>commons-codec</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+		<dependency>
+			<groupId>commons-codec</groupId>
+			<artifactId>commons-codec</artifactId>
+			<version>${commons-codec.version}</version>
 		</dependency>
 
 		<dependency>
@@ -233,10 +245,13 @@
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-failsafe-plugin</artifactId>
 				<version>${maven.failsafe.plugin.version}</version>
+				<!-- Using surefire-junit4 provider as it executes individual test class and consequently re-runs failed tests. -->
+				<!-- The provider surefire-junit47 executes all test classes and re-runs failed tests afterward.  -->
+				<!-- With surefire-junit47 it happened that not all tests are executed after re-run occurred, or their reports were cleared.-->
 				<dependencies>
 					<dependency>
 						<groupId>org.apache.maven.surefire</groupId>
-						<artifactId>surefire-junit47</artifactId>
+						<artifactId>surefire-junit4</artifactId>
 						<version>3.2.5</version>
 					</dependency>
 				</dependencies>
@@ -335,6 +350,7 @@
 					<sourceJsonReportDirectory>${project.build.directory}/cucumber/json</sourceJsonReportDirectory>
 					<generatedHtmlReportDirectory>${project.build.directory}/cucumber/cluecumber-report</generatedHtmlReportDirectory>
 					<customPageTitle>Functional Tests Report</customPageTitle>
+					<customParametersFile>${project.build.directory}/test-classes/application-${env}.properties</customParametersFile>
 				</configuration>
 			</plugin>
 			<plugin>
@@ -350,7 +366,7 @@
 						</goals>
 						<configuration>
 							<skip>${skipReports}</skip>
-							<checkBuildResult>false</checkBuildResult>
+							<checkBuildResult>true</checkBuildResult>
 							<projectName>functional-tests</projectName>
 							<outputDirectory>${project.build.directory}/cucumber</outputDirectory>
 							<jsonFiles>
