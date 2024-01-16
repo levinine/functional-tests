@@ -71,9 +71,10 @@ jobs:
         uses: dorny/test-reporter@v1
         if: success() || failure()
         with:
-          name: Chrome Sanity Check
+          name: JUnit Results (Chrome)
           path: '**/junit/*.xml'
           reporter: java-junit
+          only-summary: 'true'
           fail-on-empty: 'false'
       - name: Upload Cucumber HTML Report
         id: upload-cucumber-html-report
@@ -126,9 +127,10 @@ jobs:
         uses: dorny/test-reporter@v1
         if: success() || failure()
         with:
-          name: Firefox Sanity Check
+          name: JUnit Results (Firefox)
           path: '**/junit/*.xml'
           reporter: java-junit
+          only-summary: 'true'
           fail-on-empty: 'false'
       - name: Upload Cucumber HTML Report
         id: upload-cucumber-html-report
