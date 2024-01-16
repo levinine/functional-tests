@@ -63,6 +63,24 @@ jobs:
       - name: Run Chrome Tests
         id: run-chrome-tests
         run: mvn clean verify -Dtags='(@sanity) and (not @bug and not @skip)' -DparallelCount=3 -Denv=github -Dbrowser=chrome -Dheadless -Dremote=false
+      - name: Upload Cucumber HTML Report
+        id: upload-cucumber-html-report
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: chrome-cucumber-html-report
+          path: target/cucumber/cucumber-html-reports/
+          if-no-files-found: ignore
+          retention-days: 1
+      - name: Upload Cluecumber Report
+        id: upload-cluecumber-report
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: chrome-cluecumber-report
+          path: target/cucumber/cluecumber-report/
+          if-no-files-found: ignore
+          retention-days: 1
 
   firefox-tests:
     name: Firefox Sanity Check
@@ -88,3 +106,21 @@ jobs:
       - name: Run Firefox Tests
         id: run-firefox-tests
         run: mvn clean verify -Dtags='(@sanity) and (not @bug and not @skip)' -DparallelCount=3 -Denv=github -Dbrowser=firefox -Dheadless -Dremote=false
+      - name: Upload Cucumber HTML Report
+        id: upload-cucumber-html-report
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: firefox-cucumber-html-report
+          path: target/cucumber/cucumber-html-reports/
+          if-no-files-found: ignore
+          retention-days: 1
+      - name: Upload Cluecumber Report
+        id: upload-cluecumber-report
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: firefox-cluecumber-report
+          path: target/cucumber/cluecumber-report/
+          if-no-files-found: ignore
+          retention-days: 1
