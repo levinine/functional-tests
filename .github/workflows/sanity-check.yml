@@ -62,7 +62,7 @@ jobs:
           chrome-version: latest
       - name: Run Chrome Tests
         id: run-chrome-tests
-        run: mvn clean verify -Dtags='(@sanity) and (not @bug and not @skip)' -DparallelCount=3 -Denv=github -Dbrowser=chrome -Dheadless -Dremote=false
+        run: mvn clean verify -Dtags='(@sanity or @bug) and (not @skip)' -DparallelCount=3 -Denv=github -Dbrowser=chrome -Dheadless -Dremote=false
       - name: Publish Test Report
         uses: mikepenz/action-junit-report@v4
         if: success() || failure()
