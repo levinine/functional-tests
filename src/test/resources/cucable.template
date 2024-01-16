@@ -9,7 +9,7 @@ import io.cucumber.junit.CucumberOptions;
 @CucumberOptions(
 	glue = "com.levi9.functionaltests",
 	features = { "target/cucumber/cucable-generated/features/[CUCABLE:FEATURE].feature" },
-	plugin = { "json:target/cucumber/json/[CUCABLE:RUNNER].json", "pretty" }
+	plugin = { "json:target/cucumber/json/[CUCABLE:RUNNER].json", "pretty", "io.qameta.allure.cucumber7jvm.AllureCucumber7Jvm" }
 )
 public class [CUCABLE:RUNNER] {
 

@@ -7,22 +7,25 @@ Feature: Login
 	Background: User is on Booking Management Login Page
 		Given User is on the Booking Management Login Page
 
-	@sanity
+	@blocker @sanity
 	Scenario: Administrator is able to login with correct username and password
 		When Tries to login with valid username and password
 		Then User is Logged In
 		And User is redirected to Rooms Management Page
 
+	@normal
 	Scenario: User is not able to login with empty username
 		When Tries to login with only valid password
 		Then User is still on Booking Management Login Page
 		And Username field will have red border
 
+	@normal
 	Scenario: User is not able to login with empty password
 		When Tries to login with only valid username
 		Then User is still on Booking Management Login Page
 		And Password field will have red border
 
+	@critical
 	Scenario: User is not able to login with wrong password
 		When Tries to login with wrong password
 		Then User is still on Booking Management Login Page

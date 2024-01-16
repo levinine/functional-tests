@@ -60,6 +60,7 @@
 		<apache.commons-io.version>2.15.1</apache.commons-io.version>
 		<apache.pdfbox.version>3.0.1</apache.pdfbox.version>
 		<jackson.version>2.16.1</jackson.version>
+		<allure.version>2.24.0</allure.version>
 
 		<!-- Maven Plugins Versions -->
 		<maven.compiler.version>3.12.1</maven.compiler.version>
@@ -72,6 +73,18 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 	</properties>
+
+	<dependencyManagement>
+		<dependencies>
+			<dependency>
+				<groupId>io.qameta.allure</groupId>
+				<artifactId>allure-bom</artifactId>
+				<version>${allure.version}</version>
+				<type>pom</type>
+				<scope>import</scope>
+			</dependency>
+		</dependencies>
+	</dependencyManagement>
 
 	<dependencies>
 
@@ -235,6 +248,19 @@
 			<groupId>org.apache.pdfbox</groupId>
 			<artifactId>pdfbox</artifactId>
 			<version>${apache.pdfbox.version}</version>
+		</dependency>
+
+		<!-- Allure -->
+		<dependency>
+			<groupId>io.qameta.allure</groupId>
+			<artifactId>allure-cucumber7-jvm</artifactId>
+			<scope>test</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>io.qameta.allure</groupId>
+			<artifactId>allure-junit4</artifactId>
+			<scope>test</scope>
 		</dependency>
 	</dependencies>
 

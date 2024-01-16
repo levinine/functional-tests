@@ -7,6 +7,7 @@ Feature: Invalid Data Validation on Contact Hotel
 	Background: Visitor is on the Front Page
 		Given Visitor is on the Front Page
 
+	@normal
 	Scenario Outline: Visitor must NOT be able to contact the property by filling up invalid email
 		When Visitor 'John Doe' tries to contact property regarding 'Special Accommodation' by filling up email with invalid value: '<invalid_email>'
 		Then Visitor will get Contact Validation Error Message: 'must be a well-formed email address'
@@ -29,6 +30,7 @@ Feature: Invalid Data Validation on Contact Hotel
 			| invalid_email |
 			| email@example |
 
+	@minor
 	Scenario Outline: Visitor must NOT be able to contact the property by filling up the invalid phone number
 		When Visitor 'John Doe' tries to contact property regarding 'Special Accommodation' by filling up phone with invalid value: '<invalid_phone>'
 		Then Visitor will get Contact Validation Error Message: 'Phone must be between 11 and 21 characters.'
@@ -37,6 +39,7 @@ Feature: Invalid Data Validation on Contact Hotel
 			| 1234567890             |
 			| 1234567890123456789012 |
 
+	@normal
 	Scenario Outline: Visitor must be able to contact the property by filling up valid phone phone number
 		When Visitor 'John Doe' tries to contact property regarding 'Special Accommodation' by filling up phone with valid value: '<valid_phone>'
 		Then Visitor 'John Doe' will get Thanks for getting in touch message regarding subject 'Special Accommodation'
@@ -45,6 +48,7 @@ Feature: Invalid Data Validation on Contact Hotel
 			| 12345678901           |
 			| 123456789012345678901 |
 
+	@minor
 	Scenario Outline: Visitor must NOT be able to contact the property by filling up the subject with invalid length, less than 5 and more than 100 characters
 		When Visitor 'John Doe' tries to contact property by filling up subject with value length of <subject_length> characters
 		Then Visitor will get Contact Validation Error Message: 'Subject must be between 5 and 100 characters.'
@@ -53,6 +57,7 @@ Feature: Invalid Data Validation on Contact Hotel
 			| 4              |
 			| 101            |
 
+	@normal
 	Scenario Outline: Visitor must be able to contact the property by filling up the subject with valid length, between 5 and 100 characters
 		When Visitor 'John Doe' tries to contact property by filling up subject with value length of <subject_length> characters
 		Then Visitor 'John Doe' will get Thanks for getting in touch message
@@ -61,6 +66,7 @@ Feature: Invalid Data Validation on Contact Hotel
 			| 5              |
 			| 100            |
 
+	@minor
 	Scenario Outline: Visitor must NOT be able to contact the property by filling up the message with invalid length, less than 20 and more than 2000 characters
 		When Visitor 'John Doe' tries to contact property regarding 'Special Accommodation' by filling up message with value length of <message_length> characters
 		Then Visitor will get Contact Validation Error Message: 'Message must be between 20 and 2000 characters.'
@@ -69,6 +75,7 @@ Feature: Invalid Data Validation on Contact Hotel
 			| 19             |
 			| 2001           |
 
+	@normal
 	Scenario Outline: Visitor must be able to contact the property by filling up the message with valid length, between 20 and 2000 characters
 		When Visitor 'John Doe' tries to contact property regarding 'Special Accommodation' by filling up message with value length of <message_length> characters
 		Then Visitor 'John Doe' will get Thanks for getting in touch message regarding subject 'Special Accommodation'

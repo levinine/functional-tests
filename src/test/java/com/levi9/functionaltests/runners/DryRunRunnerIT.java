@@ -17,7 +17,8 @@ import io.cucumber.junit.CucumberOptions;
 		"html:target/reports/cucumber/html",
 		"json:target/reports/cucumber/json/cucumber.json",
 		"usage:target/usage.jsonx",
-		"junit:target/reports/junit.xml" },
+		"junit:target/reports/junit.xml",
+		"io.qameta.allure.cucumber7jvm.AllureCucumber7Jvm" },
 	glue = { "com.levi9.functionaltests" },
 	monochrome = true,
 	dryRun = true)

@@ -78,7 +78,7 @@ public class BookingStepdef {
 		visitorBooksRoom(firstName, lastName, email, phoneNumber, roomName);
 	}
 
-	@When("Visitor {string} {string} with an email {string} and phone number {string} tries to book a room {string} without setting the dates")
+	@When("Visitor {string} {string} with an email {string} and phone number {string} tries to book a room {string} without setting booking dates")
 	public void visitorBooksRoomWithoutSettingBookingDates(final String firstName, final String lastName, final String email, final String phoneNumber,
 		final String roomName) {
 		frontPage.bookRoomWithoutDates(roomName, firstName, lastName, email, phoneNumber);

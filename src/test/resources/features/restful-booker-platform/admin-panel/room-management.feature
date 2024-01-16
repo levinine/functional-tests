@@ -9,7 +9,7 @@ Feature: Rooms Management
 		Given User is logged via Booking Management Login Page as Administrator
 		And User is on the Rooms Management Page
 
-	@sanity
+	@blocker @sanity
 	Scenario Outline: User must be able to create new room by filling up all mandatory fields
 		When User creates new <room_type> type <accessibility> room '<room_name>' priced at <room_price> GBP with '<features>'
 		Then New <room_type> type <accessibility> room '<room_name>' priced at <room_price> GBP with '<features>' will be created
@@ -21,14 +21,17 @@ Feature: Rooms Management
 			| 117       | Family    | 250        | Accessible     | WiFi, TV, Radio, Refreshments, Safe and Views |
 			| 118       | Suite     | 300        | Accessible     | WiFi, TV, Radio, Refreshments, Safe and Views |
 
+	@critical
 	Scenario: User must NOT be able to create new room without filling up room name field
 		When User creates new Twin type Not Accessible room priced at 55 GBP with 'WiFi and TV' without filling up room name field
 		Then User will get mandatory error message: 'Room name must be set'
 
+	@critical
 	Scenario: User must NOT be able to create new room without filling up room price field
 		When User creates new Twin type Not Accessible room '314' with 'WiFi, TV and Safe' without filling up room price field
 		Then User will get mandatory error message: 'must be greater than or equal to 1'
 
+	@critical
 	Scenario: User must NOT be able to create new room with price 0
 		When User creates new Single type Not Accessible room '214' priced at 0 GBP with 'no features added to the room'
 		Then User will get validation error message: 'must be greater than or equal to 1'

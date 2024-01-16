@@ -9,6 +9,7 @@ Feature: Invalid Data Validation when Booking a Room
 		And User has created Single type Accessible room '1408' priced at 50 GBP with 'WiFi, TV, Refreshments and Safe'
 		And Visitor is on the Front Page
 
+	@minor
 	Scenario Outline: Visitor must NOT be able to book a room by filling up the first name with invalid length value, less than 3 and more than 18 characters
 		When Visitor 'Doe' with an email 'john.doe@email.com' and phone number '+44 1632 960018' tries to book a room '1408' by filling up first name with value length of <first_name_length> characters
 		Then Visitor will get Booking Validation Error Message: 'size must be between 3 and 18'
@@ -17,6 +18,7 @@ Feature: Invalid Data Validation when Booking a Room
 			| 2                 |
 			| 19                |
 
+	@normal
 	Scenario Outline: Visitor must be able to book a room by filling up the first name with valid length value, more than 3 and less than 18 characters
 		When Visitor 'Doe' with an email 'john.doe@email.com' and phone number '+44 1632 960018' tries to book a room '1408' by filling up first name with value length of <first_name_length> characters
 		Then Visitor will get Booking Successful! Message
@@ -25,6 +27,7 @@ Feature: Invalid Data Validation when Booking a Room
 			| 3                 |
 			| 18                |
 
+	@minor
 	Scenario Outline: Visitor must NOT be able to book a room by filling up the last name with invalid length value, less than 3 and more than 30 characters
 		When Visitor 'John' with an email 'john.doe@email.com' and phone number '+44 1632 960018' tries to book a room '1408' by filling up last name with value length of <last_name_length> characters
 		Then Visitor will get Booking Validation Error Message: 'size must be between 3 and 30'
@@ -33,6 +36,7 @@ Feature: Invalid Data Validation when Booking a Room
 			| 2                |
 			| 31               |
 
+	@normal
 	Scenario Outline: Visitor must be able to book a room by filling up the last name with valid length value, more than 3 and less than 30 characters
 		When Visitor 'John' with an email 'john.doe@email.com' and phone number '+44 1632 960018' tries to book a room '1408' by filling up last name with value length of <last_name_length> characters
 		Then Visitor will get Booking Successful! Message
@@ -41,6 +45,7 @@ Feature: Invalid Data Validation when Booking a Room
 			| 3                |
 			| 30               |
 
+	@normal
 	Scenario Outline: Visitor must NOT be able to book a room by filling up email with invalid value
 		When Visitor 'John' 'Doe' with an invalid email '<invalid_email>' and phone number '+44 1632 960018' tries to book a room '1408'
 		Then Visitor will get Booking Validation Error Message: 'must be a well-formed email address'
@@ -63,6 +68,7 @@ Feature: Invalid Data Validation when Booking a Room
 			| invalid_email |
 			| email@example |
 
+	@minor
 	Scenario Outline: Visitor must NOT be able to book a room by filling up the phone with invalid length value, less than 11 and more than 21 characters
 		When Visitor 'John' 'Doe' with an email 'john.doe@email.com' tries to book a room '1408' by filling up phone with value length of <phone_length> characters
 		Then Visitor will get Booking Validation Error Message: 'size must be between 11 and 21'
@@ -71,6 +77,7 @@ Feature: Invalid Data Validation when Booking a Room
 			| 10           |
 			| 22           |
 
+	@normal
 	Scenario Outline: Visitor must be able to book a room by filling up the phone with valid length value, more than 11 and less than 21 characters
 		When Visitor 'John' 'Doe' with an email 'john.doe@email.com' tries to book a room '1408' by filling up phone with value length of <phone_length> characters
 		Then Visitor will get Booking Successful! Message
