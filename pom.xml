@@ -404,7 +404,7 @@
 							<projectName>functional-tests</projectName>
 							<outputDirectory>${project.build.directory}/cucumber</outputDirectory>
 							<jsonFiles>
-								<param>**/*.json</param>
+								<param>**/json/*.json</param>
 							</jsonFiles>
 							<skipEmptyJSONFiles>true</skipEmptyJSONFiles>
 							<mergeFeaturesById>true</mergeFeaturesById>
