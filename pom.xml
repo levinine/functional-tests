@@ -22,6 +22,14 @@
 		<!-- Java Version -->
 		<java.version>21</java.version>
 
+		<!-- Browser -->
+		<browser>chrome</browser>
+		<headless>false</headless>
+
+		<!-- Selenium Grid -->
+		<remote>false</remote>
+		<remoteUrl>http://localhost:4444/wd/hub</remoteUrl>
+
 		<!-- Tags -->
 		<!--suppress UnresolvedMavenProperty -->
 		<tags>(@sanity) and (not @skip and not @bug)</tags>

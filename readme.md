@@ -33,19 +33,19 @@ Additional parameters:
     - `(@booking or @contact) and (not @bug)` - Scenarios tagged with either `@booking` or `@contact` that are not also tagged with `@bug` will be
       executed
 - `-Dremote` - Defines if execution is done locally or remotely i.e. ```-Dremote=false``` execute using local browsers and drivers
-  or ```-Dremote=true``` execute remotely using Selenium Grid (URL of Selenium Grid per environment is located in environment properties files).
+  or ```-Dremote=true``` execute remotely using Selenium Grid. If set to true, `-DremoteUrl` must be set also.
+- `-DremoteUrl` - URL of Selenium Grid which is used for remote execution of Selenium Tests.
 - `-Dbrowser` - Browser on which UI test will be used i.e. ```-Dbrowser=firefox```, if not specified `chrome` will be used. Possible values are:
     - `chrome`
-    - `chrome_headless`
     - `firefox`
-    - `firefox_headless`
+- `-Dheadless` - Defines if execution is done with Browsers running in headless mode or not.
 - `-DparallelCount` - Maximum number of scenarios executed in parallel i.e. ```-DparallelCount=5```, if not specified `3` will be used.
 
 For example to execute @ui and @api tests, excluding skipped and scenarios with known issues, with 5 features in parallel one development environment
-with Chrome browser and not using Selenium Grid command will look like:
+with Chrome browser running in headless mode and not using remote Selenium Grid, command will look like:
 
 ```console 
-mvn clean verify -Dtags='(@ui or @api) and (not @skip and not @bug)' -DparallelCount=5 -Denv=development -Dbrowser=chrome -Dremote=false
+mvn clean verify -Dtags='(@ui or @api) and (not @skip and not @bug)' -DparallelCount=5 -Denv=development -Dbrowser=chrome -Dheadless -Dremote=false
 ```
 
 ## Local Development Setup

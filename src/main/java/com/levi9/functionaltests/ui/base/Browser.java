@@ -12,9 +12,7 @@ import org.apache.commons.lang3.StringUtils;
 public enum Browser {
 
 	CHROME,
-	CHROME_HEADLESS,
-	FIREFOX,
-	FIREFOX_HEADLESS;
+	FIREFOX;
 
 	/**
 	 * Gets Browser option from String. If Browser is not found for passed string, default one (CHROME) is returned.

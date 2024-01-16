@@ -1,9 +1,9 @@
 package com.levi9.functionaltests.ui.base;
 
 import static com.levi9.functionaltests.ui.base.Browser.CHROME;
-import static com.levi9.functionaltests.ui.base.Browser.CHROME_HEADLESS;
 import static com.levi9.functionaltests.ui.base.Browser.FIREFOX;
-import static com.levi9.functionaltests.ui.base.Browser.FIREFOX_HEADLESS;
+import static lombok.AccessLevel.PRIVATE;
+import static lombok.AccessLevel.PUBLIC;
 
 import com.levi9.functionaltests.exceptions.FunctionalTestsException;
 import com.levi9.functionaltests.storage.Storage;
@@ -38,7 +38,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
-import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
@@ -47,6 +46,7 @@ import lombok.extern.slf4j.Slf4j;
  *
  * @author Milos Pujic (m.pujic@levi9.com)
  */
+@SuppressWarnings({ "java:S3740", "rawtypes", "unchecked" })
 @Slf4j
 @Component
 @Scope("cucumber-glue")
@@ -55,26 +55,37 @@ public class BaseDriver {
 	/**
 	 * Initialization.
 	 */
-	private final ThreadLocal<WebDriver> driver = new ThreadLocal<>();
+	private final ThreadLocal<WebDriver> threadLocalDriver = new ThreadLocal<>();
 
-	@Getter(AccessLevel.PUBLIC)
-	private final Browser browser;
+	@Getter(PRIVATE)
 	private final WebDriverListener eventListener = new BaseDriverListener();
-	private final boolean remote;
-	@Value("${selenium.grid.url}")
-	private String remoteWebDriverUrl;
+
+	@Getter(PUBLIC)
+	private final Browser browser;
+
+	@Value("${headless:false}")
+	@Getter(PRIVATE)
+	private boolean headLess;
+
+	@Value("${remote:true}")
+	@Getter(PRIVATE)
+	private boolean remote;
+
+	@Value("${remoteUrl:http://localhost:4444/wd/hub}")
+	@Getter(PRIVATE)
+	private String remoteUrl;
+
+	@Getter(PRIVATE)
 	private final Storage storage;
 
 	/**
 	 * Setup method with browser and Selenium grid.
 	 *
 	 * @param browser possible values "chrome" and "firefox" (case-insensitive)
-	 * @param remote  true to execute remotely on Selenium Grid, false otherwise
 	 */
 	@Autowired
-	public BaseDriver(@Value("${browser:chrome}") final String browser, @Value("${remote:false}") final boolean remote, final Storage storage) {
+	public BaseDriver(@Value("${browser:chrome}") final String browser, final Storage storage) {
 		this.browser = Browser.getEnum(browser);
-		this.remote = remote;
 		this.storage = storage;
 	}
 
@@ -84,7 +95,7 @@ public class BaseDriver {
 	 * @return {@link WebDriver}
 	 */
 	public WebDriver getDriver() {
-		return driver.get();
+		return threadLocalDriver.get();
 	}
 
 	/**
@@ -99,33 +110,34 @@ public class BaseDriver {
 	 *
 	 * @param browser browser
 	 */
+
 	private void initializeWebDriver(final Browser browser) {
 		final var browserOptions = getBrowserOptions(browser);
 		final String browserName = browserOptions.getBrowserName().toUpperCase();
-		if (this.remote) {
-			log.info("Using Remote Webdriver with URL: {}", remoteWebDriverUrl);
+		if (isRemote()) {
+			log.info("Using Remote Webdriver with URL: {}", getRemoteUrl());
 			try {
-				final RemoteWebDriver remoteDriver = new RemoteWebDriver(URI.create(remoteWebDriverUrl).toURL(), browserOptions);
+				final RemoteWebDriver remoteDriver = new RemoteWebDriver(URI.create(getRemoteUrl()).toURL(), browserOptions);
 				remoteDriver.setFileDetector(new LocalFileDetector());
-				log.info("Initializing remote WebDriver with url {} and with browser {} ", remoteWebDriverUrl, browserName);
-				driver.set(new EventFiringDecorator(eventListener).decorate(remoteDriver));
+				log.info("Initializing remote WebDriver with url {} and with browser {} ", getRemoteUrl(), browserName);
+				threadLocalDriver.set(new EventFiringDecorator(getEventListener()).decorate(remoteDriver));
 			} catch (final MalformedURLException e) {
-				final String msg = "Error while initializing remote webdriver with url: " + remoteWebDriverUrl.toUpperCase();
+				final String msg = "Error while initializing remote webdriver with url: " + getRemoteUrl().toUpperCase();
 				log.error(msg, e);
 				throw new FunctionalTestsException(msg, e);
 			}
-		} else if (browser.equals(FIREFOX) || browser.equals(FIREFOX_HEADLESS)) {
+		} else if (browser.equals(FIREFOX)) {
 			log.info("Initializing Local WebDriver with {} browser", browserName);
 			final FirefoxDriverService firefoxService = new GeckoDriverService.Builder().build();
 			final FirefoxOptions firefoxOptions = (FirefoxOptions) browserOptions;
 			final FirefoxDriver firefoxDriver = new FirefoxDriver(firefoxService, firefoxOptions);
-			driver.set(new EventFiringDecorator(eventListener).decorate(firefoxDriver));
-		} else if (browser.equals(CHROME) || browser.equals(CHROME_HEADLESS)) {
+			threadLocalDriver.set(new EventFiringDecorator(getEventListener()).decorate(firefoxDriver));
+		} else if (browser.equals(CHROME)) {
 			log.info("Initializing Local WebDriver with {} browser", browserName);
 			final ChromeDriverService chromeService = new ChromeDriverService.Builder().build();
 			final ChromeOptions chromeOptions = (ChromeOptions) browserOptions;
 			final ChromeDriver chromeDriver = new ChromeDriver(chromeService, chromeOptions);
-			driver.set(new EventFiringDecorator(eventListener).decorate(chromeDriver));
+			threadLocalDriver.set(new EventFiringDecorator(getEventListener()).decorate(chromeDriver));
 		} else {
 			final String msg = "No proper browser setting is found!";
 			log.error(msg);
@@ -143,20 +155,18 @@ public class BaseDriver {
 	 */
 	private <T extends AbstractDriverOptions> T getBrowserOptions(final Browser browser) {
 		return switch (browser) {
-			case FIREFOX -> (T) getFirefoxOptions(false);
-			case FIREFOX_HEADLESS -> (T) getFirefoxOptions(true);
-			case CHROME -> (T) getChromeOptions(false);
-			case CHROME_HEADLESS -> (T) getChromeOptions(true);
+			case FIREFOX -> (T) getFirefoxOptions();
+			case CHROME -> (T) getChromeOptions();
 		};
 	}
 
 	/**
 	 * Get Firefox Options.
 	 */
-	private FirefoxOptions getFirefoxOptions(final boolean headless) {
+	private FirefoxOptions getFirefoxOptions() {
 		final FirefoxOptions browserOptions = new FirefoxOptions();
 		final FirefoxProfile firefoxProfile = new FirefoxProfile();
-		if (headless) {
+		if (isHeadLess()) {
 			browserOptions.addArguments("--headless"); // run in headless mode
 		}
 		browserOptions.setProfile(firefoxProfile);
@@ -166,9 +176,9 @@ public class BaseDriver {
 	/**
 	 * Get Chrome Options.
 	 */
-	private ChromeOptions getChromeOptions(final boolean headless) {
+	private ChromeOptions getChromeOptions() {
 		final ChromeOptions browserOptions = new ChromeOptions();
-		if (headless) {
+		if (isHeadLess()) {
 			browserOptions.addArguments("--headless=new"); // run in headless mode
 		}
 		browserOptions.addArguments("disable-infobars"); // disabling info bars
@@ -188,7 +198,7 @@ public class BaseDriver {
 				getDriver().manage().deleteAllCookies();
 				getDriver().close();
 				getDriver().quit();
-				driver.remove();
+				threadLocalDriver.remove();
 			} catch (final Exception e) {
 				log.info("Error with Closing Selenium Driver: {}", e.getMessage());
 			}
@@ -202,10 +212,10 @@ public class BaseDriver {
 	public byte[] takeScreenshot() {
 		final Calendar now = Calendar.getInstance();
 		final String timestamp = new SimpleDateFormat("yyyy-MM-dd HH-mm-ss-SSS").format(now.getTime());
-		final String fileName = timestamp + "_" + storage.getTestScenario().getScreenshotCounter();
+		final String fileName = timestamp + "_" + getStorage().getTestScenario().getScreenshotCounter();
 		final String fileExtension = ".png";
 		final TakesScreenshot screenshot = (TakesScreenshot) getDriver();
-		final String screenShotSaveLocationPath = storage.getTestScenario().getScenarioScreenshotsLocationPath() + fileName + fileExtension;
+		final String screenShotSaveLocationPath = getStorage().getTestScenario().getScenarioScreenshotsLocationPath() + fileName + fileExtension;
 		try {
 			final byte[] screenShootByteArray = screenshot.getScreenshotAs(OutputType.BYTES);
 			FileUtils.writeByteArrayToFile(new File(screenShotSaveLocationPath), screenShootByteArray);
