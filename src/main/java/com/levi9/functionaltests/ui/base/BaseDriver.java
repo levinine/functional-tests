@@ -67,7 +67,7 @@ public class BaseDriver {
 	@Getter(PRIVATE)
 	private boolean headLess;
 
-	@Value("${remote:true}")
+	@Value("${remote:false}")
 	@Getter(PRIVATE)
 	private boolean remote;
 
@@ -149,7 +149,6 @@ public class BaseDriver {
 	 * Get Browser Options depending on Browser.
 	 *
 	 * @param browser {@link Browser}
-	 * @param <T>
 	 *
 	 * @return {@link FirefoxOptions} or {@link ChromeOptions}
 	 */
