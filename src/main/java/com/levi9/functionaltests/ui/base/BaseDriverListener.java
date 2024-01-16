@@ -17,7 +17,6 @@ import lombok.extern.slf4j.Slf4j;
  * @author Milos Pujic (m.pujic@levi9.com)
  */
 @SuppressWarnings({ "java:S125", "unused" })
-
 @Slf4j
 public class BaseDriverListener implements WebDriverListener {
 
