@@ -23,7 +23,9 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeDriverService;
 import org.openqa.selenium.chrome.ChromeOptions;
+import org.openqa.selenium.chromium.ChromiumDriverLogLevel;
 import org.openqa.selenium.firefox.FirefoxDriver;
+import org.openqa.selenium.firefox.FirefoxDriverLogLevel;
 import org.openqa.selenium.firefox.FirefoxDriverService;
 import org.openqa.selenium.firefox.FirefoxOptions;
 import org.openqa.selenium.firefox.FirefoxProfile;
@@ -128,13 +130,13 @@ public class BaseDriver {
 			}
 		} else if (browser.equals(FIREFOX)) {
 			log.info("Initializing Local WebDriver with {} browser", browserName);
-			final FirefoxDriverService firefoxService = new GeckoDriverService.Builder().build();
+			final FirefoxDriverService firefoxService = new GeckoDriverService.Builder().withLogLevel(FirefoxDriverLogLevel.ERROR).build();
 			final FirefoxOptions firefoxOptions = (FirefoxOptions) browserOptions;
 			final FirefoxDriver firefoxDriver = new FirefoxDriver(firefoxService, firefoxOptions);
 			threadLocalDriver.set(new EventFiringDecorator(getEventListener()).decorate(firefoxDriver));
 		} else if (browser.equals(CHROME)) {
 			log.info("Initializing Local WebDriver with {} browser", browserName);
-			final ChromeDriverService chromeService = new ChromeDriverService.Builder().build();
+			final ChromeDriverService chromeService = new ChromeDriverService.Builder().withLogLevel(ChromiumDriverLogLevel.SEVERE).build();
 			final ChromeOptions chromeOptions = (ChromeOptions) browserOptions;
 			final ChromeDriver chromeDriver = new ChromeDriver(chromeService, chromeOptions);
 			threadLocalDriver.set(new EventFiringDecorator(getEventListener()).decorate(chromeDriver));
