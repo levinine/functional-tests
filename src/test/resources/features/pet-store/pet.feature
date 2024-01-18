@@ -4,7 +4,7 @@ Feature: Pets
 	User is able to add new pet to the store, when it is added to the store user can fetch the information about the pet,
 	change pet information or delete the pet from the store.
 
-	@blocker @sanity
+	@blocker
 	Scenario: User is able to sell a pet in status available
 		Given User added pet "Beagle" to the pet store
 		When Pet status is set to "available"

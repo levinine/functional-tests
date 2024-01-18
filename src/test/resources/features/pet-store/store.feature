@@ -4,7 +4,7 @@ Feature: Pet Store orders
 	User is able to make order for a pet in my pet store.
 	User is able to delete order from pet store.
 
-	@blocker @sanity
+	@blocker
 	Scenario: User is able to place an order for a pet
 		Given User adds pet "German Shepherd" to the pet store
 		When  Places order for a pet with quantity of 5, ship date in 10 days with status placed
