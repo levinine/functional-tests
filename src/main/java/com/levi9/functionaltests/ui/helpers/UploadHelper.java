@@ -14,6 +14,7 @@ import lombok.Getter;
 /**
  * @author Milos Pujic (m.pujic@levi9.com)
  */
+@SuppressWarnings({ "unused" })
 @Slf4j
 @Getter
 public class UploadHelper {

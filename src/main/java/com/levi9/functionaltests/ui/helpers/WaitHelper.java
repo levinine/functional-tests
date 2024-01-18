@@ -19,6 +19,7 @@ import groovy.util.logging.Slf4j;
  *
  * @author Milos Pujic (m.pujic@levi9.com)
  */
+@SuppressWarnings({ "unused" })
 @Slf4j
 public class WaitHelper {
 
