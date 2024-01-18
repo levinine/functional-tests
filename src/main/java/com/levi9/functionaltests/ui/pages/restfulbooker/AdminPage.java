@@ -40,7 +40,7 @@ public class AdminPage extends BasePage<AdminPage> {
 	 * Load Page.
 	 */
 	public void load() {
-		openPage(getRestfulBookerPlatformUrl() + "/#/admin", page);
+		openPage(getRestfulBookerPlatformUrl() + "#/admin", page);
 	}
 
 	/**
