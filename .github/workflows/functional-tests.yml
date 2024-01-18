@@ -76,6 +76,24 @@ jobs:
           path: target/cucumber/allure-results/
           if-no-files-found: ignore
           retention-days: 1
+      - name: Upload Cluecumber Report
+        id: upload-cluecumber-report
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: chrome-cluecumber-report
+          path: target/cucumber/cluecumber-report/
+          if-no-files-found: ignore
+          retention-days: 1
+      - name: Upload Cucumber HTML Report
+        id: upload-cucumber-html-report
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: chrome-cucumber-html-report
+          path: target/cucumber/cucumber-html-reports/
+          if-no-files-found: ignore
+          retention-days: 1
 
   firefox-tests:
     name: Firefox Sanity Check
@@ -108,6 +126,24 @@ jobs:
         with:
           name: firefox-allure-results
           path: target/cucumber/allure-results/
+          if-no-files-found: ignore
+          retention-days: 1
+      - name: Upload Cluecumber Report
+        id: upload-cluecumber-report
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: firefox-cluecumber-report
+          path: target/cucumber/cluecumber-report/
+          if-no-files-found: ignore
+          retention-days: 1
+      - name: Upload Cucumber HTML Report
+        id: upload-cucumber-html-report
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: firefox-cucumber-html-report
+          path: target/cucumber/cucumber-html-reports/
           if-no-files-found: ignore
           retention-days: 1
 
@@ -161,7 +197,11 @@ jobs:
         id: move-to-reports-folder
         run: |
           mv chrome-allure-report reports/chrome-allure-report
+          mv chrome-cluecumber-report reports/chrome-cluecumber-report
+          mv chrome-cucumber-html-report reports/chrome-cucumber-html-report
           mv firefox-allure-report reports/firefox-allure-report
+          mv firefox-cluecumber-report reports/firefox-cluecumber-report
+          mv firefox-cucumber-html-report reports/firefox-cucumber-html-report
         shell: bash
       - name: Setup Pages
         id: setup-pages
