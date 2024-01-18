@@ -18,6 +18,7 @@ import java.io.File;
 import java.io.OutputStream;
 import java.io.PrintStream;
 import java.math.BigInteger;
+import java.net.URI;
 import java.text.SimpleDateFormat;
 import java.util.Map;
 
@@ -87,13 +88,19 @@ public abstract class BaseRestClient {
 	/**
 	 * Set Base URI to default request specification.
 	 *
-	 * @param baseUri base URI
+	 * @param baseUrl base URL
 	 */
-	private void setBaseUri(final String baseUri) {
+	private void setBaseUri(final String baseUrl) {
+		final URI baseUri = URI.create(baseUrl);
 		getDefaultRequestSpecBuilder().setBaseUri(baseUri);
-		// If localhost is used for baseUri RestAssured sets port to 8080, in that case port 80 must be set explicitly
-		if (baseUri.equals("http://localhost/") || baseUri.equals("http://localhost")) {
+		// In case host is "localhost" without set port, Rest Assured will use port "8080" by default.
+		// Code bellow will override that behaviour and in case host is "localhost" and port is not set, it will set port to "80" explicitly
+		final String host = baseUri.getHost();
+		final int port = baseUri.getPort(); // if port is not set this value will be -1
+		if (host.equalsIgnoreCase("localhost") && port == -1) {
 			getDefaultRequestSpecBuilder().setPort(80);
+		} else if (port != -1) {
+			getDefaultRequestSpecBuilder().setPort(port);
 		}
 	}
 
