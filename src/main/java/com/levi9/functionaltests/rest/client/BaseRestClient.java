@@ -91,6 +91,10 @@ public abstract class BaseRestClient {
 	 */
 	private void setBaseUri(final String baseUri) {
 		getDefaultRequestSpecBuilder().setBaseUri(baseUri);
+		// If localhost is used for baseUri RestAssured sets port to 8080, in that case port 80 must be set explicitly
+		if (baseUri.equals("http://localhost/") || baseUri.equals("http://localhost")) {
+			getDefaultRequestSpecBuilder().setPort(80);
+		}
 	}
 
 	private void configSetup() {

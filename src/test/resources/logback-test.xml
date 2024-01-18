@@ -22,7 +22,7 @@
 		</encoder>
 	</appender>
 
-	<logger name="com.levi9.functionaltests.rest.client" level="debug" additivity="false">
+	<logger name="com.levi9.functionaltests.rest.client" level="info" additivity="false">
 		<appender-ref ref="STDOUT"/>
 		<appender-ref ref="FILE_APPENDER"/>
 	</logger>
