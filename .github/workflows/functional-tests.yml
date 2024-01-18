@@ -144,8 +144,8 @@ jobs:
       - name: Move to Reports folder
         id: move-to-reports-folder
         run: |
-          mv chrome-allure-results reports/chrome-allure-results
-          mv firefox-allure-results reports/firefox-allure-results
+          mv chrome-allure-report reports/chrome-allure-report
+          mv firefox-allure-report reports/firefox-allure-report
         shell: bash
       - name: Setup Pages
         id: setup-pages
