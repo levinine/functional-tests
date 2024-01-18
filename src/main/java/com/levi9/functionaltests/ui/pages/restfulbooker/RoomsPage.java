@@ -143,7 +143,8 @@ public class RoomsPage extends BasePage<RoomsPage> {
 		}
 		selectAmenities(roomAmenities);
 		waitAndClick(createRoomButton);
-
+		log.info("Create Room with: Name={}; Price={}; Type={}; Accessible={}; Features={}", roomName, roomPrice, roomType, accessible,
+			roomAmenities.getRoomDetailsFromAmenities());
 	}
 
 	/**

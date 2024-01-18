@@ -79,20 +79,24 @@ public class ContactStepdef {
 		assertThat(frontPage.isContactSuccessfulConfirmationDisplayed()).as("Contact Successful Confirmation Message is not displayed!").isTrue();
 		assertThat(frontPage.getContactSuccessfulHeaderText()).as("Contact Successful HeaderPage Text is wrong!")
 			.isEqualTo("Thanks for getting in touch " + fullName + "!");
+		log.info("Contact Successful Confirmation Message is displayed with correct name '{}' in header", fullName);
+
 	}
 
 	@Then("Visitor {string} will get Thanks for getting in touch message regarding subject {string}")
-	public void assertMessageSubject(final String fullName, final String subject) {
+	public void assertMessageSubject(final String name, final String subject) {
 		assertSoftly(softly -> {
 			softly.assertThat(frontPage.getContactSuccessfulHeaderText()).as("Contact Successful HeaderPage Text is wrong!")
-				.isEqualTo("Thanks for getting in touch " + fullName + "!");
+				.isEqualTo("Thanks for getting in touch " + name + "!");
 			softly.assertThat(frontPage.getContactSuccessfulSubjectText()).as("Contact Successful Subject Text is wrong!").isEqualTo(subject);
 		});
+		log.info("Contact Successful Confirmation Message is displayed with correct name '{}' and subject '{}'", name, subject);
 	}
 
 	@Then("Visitor will get Contact Validation/Mandatory Error Message: {string}")
 	public void assertContactErrorMessages(final String message) {
 		assertThat(frontPage.areContactErrorMessagesDisplayed()).as("Contact Error Messages are not displayed!").isTrue();
 		assertThat(frontPage.getContactErrorMessages()).as("Wrong Contact Error Message is displayed!").contains(message);
+		log.info("Contact Validation / Mandatory Error Message '{}' is displayed", message);
 	}
 }

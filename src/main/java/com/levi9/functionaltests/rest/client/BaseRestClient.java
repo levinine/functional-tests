@@ -67,9 +67,9 @@ public abstract class BaseRestClient {
 	@Getter(AccessLevel.PRIVATE)
 	private final ErrorLoggingFilter errorLoggingFilter = new ErrorLoggingFilter(getLogPrintStream());
 	@Getter(AccessLevel.PRIVATE)
-	private final RequestLoggingFilter requestLoggingFilter = new RequestLoggingFilter(LogDetail.ALL, getLogPrintStream());
+	private final RequestLoggingFilter requestLoggingFilter = new RequestLoggingFilter(LogDetail.ALL, true, getLogPrintStream());
 	@Getter(AccessLevel.PRIVATE)
-	private final ResponseLoggingFilter responseLoggingFilter = new ResponseLoggingFilter(LogDetail.ALL, getLogPrintStream());
+	private final ResponseLoggingFilter responseLoggingFilter = new ResponseLoggingFilter(LogDetail.ALL, true, getLogPrintStream());
 
 	/**
 	 * Default Request Specification will be used in all REST calls of specified client.

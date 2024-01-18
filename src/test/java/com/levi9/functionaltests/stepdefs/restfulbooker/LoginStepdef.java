@@ -41,6 +41,7 @@ public class LoginStepdef {
 		adminPage.load();
 		bannerPage.closeBanner();
 		assertThat(adminPage.isLoaded()).as("User is not on the Booking Management Login Page!").isTrue();
+		log.info("User is on B&B Booking Management Admin Login Page");
 	}
 
 	@Given("User is logged via Booking Management Login Page as Administrator")
@@ -78,26 +79,32 @@ public class LoginStepdef {
 	@Then("User is Logged In")
 	public void assertUserIsLoggedInSuccessfully() {
 		assertThat(headerPage.isLogoutLinkVisible()).as("User is not logged in!").isTrue();
+		log.info("User is logged in successfully");
 	}
 
 	@Then("User is redirected to Rooms Management Page")
 	public void assertUserIsRedirectedToRoomsManagementPage() {
 		assertThat(roomsPage.isLoaded()).as("User is not redirected to Rooms Management Page!").isTrue();
+		log.info("User is redirected to Rooms Management Page");
 	}
 
 	@Then("User is still on Booking Management Login Page")
 	public void assertUserIsStillOnBookingManagementLoginPage() {
 		assertThat(adminPage.isLoaded()).as("User is not anymore on Booking Management Login Page!").isTrue();
+		log.info("User is still on B&B Booking Management Admin Login Page and not redirected to Rooms Management Page");
 	}
 
 	@Then("Username field will have red border")
 	public void assertUsernameFieldHasRedBorder() {
 		assertThat(adminPage.usernameFieldHasRedBorder()).as("Username field does not have red border!").isTrue();
+		log.info("Username field has red border");
 	}
 
 	@Then("Password field will have red border")
 	public void assertPasswordFieldHasRedBorder() {
 		assertThat(adminPage.passwordFieldHasRedBorder()).as("Password field does not have red border!").isTrue();
+		log.info("Password field has red border");
+
 	}
 
 	@Then("Both Username and Passwords fields will have red border")

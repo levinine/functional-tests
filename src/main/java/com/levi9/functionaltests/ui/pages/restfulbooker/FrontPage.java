@@ -90,6 +90,7 @@ public class FrontPage extends BasePage<FrontPage> {
 			waitAndSendKeys(contactDescriptionField, description);
 		}
 		waitAndClick(contactSubmitButton);
+		log.info("Send Message to Hotel with: Name={};Email={};Phone={};Subject={};Message={}", name, email, phone, subject, description);
 	}
 
 	/**
@@ -100,8 +101,7 @@ public class FrontPage extends BasePage<FrontPage> {
 	 * @return {@link WebElement}
 	 */
 	private WebElement getBookingRoomElement(final String roomName) {
-		final By bookingRoom = By.xpath(
-			"//div[contains(@class, 'room-header')]/following-sibling::div[.//img[contains(@alt," + roomName + ")]][last()]");
+		final By bookingRoom = By.xpath("//div[contains(@class, 'room-header')]/following-sibling::div[.//img[contains(@alt," + roomName + ")]][last()]");
 		return waitAndGetWebElement(bookingRoom);
 	}
 
@@ -167,6 +167,7 @@ public class FrontPage extends BasePage<FrontPage> {
 		fillBookingFields(roomName, firstName, lastName, email, phoneNumber);
 		selectBookingDates(roomName);
 		clickOnBookButton(roomName);
+		log.info("Book Room '{}' with booking dates for '{} {}' with email {} and phone number {}", roomName, firstName, lastName, email, phoneNumber);
 	}
 
 	/**
@@ -182,6 +183,8 @@ public class FrontPage extends BasePage<FrontPage> {
 		clickBookThsRoomButton(roomName);
 		fillBookingFields(roomName, firstName, lastName, email, phoneNumber);
 		clickOnBookButton(roomName);
+		log.info("Book Room '{}' without booking dates for '{} {}' with email {} and phone number {}", roomName, firstName, lastName, email, phoneNumber);
+
 	}
 
 	/**

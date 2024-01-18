@@ -37,6 +37,7 @@ public class BannerPage extends BasePage<AdminPage> {
 	public void closeBanner() {
 		if (isLoaded()) {
 			waitAndClick(letMeHackButton);
+			log.info("Banner is closed");
 		}
 	}
 }

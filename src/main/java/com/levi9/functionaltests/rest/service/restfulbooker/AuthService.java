@@ -48,6 +48,7 @@ public class AuthService {
 			throw new FunctionalTestsException("User is not logged in. Expected {}, but actual {}. Response message: {}", HttpStatus.SC_OK,
 				response.statusCode(), response.getBody().prettyPrint());
 		}
+		log.info("Login via API with username: '{}' and password: '{}'", username, password);
 
 	}
 }

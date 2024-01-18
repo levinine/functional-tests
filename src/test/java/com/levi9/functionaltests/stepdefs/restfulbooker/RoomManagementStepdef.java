@@ -42,6 +42,7 @@ public class RoomManagementStepdef {
 		roomsPage.load();
 		bannerPage.closeBanner();
 		assertThat(roomsPage.isLoaded()).as("User is not on the Booking Management Login Page!").isTrue();
+		log.info("User is on Room Management Page");
 	}
 
 	@Given("User has created {roomType} type {accessible} room {string} priced at {int} GBP with {string}")
@@ -66,6 +67,9 @@ public class RoomManagementStepdef {
 			softly.assertThat(roomsPage.getActualRoomPrice(roomName)).as("Room Price is wrong!").isEqualTo(Integer.toString(roomPrice));
 			softly.assertThat(roomsPage.getActualRoomDetails(roomName)).as("Room Details are wrong!").isEqualTo(roomAmenities.getRoomDetailsFromAmenities());
 		});
+
+		log.info("New {} type {} room {} priced at {} GBP with {} is created", roomType, accessible ? "accessible" : "not accessible", roomName, roomPrice,
+			features);
 
 		final RoomEntity roomEntity = RoomEntity.builder()
 			.roomName(roomName)
@@ -98,5 +102,6 @@ public class RoomManagementStepdef {
 	@Then("User will get validation/mandatory error message: {string}")
 	public void assertValidationOrMandatoryErrorMessage(final String message) {
 		assertThat(roomsPage.getValidationOrMandatoryErrorMessages()).as("Message '" + message + "' is not displayed!").contains(message);
+		log.info("Room Creation Validation / Mandatory Error Message '{}' is displayed", message);
 	}
 }

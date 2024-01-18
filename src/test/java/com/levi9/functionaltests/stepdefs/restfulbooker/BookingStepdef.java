@@ -30,6 +30,7 @@ public class BookingStepdef {
 		frontPage.load();
 		bannerPage.closeBanner();
 		assertThat(frontPage.isLoaded()).as("Visitor is not on the Front Page!").isTrue();
+		log.info("Front Page is loaded");
 	}
 
 	@When("Visitor {string} {string} with an (invalid )email {string} and phone number {string} tries to book a room {string}")
@@ -87,12 +88,14 @@ public class BookingStepdef {
 	@Then("Visitor will get Booking Successful! Message")
 	public void assertBookingSuccessful() {
 		assertThat(frontPage.isBookingSuccessfulConfirmationDisplayed()).as("Booking Successful Confirmation Modal is not displayed!").isTrue();
+		log.info("Booking Successful! Message is displayed");
 	}
 
 	@Then("Visitor will get Booking Validation/Mandatory Error Message: {string}")
 	public void assertBookingErrorMessages(final String message) {
 		assertThat(frontPage.areBookingErrorMessagesDisplayed()).as("Booking Error Messages are not displayed!").isTrue();
 		assertThat(frontPage.getBookingErrorMessages()).as("Wrong Booking Error Message is displayed!").contains(message);
+		log.info("Booking Validation / Mandatory Error Message '{}' is displayed", message);
 	}
 
 }

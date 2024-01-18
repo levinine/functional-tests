@@ -53,6 +53,7 @@ public class AdminPage extends BasePage<AdminPage> {
 		waitAndSendKeys(usernameField, username);
 		waitAndSendKeys(passwordField, password);
 		waitAndClick(loginButton);
+		log.info("Login via UI using username: '{}' and password '{}'", username, password);
 	}
 
 	/**
