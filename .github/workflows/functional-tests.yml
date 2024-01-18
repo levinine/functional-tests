@@ -134,6 +134,22 @@ jobs:
       - name: Download Artifacts
         id: download-artifacts
         uses: actions/download-artifact@v4
+      - name: Fetch Chrome Allure History
+        id: chrome-allure-history
+        run: |
+          curl --create-dirs -o ./chrome-allure-results/history/categories-trend.json https://levinine.github.io/functional-tests/chrome-allure-report/history/categories-trend.json
+          curl --create-dirs -o ./chrome-allure-results/history/duration-trend.json https://levinine.github.io/functional-tests/chrome-allure-report/history/duration-trend.json
+          curl --create-dirs -o ./chrome-allure-results/history/history-trend.json https://levinine.github.io/functional-tests/chrome-allure-report/history/history-trend.json
+          curl --create-dirs -o ./chrome-allure-results/history/history.json https://levinine.github.io/functional-tests/chrome-allure-report/history/history.json
+          curl --create-dirs -o ./chrome-allure-results/history/retry-trend.json https://levinine.github.io/functional-tests/chrome-allure-report/history/retry-trend.json
+      - name: Fetch Firefox Allure History
+        id: chrome-firefox-history
+        run: |
+          curl --create-dirs -o ./firefox-allure-results/history/categories-trend.json https://levinine.github.io/functional-tests/firefox-allure-report/history/categories-trend.json
+          curl --create-dirs -o ./firefox-allure-results/history/duration-trend.json https://levinine.github.io/functional-tests/firefox-allure-report/history/duration-trend.json
+          curl --create-dirs -o ./firefox-allure-results/history/history-trend.json https://levinine.github.io/functional-tests/firefox-allure-report/history/history-trend.json
+          curl --create-dirs -o ./firefox-allure-results/history/history.json https://levinine.github.io/functional-tests/firefox-allure-report/history/history.json
+          curl --create-dirs -o ./firefox-allure-results/history/retry-trend.json https://levinine.github.io/functional-tests/firefox-allure-report/history/retry-trend.json
       - name: Generate Allure Report
         id: generate-allure-report
         run: |
