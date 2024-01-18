@@ -1,4 +1,4 @@
-name: Sanity Check
+name: Functional Tests
 
 on:
   workflow_dispatch:
