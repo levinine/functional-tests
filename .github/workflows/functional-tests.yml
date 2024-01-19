@@ -129,6 +129,15 @@ jobs:
           path: target/cucumber/cucumber-html-reports/
           if-no-files-found: ignore
           retention-days: 1
+      - name: Upload Chrome Tests Logs
+        id: upload-test-logs
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: chrome-tests-logs
+          path: logs/
+          if-no-files-found: ignore
+          retention-days: 1
 
   firefox-tests:
     name: Firefox Sanity Check
@@ -212,6 +221,15 @@ jobs:
         with:
           name: firefox-cucumber-html-report
           path: target/cucumber/cucumber-html-reports/
+          if-no-files-found: ignore
+          retention-days: 1
+      - name: Upload Firefox Tests Logs
+        id: upload-test-logs
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: firefox-tests-logs
+          path: logs/
           if-no-files-found: ignore
           retention-days: 1
 
