@@ -60,7 +60,7 @@
 		<apache.commons-io.version>2.15.1</apache.commons-io.version>
 		<apache.pdfbox.version>3.0.1</apache.pdfbox.version>
 		<jackson.version>2.16.1</jackson.version>
-		<allure.version>2.24.0</allure.version>
+		<allure.version>2.25.0</allure.version>
 
 		<!-- Maven Plugins Versions -->
 		<maven.compiler.version>3.12.1</maven.compiler.version>
