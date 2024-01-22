@@ -60,11 +60,11 @@
 		<apache.commons-io.version>2.15.1</apache.commons-io.version>
 		<apache.pdfbox.version>3.0.1</apache.pdfbox.version>
 		<jackson.version>2.16.1</jackson.version>
-		<allure.version>2.24.0</allure.version>
+		<allure.version>2.25.0</allure.version>
 
 		<!-- Maven Plugins Versions -->
 		<maven.compiler.version>3.12.1</maven.compiler.version>
-		<maven.failsafe.plugin.version>3.2.3</maven.failsafe.plugin.version>
+		<maven.failsafe.plugin.version>3.2.5</maven.failsafe.plugin.version>
 		<cucable.version>1.11.0</cucable.version>
 		<maven-cucumber-reporting.version>5.7.8</maven-cucumber-reporting.version>
 		<maven.build.helper.plugin.version>3.5.0</maven.build.helper.plugin.version>
