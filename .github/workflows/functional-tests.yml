@@ -240,6 +240,7 @@ jobs:
     needs: [ chrome-tests, firefox-tests ]
     timeout-minutes: 30
     permissions:
+      actions: write
       contents: read
       pages: write
       id-token: write
@@ -300,3 +301,12 @@ jobs:
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
+      - name: Delete Unnecessary Artifacts
+        id: delete-unnecessary-artifacts
+        uses: geekyeggo/delete-artifact@v4
+        with:
+          name: |
+            *-allure-results
+            *-cluecumber-report
+            *-cucumber-html-report
+          failOnError: false
