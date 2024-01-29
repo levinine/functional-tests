@@ -117,14 +117,14 @@ public class BaseDriver {
 		final var browserOptions = getBrowserOptions(browser);
 		final String browserName = browserOptions.getBrowserName().toUpperCase();
 		if (isRemote()) {
-			log.info("Using Remote Webdriver with URL: {}", getRemoteUrl());
+			log.info("Using Remote WebDriver with URL: {}", getRemoteUrl());
 			try {
 				final RemoteWebDriver remoteDriver = new RemoteWebDriver(URI.create(getRemoteUrl()).toURL(), browserOptions);
 				remoteDriver.setFileDetector(new LocalFileDetector());
 				log.info("Initializing remote WebDriver with url {} and with browser {} ", getRemoteUrl(), browserName);
 				threadLocalDriver.set(new EventFiringDecorator(getEventListener()).decorate(remoteDriver));
 			} catch (final MalformedURLException e) {
-				final String msg = "Error while initializing remote webdriver with url: " + getRemoteUrl().toUpperCase();
+				final String msg = "Error while initializing Remote WebDriver with url: " + getRemoteUrl().toUpperCase();
 				log.error(msg, e);
 				throw new FunctionalTestsException(msg, e);
 			}

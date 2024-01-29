@@ -304,9 +304,9 @@
 					<!-- How many times to retry failing test -->
 					<rerunFailingTestsCount>2</rerunFailingTestsCount>
 					<!-- Run all tests regardless of their result, otherwise the plugin execution will stop on failing tests -->
-					<!-- ! However with this, the build will not fail in case of failing tests! -->
+					<!-- ! However, with this, the build will not fail in case of failing tests ! -->
 					<testFailureIgnore>true</testFailureIgnore>
-					<!-- If there are not tests executed do not fail build -->
+					<!-- If there are no tests executed do not fail build -->
 					<failIfNoSpecifiedTests>false</failIfNoSpecifiedTests>
 					<!-- Use existing processes or create new ones -->
 					<reuseForks>true</reuseForks>
