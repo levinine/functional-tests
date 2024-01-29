@@ -20,7 +20,7 @@ import lombok.extern.slf4j.Slf4j;
 /**
  * @author Milos Pujic (m.pujic@levi9.com)
  */
-@SuppressWarnings({ "java:S6832", "unused" })
+@SuppressWarnings({ "java:S6832", "unused", "unchecked" })
 @Slf4j
 @Getter
 public abstract class BasePage<T> {
