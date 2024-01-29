@@ -3,7 +3,7 @@
 ## Used Technologies
 
 - [Java](https://www.java.com/)
-- [JUnit 5](https://junit.org/junit5/)
+- [JUnit 4](https://junit.org/junit4/)
 - [AssertJ](http://joel-costigliola.github.io/assertj/)
 - [Cucumber](https://docs.cucumber.io/)
 - [Project Lombok](https://projectlombok.org/)
