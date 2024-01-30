@@ -12,9 +12,76 @@
 - [Selenium](https://www.seleniumhq.org/)
 - [Logback](https://logback.qos.ch/)
 
+## Local Development Setup
+
+### Download and install
+
+- [Java 21+](http://www.oracle.com/technetwork/java/javase/downloads/index.html) and installed as
+  described [here](https://docs.oracle.com/en/java/javase/21/install/overview-jdk-installation.html)
+- [Maven 3.9+](https://maven.apache.org/download.cgi) and installed as described [here](https://maven.apache.org/install.html)
+- IDE of choice, [IntelliJ IDEA](https://www.jetbrains.com/idea/download) or [Eclipse](https://www.eclipse.org/downloads/)
+- [Lombok](https://projectlombok.org/download) and configured on chosen IDE, [IntelliJ IDEA](https://projectlombok.org/setup/intellij)
+  or [Eclipse](https://projectlombok.org/setup/eclipse)
+- Cucumber plug-ins for chosen IDE, [IntelliJ IDEA Cucumber for Java plug-in](https://plugins.jetbrains.com/plugin/7212-cucumber-for-java)
+  or [Cucumber Eclipse plug-in](https://cucumber.github.io/cucumber-eclipse/)
+    - More information about Cucumber Plug-ins usage
+        - [IntelliJ IDEA Cucumber for Java plug-in](https://www.jetbrains.com/help/idea/cucumber-support.html)
+        - [Cucumber Eclipse plug-in](https://github.com/cucumber/cucumber-eclipse/blob/master/README.md)
+- [IntelliJ IDEA Save Actions plug-in](https://plugins.jetbrains.com/plugin/22113-save-actions--xdev-edition) to apply code formatting on save
+  action (this is not needed for Eclipse as it comes built-in)
+- SonarLint plug-in for chosen IDE [IntelliJ IDEA SonarLint plug-in](https://plugins.jetbrains.com/plugin/7973-sonarlint)
+  or [Eclipse SonarLint plug-in](https://marketplace.eclipse.org/content/sonarlint)
+
+## Local Environment Setup
+
+### Docker (Docker for Desktop / Minikube)
+
+> Before you proceed, you should install Docker Desktop depending on your OS and start it:
+>
+>- [Docker Desktop for Windows](https://docs.docker.com/desktop/install/windows-install/)
+>- [Docker Desktop for Mac](https://docs.docker.com/desktop/install/mac-install/)
+>
+>As Docker for Desktop is **paid** software now, instead of it you can setup and start minikube using bellow guides:
+>
+>- [Minikube Setup for Windows](/docs/minikube-setup-windows.md)
+>- [Minikube Setup for Mac](/docs/minikube-setup-mac.md)
+
+After Docker has been installed on your machine, open the terminal inside `<local_path>\functional-tests` and use the following command:
+
+    docker compose -f ./docker-compose-restful-booker.yml up -d 
+
+That will start Restful Booker Platform locally.
+
+After everything is up and running you will have Restful Booker Platform available at:
+
+- Docker for Desktop: `http://localhost`
+- minikube: `http://kube.local`
+
+## Kubernetes (Minikube)
+
+> Before you proceed, you should set up and start minikube using bellow guides:
+>
+>- [Minikube Setup for Windows](/docs/minikube-setup-windows.md)
+>- [Minikube Setup for Mac](/docs/minikube-setup-mac.md)
+
+After minikube has been properly installed and started on your machine, open the terminal inside `<local_path>\functional-tests` and use the
+following command:
+
+    kubectl apply -f .kube/restful-booker-platform.yml 
+
+That will start Restful Booker Platform locally.
+
+After everything is up and running you will have Restful Booker Platform available at `http://kube.local`.
+
 ## Project usage
 
-Project is executed by running command in project folder:
+Install all dependencies:
+
+```console
+mvn clean install -DskipTests -DskipReports
+```
+
+Tests are executed by running `verify` command in project folder:
 
 ```console 
 mvn clean verify
@@ -22,7 +89,7 @@ mvn clean verify
 
 Additional parameters:
 
-- `-Denv` - Environment on which to execute tests i.e ```-Denv=test```, if not specified `development` will be used.
+- `-Denv` - Environment on which to execute tests i.e ```-Denv=local```, if not specified `development` will be used.
 - `-Dtags` - Scenario tags to execute or not to execute. If not specified sanity tests will be executed excluding skipped scenarios and scenarios with
   known bugs, i.e. ```(@sanity) and (not @skip or not @bug)```. Tag expression is an infix boolean expression, and there can be one or multiple tags,
   some examples:
@@ -47,53 +114,6 @@ with Chrome browser running in headless mode and not using remote Selenium Grid,
 ```console 
 mvn clean verify -Dtags='(@ui or @api) and (not @skip and not @bug)' -DparallelCount=5 -Denv=development -Dbrowser=chrome -Dheadless -Dremote=false
 ```
-
-## Local Development Setup
-
-### Download and install
-
-- [Java 21+](http://www.oracle.com/technetwork/java/javase/downloads/index.html) and installed as
-  described [here](https://docs.oracle.com/en/java/javase/21/install/overview-jdk-installation.html)
-- [Maven 3.9+](https://maven.apache.org/download.cgi) and installed as described [here](https://maven.apache.org/install.html)
-- IDE of choice, [IntelliJ IDEA](https://www.jetbrains.com/idea/download) or [Eclipse](https://www.eclipse.org/downloads/)
-- [Lombok](https://projectlombok.org/download) and configured on chosen IDE, [IntelliJ IDEA](https://projectlombok.org/setup/intellij)
-  or [Eclipse](https://projectlombok.org/setup/eclipse)
-- Cucumber plug-ins for chosen IDE, [IntelliJ IDEA Cucumber for Java plug-in](https://plugins.jetbrains.com/plugin/7212-cucumber-for-java)
-  or [Cucumber Eclipse plug-in](https://cucumber.github.io/cucumber-eclipse/)
-    - More information about Cucumber Plug-ins usage
-        - [IntelliJ IDEA Cucumber for Java plug-in](https://www.jetbrains.com/help/idea/cucumber-support.html)
-        - [Cucumber Eclipse plug-in](https://github.com/cucumber/cucumber-eclipse/blob/master/README.md)
-- [IntelliJ IDEA Save Actions plug-in](https://plugins.jetbrains.com/plugin/22113-save-actions--xdev-edition) to apply code formatting on save
-  action (this is not needed for Eclipse as it comes built-in)
-- SonarLint plug-in for chosen IDE [IntelliJ IDEA SonarLint plug-in](https://plugins.jetbrains.com/plugin/7973-sonarlint)
-  or [Eclipse SonarLint plug-in](https://marketplace.eclipse.org/content/sonarlint)
-
-### Maven Settings
-
-		<?xml version="1.0" encoding="UTF-8"?>
-		<settings xmlns="http://maven.apache.org/SETTINGS/1.0.0"
-                  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-                  xsi:schemaLocation="http://maven.apache.org/SETTINGS/1.0.0 http://maven.apache.org/xsd/settings-1.0.0.xsd">
-
-			    <profiles>
-                    <profile>
-                        <id>alwaysActiveProfile</id>
-                        <repositories>
-                            <repository>
-                                <id>spring-milestones</id>
-                                <name>Spring Milestones</name>
-                                <url>http://repo.spring.io/milestone</url>
-                                <snapshots>
-                                    <enabled>false</enabled>
-                                </snapshots>
-                            </repository>
-                        </repositories>
-                    </profile>
-                </profiles>
-		    <activeProfiles>
-                <activeProfile>alwaysActiveProfile</activeProfile>
-            </activeProfiles>
-        </settings>
 
 ## Codding standards and rules
 

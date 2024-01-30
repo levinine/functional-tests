@@ -114,7 +114,7 @@ jobs:
           chrome-version: latest
       - name: Run Chrome Tests
         id: run-chrome-tests
-        run: mvn clean verify -Dtags='(@sanity) and (not @bug and not @skip)' -DparallelCount=3 -Denv=github -Dbrowser=chrome -Dheadless -Dremote=false
+        run: mvn clean verify -Dtags='(@sanity) and (not @bug and not @skip)' -DparallelCount=3 -Denv=local -Dbrowser=chrome -Dheadless -Dremote=false
       - name: Upload Cucumber HTML Report
         id: upload-cucumber-html-report
         uses: actions/upload-artifact@v4
@@ -199,7 +199,7 @@ jobs:
           firefox-version: latest
       - name: Run Firefox Tests
         id: run-firefox-tests
-        run: mvn clean verify -Dtags='(@sanity) and (not @bug and not @skip)' -DparallelCount=3 -Denv=github -Dbrowser=firefox -Dheadless -Dremote=false
+        run: mvn clean verify -Dtags='(@sanity) and (not @bug and not @skip)' -DparallelCount=3 -Denv=local -Dbrowser=firefox -Dheadless -Dremote=false
       - name: Upload Cucumber HTML Report
         id: upload-cucumber-html-report
         uses: actions/upload-artifact@v4

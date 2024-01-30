@@ -195,7 +195,7 @@ jobs:
           firefox-version: latest
       - name: Run Firefox Tests
         id: run-firefox-tests
-        run: mvn clean verify -Dtags='(not @bug and not @skip)' -DparallelCount=3 -Denv=github -Dbrowser=firefox -Dheadless -Dremote=false
+        run: mvn clean verify -Dtags='(not @bug and not @skip)' -DparallelCount=3 -Denv=local -Dbrowser=firefox -Dheadless -Dremote=false
       - name: Upload Allure Results
         id: upload-allure-results
         uses: actions/upload-artifact@v4
