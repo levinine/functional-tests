@@ -41,7 +41,7 @@
 >- [Docker Desktop for Windows](https://docs.docker.com/desktop/install/windows-install/)
 >- [Docker Desktop for Mac](https://docs.docker.com/desktop/install/mac-install/)
 >
->As Docker for Desktop is **paid** software now, instead of it you can setup and start minikube using bellow guides:
+>As Docker for Desktop is **paid** software now, instead of it you can set up and start minikube using bellow guides:
 >
 >- [Minikube Setup for Windows](/docs/minikube-setup-windows.md)
 >- [Minikube Setup for Mac](/docs/minikube-setup-mac.md)
@@ -254,3 +254,65 @@ Also make sure that there are no **and** conjunctions in sentences. If there is,
     - [Optional text](https://github.com/cucumber/cucumber-expressions#optional-text)
     - [Alternative text](https://github.com/cucumber/cucumber-expressions#alternative-text)
     - [Escaping](https://github.com/cucumber/cucumber-expressions#escaping)
+
+## Execute Functional Tests using GitHub Actions Workflows on GitHub
+
+All GitHub Actions Workflows are configured in [**GitHub Folder**](/.github/workflows) yaml files.
+
+They all can be found by navigating to [GitHub Repository > Actions](https://github.com/levinine/functional-tests/actions).
+
+![GitHub Actions Workflows](/docs/imgs/GitHub-Actions.png)
+
+There are 2 GitHub Actions Workflows setup for Functional Tests repository:
+
+- [Functional Tests](https://github.com/levinine/functional-tests/actions/workflows/functional-tests.yml)
+- [Sanity Check](https://github.com/levinine/functional-tests/actions/workflows/sanity-check.yml)
+
+### Functional Tests
+
+This GitHub Action Workflow Executes All Functional Tests on `local` environment using `chrome` and `firefox` browsers from defined
+branch (by default it is `main`).
+Environment `local` means that, Restful Booker Platform will be started inside GitHub Services and tests will run against it.
+
+GitHub Action Workflow configuration file of this workflow is [functional-tests.yml](/.github/workflows/functional-tests.yml).
+
+This workflow is only triggered Manually. Steps to trigger it:
+
+1. Open [Functional Tests](https://github.com/levinine/functional-tests/actions/workflows/functional-tests.yml)
+2. Click on `Run workflow` button
+    - (which opens sub-modal where `Branch` can be selected, `main` selected by default)
+3. Select `Branch`
+4. Click on `Run workflow` button
+
+![Functional Tests](/docs/imgs/Functional-Tests.png)
+
+Also, on [Functional Tests](https://github.com/levinine/functional-tests/actions/workflows/functional-tests.yml) page, status of all ongoing and
+previously executed 'Functional Tests' Workflow runs can be found.
+
+Latest Test reports, with trends history, Functional Tests GitHub Action Workflow can be
+found [here](https://levinine.github.io/functional-tests/).
+
+![Functional Tests Reports](/docs/imgs/Functional-Tests-Reports.png)
+
+There are 3 types of reports:
+
+1. Allure Report, with trend history
+2. Latest Cluecumber Report, without trend history
+3. Latest Cucumber Report, without trend history
+
+### Sanity Check
+
+This GitHub Action Workflow Executes `@sanity` tagged tests of Functional Tests on `local` environment using `chrome` and `firefox`.
+browsers from `main` or Pull Request source branch.
+
+GitHub Action Workflow configuration file of this workflow is [sanity-check.yml](/.github/workflows/sanity-check.yml).
+
+This workflow is only triggered automatically on specific events:
+
+- Merge Events on `main` branch
+- Create / Update GitHub Pull Request Events
+
+Also, on [Sanity Check](https://github.com/levinine/functional-tests/actions/workflows/sanity-check.yml) page, status of all ongoing and
+previously executed 'Sanity Check' Workflow runs can be found.
+
+This workflow doesn't produce reports like Functional Tests Workflow, and its status and results can be checked inside GitHub Action Job Summary.
