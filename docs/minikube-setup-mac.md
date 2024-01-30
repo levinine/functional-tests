@@ -131,7 +131,7 @@ When you finish testing / using minikube for the day, do not forget to stop it t
 
     minikube stop
 
-Next time when you start it is will be in same state as when you stopped it.
+Next time when you start it will be in same state as when you stopped it.
 
 Minikube configuration can always be checked in `~/.minikube/machines/minikube/config.json` file.
 
