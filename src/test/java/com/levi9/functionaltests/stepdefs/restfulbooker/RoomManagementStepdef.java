@@ -4,7 +4,6 @@ import static org.assertj.core.api.Assertions.*;
 import static org.assertj.core.api.SoftAssertions.assertSoftly;
 
 import com.levi9.functionaltests.rest.data.restfulbooker.RoomAmenities;
-import com.levi9.functionaltests.rest.data.restfulbooker.RoomDSO;
 import com.levi9.functionaltests.rest.data.restfulbooker.RoomType;
 import com.levi9.functionaltests.rest.service.restfulbooker.RoomService;
 import com.levi9.functionaltests.storage.Storage;
@@ -18,6 +17,7 @@ import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
 import lombok.extern.slf4j.Slf4j;
+import restfulbooker.model.room.Room;
 
 /**
  * @author Milos Pujic (m.pujic@levi9.com)
@@ -81,7 +81,7 @@ public class RoomManagementStepdef {
 			.image("https://www.mwtestconsultancy.co.uk/img/room1.jpg")
 			.build();
 
-		final RoomDSO actualRoom = roomService.getRoom(roomName);
+		final Room actualRoom = roomService.getRoom(roomName);
 		roomEntity.setRoomId(actualRoom.getRoomid());
 
 		storage.getRooms().add(roomEntity);

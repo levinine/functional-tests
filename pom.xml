@@ -262,6 +262,12 @@
 			<artifactId>allure-junit4</artifactId>
 			<scope>test</scope>
 		</dependency>
+
+		<dependency>
+			<groupId>javax.annotation</groupId>
+			<artifactId>javax.annotation-api</artifactId>
+			<version>1.3.2</version>
+		</dependency>
 	</dependencies>
 
 	<build>
@@ -273,6 +279,93 @@
 				<configuration>
 					<source>${java.version}</source>
 					<target>${java.version}</target>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.openapitools</groupId>
+				<artifactId>openapi-generator-maven-plugin</artifactId>
+				<version>7.2.0</version>
+				<executions>
+					<execution>
+						<id>generate-auth-client</id>
+						<goals>
+							<goal>generate</goal>
+						</goals>
+						<configuration>
+							<inputSpec>${project.basedir}/src/main/resources/openapi/restfulbooker/auth-open-api.json</inputSpec>
+							<modelPackage>restfulbooker.model.auth</modelPackage>
+						</configuration>
+					</execution>
+					<execution>
+						<id>generate-room-client</id>
+						<goals>
+							<goal>generate</goal>
+						</goals>
+						<configuration>
+							<inputSpec>${project.basedir}/src/main/resources/openapi/restfulbooker/room-open-api.json</inputSpec>
+							<modelPackage>restfulbooker.model.room</modelPackage>
+						</configuration>
+					</execution>
+					<execution>
+						<id>generate-report-client</id>
+						<goals>
+							<goal>generate</goal>
+						</goals>
+						<configuration>
+							<inputSpec>${project.basedir}/src/main/resources/openapi/restfulbooker/report-open-api.json</inputSpec>
+							<modelPackage>restfulbooker.model.report</modelPackage>
+						</configuration>
+					</execution>
+					<execution>
+						<id>generate-message-client</id>
+						<goals>
+							<goal>generate</goal>
+						</goals>
+						<configuration>
+							<inputSpec>${project.basedir}/src/main/resources/openapi/restfulbooker/message-open-api.json</inputSpec>
+							<modelPackage>restfulbooker.model.message</modelPackage>
+						</configuration>
+					</execution>
+					<execution>
+						<id>generate-branding-client</id>
+						<goals>
+							<goal>generate</goal>
+						</goals>
+						<configuration>
+							<inputSpec>${project.basedir}/src/main/resources/openapi/restfulbooker/branding-open-api.json</inputSpec>
+							<modelPackage>restfulbooker.model.branding</modelPackage>
+						</configuration>
+					</execution>
+					<execution>
+						<id>generate-booking-client</id>
+						<goals>
+							<goal>generate</goal>
+						</goals>
+						<configuration>
+							<inputSpec>${project.basedir}/src/main/resources/openapi/restfulbooker/booking-open-api.json</inputSpec>
+							<modelPackage>restfulbooker.model.booking</modelPackage>
+						</configuration>
+					</execution>
+				</executions>
+				<configuration>
+					<output>${project.build.directory}/generated-sources</output>
+					<generatorName>java</generatorName>
+					<generateApis>false</generateApis>
+					<generateModels>true</generateModels>
+					<generateApiTests>false</generateApiTests>
+					<generateApiDocumentation>false</generateApiDocumentation>
+					<generateModelDocumentation>false</generateModelDocumentation>
+					<generateModelTests>false</generateModelTests>
+					<generateSupportingFiles>false</generateSupportingFiles>
+					<configOptions>
+						<library>webclient</library>
+						<dateLibrary>java8</dateLibrary>
+						<collectionType>list</collectionType>
+						<enumPropertyNaming>UPPERCASE</enumPropertyNaming>
+						<serializationLibrary>jackson</serializationLibrary>
+						<sourceFolder>generated</sourceFolder>
+						<additionalModelTypeAnnotations>@lombok.experimental.SuperBuilder</additionalModelTypeAnnotations>
+					</configOptions>
 				</configuration>
 			</plugin>
 			<plugin>

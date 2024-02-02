@@ -3,7 +3,6 @@ package com.levi9.functionaltests.rest.service.restfulbooker;
 import com.levi9.functionaltests.exceptions.FunctionalTestsException;
 import com.levi9.functionaltests.rest.client.RestfulBookerRestClient;
 import com.levi9.functionaltests.rest.data.restfulbooker.RoomAmenities;
-import com.levi9.functionaltests.rest.data.restfulbooker.RoomDSO;
 import com.levi9.functionaltests.rest.data.restfulbooker.RoomType;
 import com.levi9.functionaltests.rest.data.restfulbooker.RoomsDSO;
 import com.levi9.functionaltests.storage.Storage;
@@ -18,6 +17,7 @@ import org.springframework.stereotype.Component;
 
 import io.restassured.response.Response;
 import lombok.extern.slf4j.Slf4j;
+import restfulbooker.model.room.Room;
 
 /**
  * @author Milos Pujic (m.pujic@levi9.com)
@@ -53,9 +53,9 @@ public class RoomService {
 	public void createRoom(final String roomName, final RoomType roomType, final boolean accessible, final String roomPrice,
 		final RoomAmenities roomAmenities) {
 
-		final RoomDSO body = RoomDSO.builder()
+		final Room body = Room.builder()
 			.roomName(roomName)
-			.roomPrice(roomPrice)
+			.roomPrice(Integer.parseInt(roomPrice))
 			.type(roomType.getValue())
 			.description("Created with Java Cucumber E2E Test Automation Framework")
 			.accessible(accessible)
@@ -69,7 +69,7 @@ public class RoomService {
 				response.statusCode(), response.getBody().prettyPrint());
 		}
 
-		final RoomDSO createdRoom = response.as(RoomDSO.class);
+		final Room createdRoom = response.as(Room.class);
 		final RoomEntity roomEntity = new RoomEntity(body);
 		roomEntity.setRoomId(createdRoom.getRoomid());
 
@@ -113,10 +113,10 @@ public class RoomService {
 	 *
 	 * @param roomName {@link String}
 	 *
-	 * @return room {@link RoomDSO}
+	 * @return room {@link Room}
 	 */
-	public RoomDSO getRoom(final String roomName) {
-		final List<RoomDSO> rooms = getRooms().getRooms();
+	public Room getRoom(final String roomName) {
+		final List<Room> rooms = getRooms().getRooms();
 		return rooms.stream().filter(room -> room.getRoomName().equals(roomName))
 			.reduce((first, last) -> last)
 			.orElseThrow(() -> new FunctionalTestsException("Room not found!"));

@@ -7,6 +7,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import restfulbooker.model.booking.Booking;
 
 /**
  * @author Milos Pujic (m.pujic@levi9.com)
@@ -18,6 +19,6 @@ import lombok.Setter;
 @Builder(toBuilder = true)
 public class BookingsDSO {
 
-	private List<BookingDSO> bookings;
+	private List<Booking> bookings;
 
 }

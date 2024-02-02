@@ -2,7 +2,6 @@ package com.levi9.functionaltests.rest.service.restfulbooker;
 
 import com.levi9.functionaltests.exceptions.FunctionalTestsException;
 import com.levi9.functionaltests.rest.client.RestfulBookerRestClient;
-import com.levi9.functionaltests.rest.data.restfulbooker.LoginDSO;
 
 import org.apache.http.HttpStatus;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,6 +10,7 @@ import org.springframework.stereotype.Component;
 
 import io.restassured.response.Response;
 import lombok.extern.slf4j.Slf4j;
+import restfulbooker.model.auth.Auth;
 
 /**
  * @author Milos Pujic (m.pujic@levi9.com)
@@ -37,7 +37,7 @@ public class AuthService {
 	 */
 	public void login(final String username, final String password) {
 
-		final LoginDSO body = LoginDSO.builder()
+		final Auth body = Auth.builder()
 			.username(username)
 			.password(password)
 			.build();
