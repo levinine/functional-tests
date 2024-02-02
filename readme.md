@@ -11,6 +11,7 @@
 - [Awaitility](https://github.com/awaitility/awaitility/wiki/Usage)
 - [Selenium](https://www.seleniumhq.org/)
 - [Logback](https://logback.qos.ch/)
+- [OpenAPI](https://www.openapis.org/)
 
 ## Local Development Setup
 
@@ -31,6 +32,56 @@
   action (this is not needed for Eclipse as it comes built-in)
 - SonarLint plug-in for chosen IDE [IntelliJ IDEA SonarLint plug-in](https://plugins.jetbrains.com/plugin/7973-sonarlint)
   or [Eclipse SonarLint plug-in](https://marketplace.eclipse.org/content/sonarlint)
+
+## Project usage
+
+Install all dependencies:
+
+```console
+mvn clean install -DskipTests -DskipReports
+```
+
+Generate OpenAPI models by compiling project (even though `install` also compiles project. it will do it only if it detects changes):
+
+```console
+mvn clean compile
+```
+
+Tests are executed by running `verify` command in project folder:
+
+```console 
+mvn clean verify
+```
+
+Additional parameters:
+
+- `-Denv` - Environment on which to execute tests i.e ```-Denv=local```, if not specified `development` will be used.
+- `-Dtags` - Scenario tags to execute or not to execute. If not specified sanity tests will be executed excluding skipped scenarios and scenarios with
+  known bugs, i.e. ```(@sanity) and (not @skip or not @bug)```. Tag expression is an infix boolean expression, and there can be one or multiple tags,
+  some examples:
+    - `@sanity` - Scenarios tagged with `@sanity` will be executed
+    - `@management and not @room-management` - Scenarios tagged with `@management` that are not also tagged with `@room-management` will be executed
+    - `@management and @room-management` - Scenarios tagged with both `@management` and `@room-management` will be executed
+    - `@booking or @contact` - Scenarios tagged with either `@booking` or `@contact` will be executed
+    - `(@booking or @contact) and (not @bug)` - Scenarios tagged with either `@booking` or `@contact` that are not also tagged with `@bug` will be
+      executed
+- `-Dremote` - Defines if execution is done locally or remotely i.e. ```-Dremote=false``` execute using local browsers and drivers
+  or ```-Dremote=true``` execute remotely using Selenium Grid. If set to true, `-DremoteUrl` must be set also.
+- `-DremoteUrl` - URL of Selenium Grid which is used for remote execution of Selenium Tests.
+- `-Dbrowser` - Browser on which UI test will be used i.e. ```-Dbrowser=firefox```, if not specified `chrome` will be used. Possible values are:
+    - `chrome`
+    - `firefox`
+- `-Dheadless` - Defines if execution is done with Browsers running in headless mode or not.
+- `-DparallelCount` - Maximum number of scenarios executed in parallel i.e. ```-DparallelCount=5```, if not specified `3` will be used.
+
+For example to execute @ui and @api tests, excluding skipped and scenarios with known issues, with 5 features in parallel one development environment
+with Chrome browser running in headless mode and not using remote Selenium Grid, command will look like:
+
+```console 
+mvn clean verify -Dtags='(@ui or @api) and (not @skip and not @bug)' -DparallelCount=5 -Denv=development -Dbrowser=chrome -Dheadless -Dremote=false
+```
+
+TODO: Add OpenAPI text!!!
 
 ## Local Environment Setup
 
@@ -72,48 +123,6 @@ following command:
 That will start Restful Booker Platform locally.
 
 After everything is up and running you will have Restful Booker Platform available at `http://kube.local`.
-
-## Project usage
-
-Install all dependencies:
-
-```console
-mvn clean install -DskipTests -DskipReports
-```
-
-Tests are executed by running `verify` command in project folder:
-
-```console 
-mvn clean verify
-```
-
-Additional parameters:
-
-- `-Denv` - Environment on which to execute tests i.e ```-Denv=local```, if not specified `development` will be used.
-- `-Dtags` - Scenario tags to execute or not to execute. If not specified sanity tests will be executed excluding skipped scenarios and scenarios with
-  known bugs, i.e. ```(@sanity) and (not @skip or not @bug)```. Tag expression is an infix boolean expression, and there can be one or multiple tags,
-  some examples:
-    - `@sanity` - Scenarios tagged with `@sanity` will be executed
-    - `@management and not @room-management` - Scenarios tagged with `@management` that are not also tagged with `@room-management` will be executed
-    - `@management and @room-management` - Scenarios tagged with both `@management` and `@room-management` will be executed
-    - `@booking or @contact` - Scenarios tagged with either `@booking` or `@contact` will be executed
-    - `(@booking or @contact) and (not @bug)` - Scenarios tagged with either `@booking` or `@contact` that are not also tagged with `@bug` will be
-      executed
-- `-Dremote` - Defines if execution is done locally or remotely i.e. ```-Dremote=false``` execute using local browsers and drivers
-  or ```-Dremote=true``` execute remotely using Selenium Grid. If set to true, `-DremoteUrl` must be set also.
-- `-DremoteUrl` - URL of Selenium Grid which is used for remote execution of Selenium Tests.
-- `-Dbrowser` - Browser on which UI test will be used i.e. ```-Dbrowser=firefox```, if not specified `chrome` will be used. Possible values are:
-    - `chrome`
-    - `firefox`
-- `-Dheadless` - Defines if execution is done with Browsers running in headless mode or not.
-- `-DparallelCount` - Maximum number of scenarios executed in parallel i.e. ```-DparallelCount=5```, if not specified `3` will be used.
-
-For example to execute @ui and @api tests, excluding skipped and scenarios with known issues, with 5 features in parallel one development environment
-with Chrome browser running in headless mode and not using remote Selenium Grid, command will look like:
-
-```console 
-mvn clean verify -Dtags='(@ui or @api) and (not @skip and not @bug)' -DparallelCount=5 -Denv=development -Dbrowser=chrome -Dheadless -Dremote=false
-```
 
 ## Codding standards and rules
 
