@@ -2,7 +2,6 @@ package com.levi9.functionaltests.rest.service.restfulbooker;
 
 import com.levi9.functionaltests.exceptions.FunctionalTestsException;
 import com.levi9.functionaltests.rest.client.RestfulBookerRestClient;
-import com.levi9.functionaltests.rest.data.restfulbooker.BookingDSO;
 import com.levi9.functionaltests.rest.data.restfulbooker.BookingsDSO;
 import com.levi9.functionaltests.storage.domain.restfulbooker.RoomEntity;
 
@@ -16,6 +15,7 @@ import org.springframework.stereotype.Component;
 
 import io.restassured.response.Response;
 import lombok.extern.slf4j.Slf4j;
+import restfulbooker.model.booking.Booking;
 
 /**
  * @author Milos Pujic (m.pujic@levi9.com)
@@ -40,7 +40,7 @@ public class BookingService {
 	 *
 	 * @param booking booking to be deleted
 	 */
-	public void deleteBooking(final BookingDSO booking) {
+	public void deleteBooking(final Booking booking) {
 		final Response response = restfulBookerRestClient.delete(null, REST_PATH + booking.getBookingid() + "/");
 		if (response.statusCode() != HttpStatus.SC_ACCEPTED && response.statusCode() != HttpStatus.SC_NOT_FOUND) {
 			throw new FunctionalTestsException("Booking not deleted!. Expected {}, but actual {}. Response message: {}", HttpStatus.SC_OK,

@@ -1,0 +1,349 @@
+{
+	"openapi": "3.0.1",
+	"info": {
+		"title": "OpenAPI definition",
+		"version": "v0"
+	},
+	"servers": [
+		{
+			"url": "/message/"
+		}
+	],
+	"paths": {
+		"/{id}/read": {
+			"put": {
+				"tags": [
+					"message-controller"
+				],
+				"operationId": "markAsRead",
+				"parameters": [
+					{
+						"name": "id",
+						"in": "path",
+						"required": true,
+						"schema": {
+							"type": "integer",
+							"format": "int32"
+						}
+					},
+					{
+						"name": "token",
+						"in": "cookie",
+						"required": false,
+						"schema": {
+							"type": "string"
+						}
+					}
+				],
+				"responses": {
+					"400": {
+						"description": "Bad Request",
+						"content": {
+							"*/*": {
+								"schema": {
+									"$ref": "#/components/schemas/Error"
+								}
+							}
+						}
+					},
+					"200": {
+						"description": "OK",
+						"content": {
+							"*/*": {
+								"schema": {
+									"type": "string"
+								}
+							}
+						}
+					}
+				}
+			}
+		},
+		"/": {
+			"get": {
+				"tags": [
+					"message-controller"
+				],
+				"operationId": "getMessages",
+				"responses": {
+					"400": {
+						"description": "Bad Request",
+						"content": {
+							"*/*": {
+								"schema": {
+									"$ref": "#/components/schemas/Error"
+								}
+							}
+						}
+					},
+					"200": {
+						"description": "OK",
+						"content": {
+							"*/*": {
+								"schema": {
+									"$ref": "#/components/schemas/Messages"
+								}
+							}
+						}
+					}
+				}
+			},
+			"post": {
+				"tags": [
+					"message-controller"
+				],
+				"operationId": "createMessage",
+				"requestBody": {
+					"content": {
+						"application/json": {
+							"schema": {
+								"$ref": "#/components/schemas/Message"
+							}
+						}
+					},
+					"required": true
+				},
+				"responses": {
+					"400": {
+						"description": "Bad Request",
+						"content": {
+							"*/*": {
+								"schema": {
+									"$ref": "#/components/schemas/Error"
+								}
+							}
+						}
+					},
+					"200": {
+						"description": "OK",
+						"content": {
+							"*/*": {
+								"schema": {
+									"$ref": "#/components/schemas/Message"
+								}
+							}
+						}
+					}
+				}
+			}
+		},
+		"/{id}": {
+			"get": {
+				"tags": [
+					"message-controller"
+				],
+				"operationId": "getMessage",
+				"parameters": [
+					{
+						"name": "id",
+						"in": "path",
+						"required": true,
+						"schema": {
+							"type": "integer",
+							"format": "int32"
+						}
+					}
+				],
+				"responses": {
+					"400": {
+						"description": "Bad Request",
+						"content": {
+							"*/*": {
+								"schema": {
+									"$ref": "#/components/schemas/Error"
+								}
+							}
+						}
+					},
+					"200": {
+						"description": "OK",
+						"content": {
+							"*/*": {
+								"schema": {
+									"type": "string"
+								}
+							}
+						}
+					}
+				}
+			},
+			"delete": {
+				"tags": [
+					"message-controller"
+				],
+				"operationId": "deleteMessage",
+				"parameters": [
+					{
+						"name": "id",
+						"in": "path",
+						"required": true,
+						"schema": {
+							"type": "integer",
+							"format": "int32"
+						}
+					},
+					{
+						"name": "token",
+						"in": "cookie",
+						"required": false,
+						"schema": {
+							"type": "string"
+						}
+					}
+				],
+				"responses": {
+					"400": {
+						"description": "Bad Request",
+						"content": {
+							"*/*": {
+								"schema": {
+									"$ref": "#/components/schemas/Error"
+								}
+							}
+						}
+					},
+					"200": {
+						"description": "OK",
+						"content": {
+							"*/*": {
+								"schema": {
+									"type": "string"
+								}
+							}
+						}
+					}
+				}
+			}
+		},
+		"/count": {
+			"get": {
+				"tags": [
+					"message-controller"
+				],
+				"operationId": "getCount",
+				"responses": {
+					"400": {
+						"description": "Bad Request",
+						"content": {
+							"*/*": {
+								"schema": {
+									"$ref": "#/components/schemas/Error"
+								}
+							}
+						}
+					},
+					"200": {
+						"description": "OK",
+						"content": {
+							"*/*": {
+								"schema": {
+									"$ref": "#/components/schemas/Count"
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+	},
+	"components": {
+		"schemas": {
+			"Error": {
+				"type": "object",
+				"properties": {
+					"errorCode": {
+						"type": "integer",
+						"format": "int32"
+					},
+					"error": {
+						"type": "string"
+					},
+					"errorMessage": {
+						"type": "string"
+					},
+					"fieldErrors": {
+						"type": "array",
+						"items": {
+							"type": "string"
+						}
+					}
+				}
+			},
+			"Message": {
+				"required": [
+					"description",
+					"email",
+					"name",
+					"phone",
+					"subject"
+				],
+				"type": "object",
+				"properties": {
+					"messageid": {
+						"type": "integer",
+						"format": "int32"
+					},
+					"name": {
+						"type": "string"
+					},
+					"email": {
+						"type": "string"
+					},
+					"phone": {
+						"maxLength": 21,
+						"minLength": 11,
+						"type": "string"
+					},
+					"subject": {
+						"maxLength": 100,
+						"minLength": 5,
+						"type": "string"
+					},
+					"description": {
+						"maxLength": 2000,
+						"minLength": 20,
+						"type": "string"
+					}
+				}
+			},
+			"Count": {
+				"type": "object",
+				"properties": {
+					"count": {
+						"type": "integer",
+						"format": "int32"
+					}
+				}
+			},
+			"MessageSummary": {
+				"type": "object",
+				"properties": {
+					"id": {
+						"type": "integer",
+						"format": "int32"
+					},
+					"name": {
+						"type": "string"
+					},
+					"subject": {
+						"type": "string"
+					},
+					"read": {
+						"type": "boolean"
+					}
+				}
+			},
+			"Messages": {
+				"type": "object",
+				"properties": {
+					"messages": {
+						"type": "array",
+						"items": {
+							"$ref": "#/components/schemas/MessageSummary"
+						}
+					}
+				}
+			}
+		}
+	}
+}

@@ -1,7 +1,6 @@
 package com.levi9.functionaltests.storage.domain.restfulbooker;
 
 import com.levi9.functionaltests.rest.data.restfulbooker.RoomAmenities;
-import com.levi9.functionaltests.rest.data.restfulbooker.RoomDSO;
 import com.levi9.functionaltests.rest.data.restfulbooker.RoomType;
 
 import org.apache.commons.lang3.StringUtils;
@@ -11,6 +10,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import restfulbooker.model.room.Room;
 
 /**
  * @author Milos Pujic (m.pujic@levi9.com)
@@ -27,18 +27,18 @@ public class RoomEntity {
 	private Integer roomPrice;
 	private String description;
 	private RoomType type;
-	private boolean accessible;
+	private Boolean accessible;
 	private String image;
 	private RoomAmenities amenities;
 
-	public RoomEntity(final RoomDSO roomDSO) {
-		this.roomId = roomDSO.getRoomid();
-		this.roomName = roomDSO.getRoomName();
-		this.roomPrice = Integer.parseInt(roomDSO.getRoomPrice());
-		this.description = roomDSO.getDescription();
-		this.type = RoomType.getEnum(roomDSO.getType());
-		this.accessible = roomDSO.isAccessible();
-		this.image = roomDSO.getImage();
-		this.amenities = new RoomAmenities(StringUtils.join(roomDSO.getFeatures(), ","));
+	public RoomEntity(final Room room) {
+		this.roomId = room.getRoomid();
+		this.roomName = room.getRoomName();
+		this.roomPrice = room.getRoomPrice();
+		this.description = room.getDescription();
+		this.type = RoomType.getEnum(room.getType());
+		this.accessible = room.getAccessible();
+		this.image = room.getImage();
+		this.amenities = new RoomAmenities(StringUtils.join(room.getFeatures(), ","));
 	}
 }

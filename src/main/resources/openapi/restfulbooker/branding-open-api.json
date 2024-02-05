@@ -1,0 +1,193 @@
+{
+	"openapi": "3.0.1",
+	"info": {
+		"title": "OpenAPI definition",
+		"version": "v0"
+	},
+	"servers": [
+		{
+			"url": "/branding/"
+		}
+	],
+	"paths": {
+		"/": {
+			"get": {
+				"tags": [
+					"branding-controller"
+				],
+				"operationId": "getBranding",
+				"responses": {
+					"400": {
+						"description": "Bad Request",
+						"content": {
+							"*/*": {
+								"schema": {
+									"$ref": "#/components/schemas/Error"
+								}
+							}
+						}
+					},
+					"200": {
+						"description": "OK",
+						"content": {
+							"*/*": {
+								"schema": {
+									"$ref": "#/components/schemas/Branding"
+								}
+							}
+						}
+					}
+				}
+			},
+			"put": {
+				"tags": [
+					"branding-controller"
+				],
+				"operationId": "updateBranding",
+				"parameters": [
+					{
+						"name": "token",
+						"in": "cookie",
+						"required": false,
+						"schema": {
+							"type": "string"
+						}
+					}
+				],
+				"requestBody": {
+					"content": {
+						"application/json": {
+							"schema": {
+								"$ref": "#/components/schemas/Branding"
+							}
+						}
+					},
+					"required": true
+				},
+				"responses": {
+					"400": {
+						"description": "Bad Request",
+						"content": {
+							"*/*": {
+								"schema": {
+									"$ref": "#/components/schemas/Error"
+								}
+							}
+						}
+					},
+					"200": {
+						"description": "OK",
+						"content": {
+							"*/*": {
+								"schema": {
+									"type": "object"
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+	},
+	"components": {
+		"schemas": {
+			"Error": {
+				"type": "object",
+				"properties": {
+					"errorCode": {
+						"type": "integer",
+						"format": "int32"
+					},
+					"error": {
+						"type": "string"
+					},
+					"errorMessage": {
+						"type": "string"
+					},
+					"fieldErrors": {
+						"type": "array",
+						"items": {
+							"type": "string"
+						}
+					}
+				}
+			},
+			"Branding": {
+				"required": [
+					"description",
+					"logoUrl",
+					"name"
+				],
+				"type": "object",
+				"properties": {
+					"name": {
+						"maxLength": 100,
+						"minLength": 3,
+						"pattern": "[A-Za-z& ]*",
+						"type": "string"
+					},
+					"map": {
+						"$ref": "#/components/schemas/Map"
+					},
+					"logoUrl": {
+						"type": "string"
+					},
+					"description": {
+						"maxLength": 500,
+						"minLength": 3,
+						"pattern": "[a-zA-Z,&. ]*",
+						"type": "string"
+					},
+					"contact": {
+						"$ref": "#/components/schemas/Contact"
+					}
+				}
+			},
+			"Contact": {
+				"required": [
+					"address",
+					"email",
+					"name",
+					"phone"
+				],
+				"type": "object",
+				"properties": {
+					"name": {
+						"maxLength": 40,
+						"minLength": 3,
+						"pattern": "[A-Za-z& ]*",
+						"type": "string"
+					},
+					"address": {
+						"maxLength": 200,
+						"minLength": 10,
+						"type": "string"
+					},
+					"phone": {
+						"type": "string"
+					},
+					"email": {
+						"type": "string"
+					}
+				}
+			},
+			"Map": {
+				"required": [
+					"latitude",
+					"longitude"
+				],
+				"type": "object",
+				"properties": {
+					"latitude": {
+						"type": "number",
+						"format": "double"
+					},
+					"longitude": {
+						"type": "number",
+						"format": "double"
+					}
+				}
+			}
+		}
+	}
+}
