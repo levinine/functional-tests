@@ -81,7 +81,26 @@ with Chrome browser running in headless mode and not using remote Selenium Grid,
 mvn clean verify -Dtags='(@ui or @api) and (not @skip and not @bug)' -DparallelCount=5 -Denv=development -Dbrowser=chrome -Dheadless -Dremote=false
 ```
 
-TODO: Add OpenAPI text!!!
+### OpenAPI Specification
+
+This project uses OpenAPI Specification which enables generation of API client libraries, server stubs, and documentation from an OpenAPI
+Specification (formerly known as Swagger). This tool aims to streamline the development process by automating the generation of boilerplate code and
+promoting consistency between the API definition and the actual implementation.
+
+For Maven users, the OpenAPI Generator provides a Maven plugin that integrates seamlessly into the build process. The plugin allows developers to
+generate API client libraries, server stubs, and documentation directly from the OpenAPI Specification during the Maven build lifecycle. This
+integration simplifies the workflow for projects using Maven, as code generation can be triggered automatically as part of the build process.
+
+Usage of the OpenAPI Generator Maven plugin, is configured within the project's pom.xml file. There is specified the OpenAPI Specification
+files location and other relevant options to customize the generated code. When the Maven build is executed, the plugin fetches the OpenAPI
+Specifications and generates the desired artifacts, such as client libraries or server stubs, according to the specified configuration.
+
+To make it work in IDEs, like IntelliJ IDEA, make sure to add `Target` folder as `Generated Sources Root`. To do that in IntelliJ IDEA, after
+executing `mvn clean compile` command, `Target` folder will be created. After that just right click on it, and select `Mark Directory as` option and
+choose `Generated Sources Root`.
+
+Overall, the OpenAPI Generator Maven plugin enhances the development experience for Maven-based projects by automating the generation of API-related
+code and ensuring that the codebase stays in sync with the API specification.
 
 ## Local Environment Setup
 
