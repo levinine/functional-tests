@@ -50,7 +50,7 @@
 		<commons-codec.version>1.16.1</commons-codec.version>
 		<awaitility.version>4.2.0</awaitility.version>
 		<selenium.version>4.18.1</selenium.version>
-		<logback.version>1.5.2</logback.version>
+		<logback.version>1.5.3</logback.version>
 		<lombok.version>1.18.30</lombok.version>
 		<junit.version>4.13.2</junit.version>
 		<slf4j.version>2.0.12</slf4j.version>
