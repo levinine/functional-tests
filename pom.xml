@@ -258,6 +258,12 @@
 			<groupId>io.qameta.allure</groupId>
 			<artifactId>allure-cucumber7-jvm</artifactId>
 			<scope>test</scope>
+			<exclusions>
+				<exclusion>
+					<groupId>io.cucumber</groupId>
+					<artifactId>*</artifactId>
+				</exclusion>
+			</exclusions>
 		</dependency>
 
 		<dependency>
