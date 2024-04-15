@@ -54,7 +54,7 @@
 		<lombok.version>1.18.32</lombok.version>
 		<junit.version>4.13.2</junit.version>
 		<slf4j.version>2.0.12</slf4j.version>
-		<spring.version>6.1.5</spring.version>
+		<spring.version>6.1.6</spring.version>
 		<apache.commons-lang3.version>3.14.0</apache.commons-lang3.version>
 		<apache.commons-email.version>1.6.0</apache.commons-email.version>
 		<apache.commons-io.version>2.16.1</apache.commons-io.version>
