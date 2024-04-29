@@ -47,7 +47,7 @@
 		<cucumber.version>7.17.0</cucumber.version>
 		<assertj.version>3.25.3</assertj.version>
 		<rest-assured.version>5.4.0</rest-assured.version>
-		<commons-codec.version>1.16.1</commons-codec.version>
+		<commons-codec.version>1.17.0</commons-codec.version>
 		<awaitility.version>4.2.1</awaitility.version>
 		<selenium.version>4.20.0</selenium.version>
 		<logback.version>1.5.6</logback.version>
