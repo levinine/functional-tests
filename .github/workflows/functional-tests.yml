@@ -18,7 +18,7 @@ jobs:
         id: setup-java
         uses: actions/setup-java@v4
         with:
-          java-version: '21'
+          java-version: '23'
           distribution: 'temurin'
           cache: 'maven'
       - name: Build Project
@@ -38,7 +38,7 @@ jobs:
         id: setup-java
         uses: actions/setup-java@v4
         with:
-          java-version: '21'
+          java-version: '23'
           distribution: 'temurin'
           cache: 'maven'
       - name: Execute Cucumber Dry Run
@@ -91,7 +91,7 @@ jobs:
         id: setup-java
         uses: actions/setup-java@v4
         with:
-          java-version: '21'
+          java-version: '23'
           distribution: 'temurin'
           cache: 'maven'
       - name: Setup Chrome
@@ -185,7 +185,7 @@ jobs:
         id: setup-java
         uses: actions/setup-java@v4
         with:
-          java-version: '21'
+          java-version: '23'
           distribution: 'temurin'
           cache: 'maven'
       - name: Setup Firefox
