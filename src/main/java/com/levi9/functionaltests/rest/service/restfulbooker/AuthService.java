@@ -20,7 +20,7 @@ import restfulbooker.model.auth.Auth;
 @Scope("cucumber-glue")
 public class AuthService {
 
-	public static final String REST_PATH = "auth/";
+	public static final String REST_PATH = "/auth";
 
 	private final RestfulBookerRestClient restfulBookerRestClient;
 
@@ -42,7 +42,7 @@ public class AuthService {
 			.password(password)
 			.build();
 
-		final Response response = restfulBookerRestClient.post(body, null, REST_PATH + "login/");
+		final Response response = restfulBookerRestClient.post(body, null, REST_PATH + "/login");
 
 		if (response.statusCode() != HttpStatus.SC_OK) {
 			throw new FunctionalTestsException("User is not logged in. Expected {}, but actual {}. Response message: {}", HttpStatus.SC_OK,

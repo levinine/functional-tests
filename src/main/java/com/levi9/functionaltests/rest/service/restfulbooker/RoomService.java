@@ -4,11 +4,11 @@ import com.levi9.functionaltests.exceptions.FunctionalTestsException;
 import com.levi9.functionaltests.rest.client.RestfulBookerRestClient;
 import com.levi9.functionaltests.rest.data.restfulbooker.RoomAmenities;
 import com.levi9.functionaltests.rest.data.restfulbooker.RoomType;
-import com.levi9.functionaltests.rest.data.restfulbooker.RoomsDSO;
 import com.levi9.functionaltests.storage.Storage;
 import com.levi9.functionaltests.storage.domain.restfulbooker.RoomEntity;
 
 import java.util.List;
+import java.util.Objects;
 
 import org.apache.http.HttpStatus;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,6 +18,7 @@ import org.springframework.stereotype.Component;
 import io.restassured.response.Response;
 import lombok.extern.slf4j.Slf4j;
 import restfulbooker.model.room.Room;
+import restfulbooker.model.room.Rooms;
 
 /**
  * @author Milos Pujic (m.pujic@levi9.com)
@@ -96,16 +97,16 @@ public class RoomService {
 	/**
 	 * Get all rooms.
 	 *
-	 * @return all rooms as {@link RoomsDSO}
+	 * @return all rooms as {@link Rooms}
 	 */
-	public RoomsDSO getRooms() {
+	public Rooms getRooms() {
 
 		final Response response = restfulBookerRestClient.get(null, REST_PATH);
 		if (response.statusCode() != HttpStatus.SC_OK) {
 			throw new FunctionalTestsException("Rooms can not be fetched. Expected {}, but actual {}. Response message: {}", HttpStatus.SC_OK,
 				response.statusCode(), response.getBody().prettyPrint());
 		}
-		return response.as(RoomsDSO.class);
+		return response.as(Rooms.class);
 	}
 
 	/**
@@ -117,7 +118,7 @@ public class RoomService {
 	 */
 	public Room getRoom(final String roomName) {
 		final List<Room> rooms = getRooms().getRooms();
-		return rooms.stream().filter(room -> room.getRoomName().equals(roomName))
+		return Objects.requireNonNull(rooms).stream().filter(room -> room.getRoomName().equals(roomName))
 			.reduce((first, last) -> last)
 			.orElseThrow(() -> new FunctionalTestsException("Room not found!"));
 	}
