@@ -377,7 +377,7 @@
 						<library>webclient</library>
 						<dateLibrary>java8</dateLibrary>
 						<collectionType>list</collectionType>
-						<enumPropertyNaming>UPPERCASE</enumPropertyNaming>
+						<enumPropertyNaming>legacy</enumPropertyNaming>
 						<serializationLibrary>jackson</serializationLibrary>
 						<sourceFolder>generated</sourceFolder>
 						<additionalModelTypeAnnotations>@lombok.experimental.SuperBuilder</additionalModelTypeAnnotations>
