@@ -75,6 +75,7 @@
 
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+		<spotbugs-annotations.version>4.9.3</spotbugs-annotations.version>
 	</properties>
 
 	<dependencyManagement>
@@ -276,6 +277,11 @@
 			<groupId>javax.annotation</groupId>
 			<artifactId>javax.annotation-api</artifactId>
 			<version>${javax.annotation-api.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>com.github.spotbugs</groupId>
+			<artifactId>spotbugs-annotations</artifactId>
+			<version>${spotbugs-annotations.version}</version>
 		</dependency>
 	</dependencies>
 
