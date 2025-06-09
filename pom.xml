@@ -69,7 +69,7 @@
 		<maven.surefire-junit4.plugin.version>3.5.3</maven.surefire-junit4.plugin.version>
 		<cucable.version>1.14.0</cucable.version>
 		<maven-cucumber-reporting.version>5.8.2</maven-cucumber-reporting.version>
-		<maven.build.helper.plugin.version>3.6.0</maven.build.helper.plugin.version>
+		<maven.build.helper.plugin.version>3.6.1</maven.build.helper.plugin.version>
 		<cluecumber.report.version>2.9.4</cluecumber.report.version>
 		<openapi-generator.version>7.13.0</openapi-generator.version>
 
