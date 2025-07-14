@@ -44,7 +44,7 @@
 		<parallelCount>3</parallelCount>
 
 		<!-- Dependencies Versions -->
-		<cucumber.version>7.23.0</cucumber.version>
+		<cucumber.version>7.25.0</cucumber.version>
 		<assertj.version>3.27.3</assertj.version>
 		<rest-assured.version>5.5.5</rest-assured.version>
 		<commons-codec.version>1.18.0</commons-codec.version>
