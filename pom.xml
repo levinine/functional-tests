@@ -65,7 +65,7 @@
 
 		<!-- Maven Plugins Versions -->
 		<maven.compiler.version>3.14.0</maven.compiler.version>
-		<maven.failsafe.plugin.version>3.5.3</maven.failsafe.plugin.version>
+		<maven.failsafe.plugin.version>3.5.4</maven.failsafe.plugin.version>
 		<maven.surefire-junit4.plugin.version>3.5.3</maven.surefire-junit4.plugin.version>
 		<cucable.version>1.16.0</cucable.version>
 		<maven-cucumber-reporting.version>5.8.2</maven-cucumber-reporting.version>
