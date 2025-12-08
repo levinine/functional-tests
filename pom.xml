@@ -57,7 +57,7 @@
 		<spring.version>6.2.12</spring.version>
 		<apache.commons-lang3.version>3.20.0</apache.commons-lang3.version>
 		<apache.commons-email.version>1.6.0</apache.commons-email.version>
-		<apache.commons-io.version>2.20.0</apache.commons-io.version>
+		<apache.commons-io.version>2.21.0</apache.commons-io.version>
 		<apache.pdfbox.version>3.0.6</apache.pdfbox.version>
 		<jackson.version>2.20.1</jackson.version>
 		<allure.version>2.31.0</allure.version>
