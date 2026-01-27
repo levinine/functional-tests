@@ -13,10 +13,10 @@ jobs:
     steps:
       - name: Checkout Repository
         id: checkout-repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
       - name: Setup Java
         id: setup-java
-        uses: actions/setup-java@v4
+        uses: actions/setup-java@v5
         with:
           java-version: '23'
           distribution: 'temurin'
@@ -33,10 +33,10 @@ jobs:
     steps:
       - name: Checkout Repository
         id: checkout-repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
       - name: Setup Java
         id: setup-java
-        uses: actions/setup-java@v4
+        uses: actions/setup-java@v5
         with:
           java-version: '23'
           distribution: 'temurin'
@@ -86,17 +86,17 @@ jobs:
     steps:
       - name: Checkout Repository
         id: checkout-repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
       - name: Setup Java
         id: setup-java
-        uses: actions/setup-java@v4
+        uses: actions/setup-java@v5
         with:
           java-version: '23'
           distribution: 'temurin'
           cache: 'maven'
       - name: Setup Chrome
         id: setup-chrome
-        uses: browser-actions/setup-chrome@v1
+        uses: browser-actions/setup-chrome@v2
         with:
           chrome-version: latest
       - name: Run Chrome Tests
@@ -180,10 +180,10 @@ jobs:
     steps:
       - name: Checkout Repository
         id: checkout-repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
       - name: Setup Java
         id: setup-java
-        uses: actions/setup-java@v4
+        uses: actions/setup-java@v5
         with:
           java-version: '23'
           distribution: 'temurin'
@@ -253,10 +253,10 @@ jobs:
     steps:
       - name: Checkout Repository
         id: checkout-repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
       - name: Download Artifacts
         id: download-artifacts
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v6
       - name: Fetch Chrome Allure History
         id: chrome-allure-history
         run: |
@@ -295,7 +295,7 @@ jobs:
         uses: actions/configure-pages@v5
       - name: Upload Pages Artifact
         id: upload-pages-artifact
-        uses: actions/upload-pages-artifact@v3
+        uses: actions/upload-pages-artifact@v4
         with:
           path: reports/
       - name: Deploy to GitHub Pages

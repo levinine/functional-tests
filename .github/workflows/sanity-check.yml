@@ -26,10 +26,10 @@ jobs:
     steps:
       - name: Checkout Repository
         id: checkout-repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
       - name: Setup Java
         id: setup-java
-        uses: actions/setup-java@v4
+        uses: actions/setup-java@v5
         with:
           java-version: '23'
           distribution: 'temurin'
@@ -46,10 +46,10 @@ jobs:
     steps:
       - name: Checkout Repository
         id: checkout-repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
       - name: Setup Java
         id: setup-java
-        uses: actions/setup-java@v4
+        uses: actions/setup-java@v5
         with:
           java-version: '23'
           distribution: 'temurin'
@@ -99,17 +99,17 @@ jobs:
     steps:
       - name: Checkout Repository
         id: checkout-repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
       - name: Setup Java
         id: setup-java
-        uses: actions/setup-java@v4
+        uses: actions/setup-java@v5
         with:
           java-version: '23'
           distribution: 'temurin'
           cache: 'maven'
       - name: Setup Chrome
         id: setup-chrome
-        uses: browser-actions/setup-chrome@v1
+        uses: browser-actions/setup-chrome@v2
         with:
           chrome-version: latest
       - name: Run Chrome Tests
@@ -184,10 +184,10 @@ jobs:
     steps:
       - name: Checkout Repository
         id: checkout-repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
       - name: Setup Java
         id: setup-java
-        uses: actions/setup-java@v4
+        uses: actions/setup-java@v5
         with:
           java-version: '23'
           distribution: 'temurin'

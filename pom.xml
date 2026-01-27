@@ -45,16 +45,16 @@
 
 		<!-- Dependencies Versions -->
 		<cucumber.version>7.33.0</cucumber.version>
-		<assertj.version>3.27.6</assertj.version>
+		<assertj.version>3.27.7</assertj.version>
 		<rest-assured.version>6.0.0</rest-assured.version>
 		<commons-codec.version>1.20.0</commons-codec.version>
 		<awaitility.version>4.3.0</awaitility.version>
-		<selenium.version>4.39.0</selenium.version>
-		<logback.version>1.5.24</logback.version>
+		<selenium.version>4.40.0</selenium.version>
+		<logback.version>1.5.25</logback.version>
 		<lombok.version>1.18.40</lombok.version>
 		<junit.version>4.13.2</junit.version>
 		<slf4j.version>2.0.17</slf4j.version>
-		<spring.version>6.2.12</spring.version>
+		<spring.version>7.0.3</spring.version>
 		<apache.commons-lang3.version>3.20.0</apache.commons-lang3.version>
 		<apache.commons-email.version>1.6.0</apache.commons-email.version>
 		<apache.commons-io.version>2.21.0</apache.commons-io.version>
@@ -64,7 +64,7 @@
 		<javax.annotation-api.version>1.3.2</javax.annotation-api.version>
 
 		<!-- Maven Plugins Versions -->
-		<maven.compiler.version>3.14.0</maven.compiler.version>
+		<maven.compiler.version>3.14.1</maven.compiler.version>
 		<maven.failsafe.plugin.version>3.5.4</maven.failsafe.plugin.version>
 		<maven.surefire-junit4.plugin.version>3.5.4</maven.surefire-junit4.plugin.version>
 		<cucable.version>1.16.0</cucable.version>
