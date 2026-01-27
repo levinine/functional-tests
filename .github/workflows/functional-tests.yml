@@ -13,7 +13,7 @@ jobs:
     steps:
       - name: Checkout Repository
         id: checkout-repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
       - name: Setup Java
         id: setup-java
         uses: actions/setup-java@v4
@@ -33,7 +33,7 @@ jobs:
     steps:
       - name: Checkout Repository
         id: checkout-repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
       - name: Setup Java
         id: setup-java
         uses: actions/setup-java@v4
@@ -86,7 +86,7 @@ jobs:
     steps:
       - name: Checkout Repository
         id: checkout-repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
       - name: Setup Java
         id: setup-java
         uses: actions/setup-java@v4
@@ -180,7 +180,7 @@ jobs:
     steps:
       - name: Checkout Repository
         id: checkout-repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
       - name: Setup Java
         id: setup-java
         uses: actions/setup-java@v4
@@ -253,7 +253,7 @@ jobs:
     steps:
       - name: Checkout Repository
         id: checkout-repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
       - name: Download Artifacts
         id: download-artifacts
         uses: actions/download-artifact@v6
