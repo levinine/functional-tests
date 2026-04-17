@@ -143,6 +143,74 @@ That will start Restful Booker Platform locally.
 
 After everything is up and running you will have Restful Booker Platform available at `http://kube.local`.
 
+## AI-Assisted Test Development (Functional Tests Skill)
+
+This project includes an AI skill that helps developers write, debug, and review tests following project conventions. The skill is located at `.github/skills/functional-tests-skill/` and automatically guides AI assistants to generate code matching existing patterns.
+
+### Using with IntelliJ IDEA
+
+**Prerequisites**: [GitHub Copilot plugin](https://plugins.jetbrains.com/plugin/17718-github-copilot) installed and authenticated.
+
+**How to use**:
+1. Open the Copilot Chat panel (View → Tool Windows → GitHub Copilot Chat)
+2. Type `/` to see available commands — `functional-tests-skill` will appear in the list
+3. Either:
+   - Type `/functional-tests-skill` followed by your request, or
+   - Just ask naturally: "write a test for...", "add coverage for...", "review this test code"
+   
+The skill activates automatically when you mention test-related keywords (feature files, step definitions, page objects, REST API tests, etc.).
+
+**Example prompts**:
+```
+/functional-tests-skill Create a REST API test for creating a pet in the pet store
+
+Write a UI test for the login page with valid and invalid credentials
+
+Review this step definition class for best practices
+
+Add a Scenario Outline for creating multiple rooms with different types
+```
+
+### Using with VS Code
+
+**Prerequisites**: [GitHub Copilot extension](https://marketplace.visualstudio.com/items?itemName=GitHub.copilot) and [GitHub Copilot Chat extension](https://marketplace.visualstudio.com/items?itemName=GitHub.copilot-chat) installed and authenticated.
+
+**How to use**:
+1. Open the Copilot Chat view (View → Open View → GitHub Copilot Chat, or press `Ctrl+Shift+I` / `Cmd+Shift+I`)
+2. Type `/` to see available slash commands — `functional-tests-skill` will appear
+3. Either:
+   - Type `/functional-tests-skill` followed by your request, or
+   - Just ask naturally: "write a test for...", "debug this failing test"
+   
+The skill activates automatically when you mention: writing tests, creating feature files, Gherkin scenarios, step definitions, REST API tests, UI tests, page objects, debugging tests, etc.
+
+**Example prompts**:
+```
+/functional-tests-skill Create a complete REST API test for booking a room
+
+Generate page object and step definitions for the contact form
+
+This test is failing with a 400 error - help me debug it
+
+Review RoomManagementStepdef.java for code quality issues
+```
+
+**What the skill provides**:
+- ✅ Correct project patterns (Service layer, Storage, Page Objects, Step Definitions)
+- ✅ Proper annotations (`@Slf4j`, `@Component`, `@Scope("cucumber-glue")`)
+- ✅ Correct step annotation styles (Cucumber Expressions for Restful Booker, regex for Pet Store)
+- ✅ Wait-based Selenium interactions (no `Thread.sleep()`)
+- ✅ AssertJ assertions with descriptive messages
+- ✅ Lombok usage (`@Getter`, `@Builder`, etc.)
+- ✅ Comprehensive test coverage (happy path + negative cases)
+- ✅ Code review using project-specific checklist
+
+### OpenAPI Helper Script
+
+The skill includes an [OpenAPI helper script](.github/skills/functional-tests-skill/scripts/README.md) that reads OpenAPI specifications to assist with test development. It can list endpoints, show endpoint details, and generate Java DSO class templates automatically from OpenAPI schemas.
+
+See [scripts/README.md](.github/skills/functional-tests-skill/scripts/README.md) for complete usage instructions.
+
 ## Codding standards and rules
 
 ### Coding Standards
