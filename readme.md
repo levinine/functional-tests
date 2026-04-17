@@ -153,16 +153,16 @@ This project includes an AI skill that helps developers write, debug, and review
 
 **How to use**:
 1. Open the Copilot Chat panel (View → Tool Windows → GitHub Copilot Chat)
-2. Type `/` to see available commands — `functional-tests-skill` will appear in the list
+2. Type `/skill:` to see available skills — `functional-tests-skill` will appear in the list
 3. Either:
-   - Type `/functional-tests-skill` followed by your request, or
+   - Type `/skill:functional-tests-skill` followed by your request, or
    - Just ask naturally: "write a test for...", "add coverage for...", "review this test code"
    
 The skill activates automatically when you mention test-related keywords (feature files, step definitions, page objects, REST API tests, etc.).
 
 **Example prompts**:
 ```
-/functional-tests-skill Create a REST API test for creating a pet in the pet store
+/skill:functional-tests-skill Create a REST API test for creating a pet in the pet store
 
 Write a UI test for the login page with valid and invalid credentials
 
