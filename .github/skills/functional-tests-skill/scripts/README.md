@@ -1,33 +1,44 @@
-# OpenAPI Helper Script
+# Functional Tests Skill — Scripts
 
-This Python script helps developers work with OpenAPI specifications during test development.
+Helper scripts for the `functional-tests-skill`. No external dependencies required — all scripts use Python standard library only (PyYAML optional for YAML OpenAPI specs).
 
-## Overview
+## Scripts
 
-The `openapi_helper.py` script provides three main capabilities:
-1. **List Endpoints** - Display all API endpoints from an OpenAPI spec
-2. **Endpoint Details** - Show detailed information about a specific endpoint
-3. **Generate DSO** - Generate Java DSO class templates from OpenAPI schemas
-
-## Features
-
-✅ **Multiple Sources**: Supports local files and remote URLs  
-✅ **Format Support**: Handles both JSON and YAML OpenAPI specifications  
-✅ **No Dependencies**: Uses Python standard library (PyYAML optional for YAML support)
+| Script | Purpose |
+|--------|---------|
+| [`openapi_helper.py`](#openapi-helper) | List endpoints, view details, generate Java DSOs from OpenAPI specs |
+| [`jira_ticket_fetcher.py`](#jira--github-ticket-fetcher) | Fetch ticket details from Jira or GitHub Issues for test generation |
 
 ## Requirements
 
-- Python 3.x
-- PyYAML (optional, only needed for YAML format support): `pip install pyyaml`
+- Python 3.10+
+- PyYAML (optional, only for YAML OpenAPI specs): `pip install pyyaml`
 
-## Usage
+---
 
-### 1. List All Endpoints
+## OpenAPI Helper
+
+This Python script helps developers work with OpenAPI specifications during test development.
+
+### Capabilities
+
+1. **List Endpoints** — Display all API endpoints from an OpenAPI spec
+2. **Endpoint Details** — Show detailed information about a specific endpoint
+3. **Generate DSO** — Generate Java DSO class templates from OpenAPI schemas
+
+✅ Supports local files and remote URLs  
+✅ Handles both JSON and YAML OpenAPI specifications  
+✅ No external dependencies
+
+### Usage
+
+#### List All Endpoints
 
 Display a table of all available API endpoints:
 
 ```bash
-python3 openapi_helper.py list-endpoints <spec-file-or-url>
+python3 .github/skills/functional-tests-skill/scripts/openapi_helper.py list-endpoints \
+  src/main/resources/openapi/restfulbooker/room-open-api.json
 ```
 
 **Examples:**
@@ -65,12 +76,14 @@ POST     /                                        createRoom                    
 Total endpoints: 5
 ```
 
-### 2. Get Endpoint Details
+#### Get Endpoint Details
 
 Show detailed information about a specific endpoint:
 
 ```bash
-python3 openapi_helper.py endpoint-details <spec-file-or-url> <path>
+python3 .github/skills/functional-tests-skill/scripts/openapi_helper.py endpoint-details \
+  src/main/resources/openapi/restfulbooker/room-open-api.json \
+  /room/{id}
 ```
 
 **Examples:**
@@ -89,19 +102,15 @@ python3 .github/skills/functional-tests-skill/scripts/openapi_helper.py endpoint
   /pet/{petId}
 ```
 
-**Output includes:**
-- HTTP methods supported
-- Operation ID and summary
-- Request parameters (path, query, header)
-- Request body schema
-- Response codes and descriptions
-
-### 3. Generate DSO Class Template
+#### Generate DSO Class Template
 
 Generate a complete Java DSO class from an OpenAPI schema:
 
 ```bash
-python3 openapi_helper.py generate-dso <spec-file-or-url> <schema-name> [package-name]
+python3 .github/skills/functional-tests-skill/scripts/openapi_helper.py generate-dso \
+  src/main/resources/openapi/restfulbooker/room-open-api.json \
+  Room \
+  com.levi9.functionaltests.rest.data.restfulbooker
 ```
 
 **Examples:**
@@ -166,7 +175,7 @@ The generated DSO includes:
 - ✅ JavaDoc comments from OpenAPI descriptions
 - ✅ Proper imports for List, LocalDate, LocalDateTime
 
-## Type Mapping
+### Type Mapping
 
 The script automatically maps OpenAPI types to Java types:
 
@@ -183,95 +192,122 @@ The script automatically maps OpenAPI types to Java types:
 | array        | -              | List<T>   |
 | object       | -              | Object or referenced type |
 
-## When to Use
+### Notes
 
-Use this script when:
-- **Starting a new REST API test** - List endpoints to understand what's available
-- **Creating DSO classes** - Generate templates that match the OpenAPI spec exactly
-- **API documentation is unclear** - View endpoint details with parameters and schemas
-- **API spec changes** - Regenerate DSOs to ensure consistency
-- **Working with third-party APIs** - Fetch specs directly from remote URLs (e.g., Swagger UI endpoints)
-- **Evaluating external APIs** - Quickly explore API structure without downloading files
-
-## Supported Formats
-
-| Source Type | Format | Example |
-|-------------|--------|---------|
-| Local file | JSON | `src/main/resources/openapi/room-open-api.json` |
-| Local file | YAML | `specs/api-spec.yaml` |
-| Remote URL | JSON | `https://petstore.swagger.io/v2/swagger.json` |
-| Remote URL | YAML | `https://example.com/api/openapi.yaml` |
-| Swagger UI | JSON | `https://api.example.com/swagger/v1/swagger.json` |
-
-## Integration with AI Skill
-
-This script is referenced in the `functional-tests-skill` SKILL.md:
-- In the "Creating a New REST API Test" workflow (Step 4: Create DSOs)
-- In the "OpenAPI Model Generation" section
-
-The AI assistant can invoke this script to help generate accurate test code that matches the OpenAPI specification.
-
-## Examples
-
-### Complete Workflow Example
-
-When creating a new REST API test for booking:
-
-1. **Discover available endpoints:**
-```bash
-python3 .github/skills/functional-tests-skill/scripts/openapi_helper.py list-endpoints \
-  src/main/resources/openapi/restfulbooker/booking-open-api.json
-```
-
-2. **Get details about the POST endpoint:**
-```bash
-python3 .github/skills/functional-tests-skill/scripts/openapi_helper.py endpoint-details \
-  src/main/resources/openapi/restfulbooker/booking-open-api.json \
-  /booking
-```
-
-3. **Generate DSO for the Booking schema:**
-```bash
-python3 .github/skills/functional-tests-skill/scripts/openapi_helper.py generate-dso \
-  src/main/resources/openapi/restfulbooker/booking-open-api.json \
-  Booking \
-  com.levi9.functionaltests.rest.data.restfulbooker > src/main/java/com/levi9/functionaltests/rest/data/restfulbooker/BookingDSO.java
-```
-
-4. **Review and customize** the generated DSO if needed
-
-### Working with Third-Party APIs
-
-When testing external APIs like Petstore:
-
-1. **List endpoints from remote spec:**
-```bash
-python3 .github/skills/functional-tests-skill/scripts/openapi_helper.py list-endpoints \
-  https://petstore.swagger.io/v2/swagger.json
-```
-
-2. **Explore specific endpoint:**
-```bash
-python3 .github/skills/functional-tests-skill/scripts/openapi_helper.py endpoint-details \
-  https://petstore.swagger.io/v2/swagger.json \
-  /pet/{petId}
-```
-
-3. **Generate Pet DSO:**
-```bash
-python3 .github/skills/functional-tests-skill/scripts/openapi_helper.py generate-dso \
-  https://petstore.swagger.io/v2/swagger.json \
-  Pet \
-  com.levi9.functionaltests.rest.data.petstore
-```
-
-## Notes
-
-- The script reads OpenAPI 3.0 and Swagger 2.0 specifications
-- Supports both JSON and YAML formats
-- For YAML files, PyYAML must be installed: `pip install pyyaml`
+- Reads OpenAPI 3.0 and Swagger 2.0 specifications
+- Supports both JSON and YAML formats (PyYAML required for YAML)
 - URLs are fetched with a 30-second timeout
-- If `package-name` is not provided, it defaults to `com.levi9.functionaltests.rest.data`
-- Generated DSOs follow project conventions (Lombok usage, builder pattern, etc.)
-- The script is read-only — it never modifies the OpenAPI spec files or remote sources
-- User-Agent header is set to `OpenAPI-Helper/1.0` for URL requests
+- Default package: `com.levi9.functionaltests.rest.data`
+- Generated DSOs follow project conventions (Lombok, builder pattern, etc.)
+
+---
+
+## Jira & GitHub Ticket Fetcher
+
+Fetches ticket details from **Jira** or **GitHub Issues** and extracts feature requirements, acceptance criteria, subtasks, and linked issues — enabling test generation directly from tickets.
+
+### Setup
+
+1. Copy the example environment file and fill in your credentials:
+
+```bash
+cp .github/skills/functional-tests-skill/scripts/.env.example \
+   .github/skills/functional-tests-skill/scripts/.env
+```
+
+2. Fill in the relevant values in `.env`:
+
+**Jira Cloud:**
+```
+JIRA_BASE_URL=https://yourcompany.atlassian.net
+JIRA_USER_EMAIL=your-email@company.com
+JIRA_API_TOKEN=your-api-token
+```
+
+**Jira Server / Data Center (PAT):**
+```
+JIRA_BASE_URL=https://jira.yourcompany.com
+JIRA_PAT=your-personal-access-token
+```
+
+**GitHub Issues:**
+```
+GITHUB_TOKEN=ghp_your-personal-access-token
+```
+
+> The `.env` file is auto-loaded from next to the script or from the project root. Already-set environment variables take precedence.
+
+### Usage
+
+The script auto-detects the source based on the ticket reference format:
+- **Jira:** `PROJ-123`
+- **GitHub:** `owner/repo#123`
+
+#### Fetch Ticket Details
+
+```bash
+# Jira
+python3 .github/skills/functional-tests-skill/scripts/jira_ticket_fetcher.py fetch PROJ-123
+
+# GitHub
+python3 .github/skills/functional-tests-skill/scripts/jira_ticket_fetcher.py fetch owner/repo#42
+```
+
+Output includes: summary, description, acceptance criteria, subtasks, linked issues, and (for GitHub) comments.
+
+#### Fetch with Child/Subtask Details (Jira only)
+
+```bash
+python3 .github/skills/functional-tests-skill/scripts/jira_ticket_fetcher.py fetch PROJ-123 --include-children
+```
+
+#### Output as JSON
+
+```bash
+python3 .github/skills/functional-tests-skill/scripts/jira_ticket_fetcher.py fetch PROJ-123 --format json
+```
+
+#### Generate Gherkin Skeleton
+
+Generates a `.feature` file skeleton from the ticket's acceptance criteria:
+
+```bash
+# Jira
+python3 .github/skills/functional-tests-skill/scripts/jira_ticket_fetcher.py generate-gherkin PROJ-123
+
+# GitHub
+python3 .github/skills/functional-tests-skill/scripts/jira_ticket_fetcher.py generate-gherkin owner/repo#42
+```
+
+### GitHub-Specific Features
+
+- Fetches issue comments (up to 10) for additional context
+- Parses task list checkboxes (`- [ ]` / `- [x]`) as subtasks
+- Extracts `## Acceptance Criteria` sections from the issue body
+- Works with public repos without a token; private repos require `GITHUB_TOKEN` with `repo` scope
+
+### Workflow: From Ticket to Tests
+
+1. **Fetch the ticket** to get full context
+2. **Analyze** the description and acceptance criteria
+3. **Generate a Gherkin skeleton** (optional starting point)
+4. **Implement the full test** — feature file, step definitions, services, page objects, etc.
+5. **Map each acceptance criterion** to at least one scenario
+
+### Notes
+
+- Uses Jira REST API v3 (Cloud) — works with Jira Server/Data Center via PAT
+- `.env` file is searched next to the script, then in the project root
+- No external Python dependencies required
+
+---
+
+## File Structure
+
+```
+scripts/
+├── README.md              ← This file
+├── .env.example           ← Template for environment variables
+├── openapi_helper.py      ← OpenAPI spec helper
+└── jira_ticket_fetcher.py ← Jira & GitHub ticket fetcher
+```

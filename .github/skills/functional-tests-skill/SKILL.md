@@ -1,13 +1,13 @@
 ---
 name: functional-tests-skill
-description: Expert testing skill for the Levi9 functional-tests project — a Java 23 / Maven / Cucumber BDD framework using REST Assured for API tests and Selenium 4 for UI tests with Spring DI. Use this skill whenever the user wants to write, create, add, extend, debug, review, or refactor any kind of test in this project. Trigger when the user mentions writing tests, adding test coverage, creating feature files, Gherkin scenarios, step definitions, stepdefs, REST API tests, UI tests, Selenium, page objects, debugging failing tests, fixing test failures, test architecture improvements, generating test data, reviewing test code, or anything related to testing in this Cucumber/REST Assured/Selenium codebase. Even if the user just says "write a test" or "add coverage for X" or "this test is failing", this skill should activate immediately.
+description: Expert testing skill for the Levi9 functional-tests project — a Java 23 / Maven / Cucumber BDD framework using REST Assured for API tests and Selenium 4 for UI tests with Spring DI. Use this skill whenever the user wants to write, create, add, extend, debug, review, or refactor any kind of test in this project. Trigger when the user mentions writing tests, adding test coverage, creating feature files, Gherkin scenarios, step definitions, stepdefs, REST API tests, UI tests, Selenium, page objects, debugging failing tests, fixing test failures, test architecture improvements, generating test data, reviewing test code, fetching Jira tickets, fetching GitHub issues, creating tests from Jira/GitHub/board tickets, or anything related to testing in this Cucumber/REST Assured/Selenium codebase. Even if the user just says "write a test" or "add coverage for X" or "this test is failing" or "write tests for PROJ-123" or "write tests for owner/repo#42", this skill should activate immediately.
 ---
 
 # Functional Tests Skill
 
 This skill guides you in working with the **Levi9 functional-tests** project — a Java 23 / Maven / Cucumber BDD framework that tests two systems:
-- **Pet Store API** (REST API tests only)
-- **Restful Booker Platform** (REST API + UI tests)
+- **Pet Store API** (REST API tests only) — uses hand-crafted DSO classes for request/response bodies
+- **Restful Booker Platform** (REST API + UI tests) — uses OpenAPI-generated models from `restfulbooker.model.*` for request/response bodies, plus a few hand-crafted DSOs
 
 ## Core Principles
 
@@ -34,7 +34,7 @@ Service Layer (Business logic)
         ↓
 REST Clients (BaseRestClient + specific) | UI Pages (BasePage<T> + specific)
         ↓
-DSOs (Data Service Objects)              | Storage (Entity classes)
+DSOs / OpenAPI Models                    | Storage (Entity classes)
 ```
 
 ### Key Packages
@@ -43,19 +43,26 @@ DSOs (Data Service Objects)              | Storage (Entity classes)
 src/main/java/com/levi9/functionaltests/
 ├── exceptions/           # FunctionalTestsException
 ├── rest/
-│   ├── client/          # BaseRestClient, PetStoreRestClient, RestfulBookerRestClient
-│   ├── data/            # DSO classes (request/response DTOs)
+│   ├── client/          # BaseRestClient, PetStoreRestClient, RestfulBookerRestClient, RandomDogRestClient
+│   ├── data/            # DSO classes, enums, helper classes
+│   │   ├── petstore/    # PetDSO, OrderDSO, CategoryDSO, TagDSO, MessageDSO, PetStatus, OrderStatus
+│   │   ├── restfulbooker/ # BookingsDSO, RoomAmenities, RoomType
+│   │   └── randomdogimage/ # RandomDogImageDSO
 │   └── service/         # Service layer (@Component with business logic)
+│       ├── petstore/    # PetService, StoreOrderService
+│       ├── restfulbooker/ # AuthService, BookingService, RoomService
+│       └── randomdogimage/ # RandomDogImageService
 ├── storage/             # Storage.java + Entity classes
-│   ├── domain/
-│   │   ├── petstore/    # PetEntity, OrderEntity
-│   │   └── restfulbooker/ # RoomEntity
-│   └── ScenarioEntity   # Test scenario metadata
+│   ├── ScenarioEntity   # Test scenario metadata + embed helpers
+│   └── domain/
+│       ├── petstore/    # PetEntity, OrderEntity
+│       └── restfulbooker/ # RoomEntity
 ├── ui/
-│   ├── base/           # BaseDriver, BasePage<T>, Browser enum
+│   ├── base/           # BaseDriver, BaseDriverListener, BasePage<T>, Browser enum
 │   ├── helpers/        # WaitHelper, ActionsHelper, UploadHelper
-│   └── pages/          # Page Object classes
-└── util/               # FakeUtil, FileUtil
+│   └── pages/
+│       └── restfulbooker/ # AdminPage, BannerPage, FrontPage, HeaderPage, RoomsPage
+└── util/               # FakeUtil (random emails/phones), FileUtil
 
 src/test/java/com/levi9/functionaltests/
 ├── config/             # SpringConfig (@PropertySource, @ComponentScan)
@@ -63,15 +70,46 @@ src/test/java/com/levi9/functionaltests/
 ├── runners/            # DryRunRunnerIT (validation)
 ├── stepdefs/           # Step definitions by domain
 │   ├── petstore/       # PetStepdef, StoreStepdef
-│   └── restfulbooker/  # LoginStepdef, RoomManagementStepdef, etc.
-└── typeregistry/       # Custom Cucumber parameter types
+│   └── restfulbooker/  # LoginStepdef, RoomManagementStepdef, BookingStepdef, ContactStepdef
+└── typeregistry/       # ParameterTypes.java — custom Cucumber parameter types
 
 src/test/resources/features/
-├── pet-store/          # Pet Store features
-└── restful-booker-platform/ # Restful Booker features
+├── pet-store/                          # Pet Store features
+│   ├── pet.feature
+│   └── store.feature
+└── restful-booker-platform/            # Restful Booker features
     ├── admin-panel/
+    │   ├── login.feature
+    │   └── room-management.feature
     └── front-page/
+        ├── book-a-room.feature
+        ├── book-a-room-invalid-validation.feature
+        ├── contact-hotel.feature
+        └── contact-hotel-invalid-validation.feature
 ```
+
+### Generated Models vs Hand-Crafted DSOs
+
+This is a critical distinction:
+
+**Pet Store** uses hand-crafted DSOs in `com.levi9.functionaltests.rest.data.petstore`:
+```java
+PetDSO, OrderDSO, CategoryDSO, TagDSO, MessageDSO
+```
+
+**Restful Booker** uses OpenAPI-generated models in `restfulbooker.model.*`:
+```java
+restfulbooker.model.room.Room, Rooms
+restfulbooker.model.auth.Auth, Token
+restfulbooker.model.booking.Booking, Bookings
+// etc.
+```
+Plus a few hand-crafted classes in `com.levi9.functionaltests.rest.data.restfulbooker`:
+```java
+BookingsDSO, RoomAmenities, RoomType
+```
+
+When creating new Restful Booker tests, prefer using the generated models for API request/response bodies. When creating Pet Store tests, create hand-crafted DSOs.
 
 ## Test Types
 
@@ -85,7 +123,7 @@ API tests use **REST Assured** via service layer pattern. Services are Spring `@
 
 UI tests use **Selenium 4** via Page Object pattern. All pages extend `BasePage<T>` which provides wait-based interactions.
 
-**Tags**: `@ui`, plus domain tags like `@login`, `@management`, `@booking`, `@contact`, etc.
+**Tags**: `@ui`, plus domain tags like `@login`, `@management`, `@room-management`, `@booking`, `@contact`, etc.
 
 ### Tags Reference
 
@@ -121,58 +159,106 @@ Hooks in `src/test/java/com/levi9/functionaltests/hooks/Hooks.java` manage test 
 
 ### 1. Service Layer Pattern (REST API Tests)
 
-Services encapsulate business logic, make REST calls, validate responses, and update Storage.
+Services encapsulate business logic, make REST calls, validate responses, and update Storage. Services use **constructor injection** (not field `@Autowired`) and **throw `FunctionalTestsException`** on bad status codes (not AssertJ assertions).
 
-**Template**:
+**Real example from PetService:**
 ```java
 @Slf4j
 @Component
 @Scope("cucumber-glue")
-public class {Domain}Service {
-    
+public class PetService {
+
+    public static final String REST_PATH = "v2/pet/";
+
+    private final PetStoreRestClient petStoreRestClient;
+    private final Storage storage;
+
     @Autowired
-    private {System}RestClient client;
-    
-    @Autowired
-    private Storage storage;
-    
-    public void performAction(String param) {
-        log.info("Performing action with param: {}", param);
-        
-        // 1. Build request DSO
-        {Action}{Resource}DSO requestBody = {Action}{Resource}DSO.builder()
-            .field(param)
+    public PetService(final PetStoreRestClient petStoreRestClient, final Storage storage) {
+        this.petStoreRestClient = petStoreRestClient;
+        this.storage = storage;
+    }
+
+    public void addPetToStore(final String petName) {
+        final PetDSO body = PetDSO.builder()
+            .id(ThreadLocalRandom.current().nextInt(Integer.MAX_VALUE))
+            .name(petName)
+            .status(PENDING.getValue())
             .build();
-        
-        // 2. Call REST client
-        Response response = client.post(requestBody, null, "/path/to/endpoint");
-        
-        // 3. Validate response
-        assertThat(response.statusCode())
-            .as("Status code should be 200")
-            .isEqualTo(200);
-        
-        // 4. Extract response
-        {Resource}DSO responseBody = response.as({Resource}DSO.class);
-        
-        // 5. Update storage
-        {Resource}Entity entity = {Resource}Entity.builder()
-            .id(responseBody.getId())
-            .field(responseBody.getField())
+
+        final Response response = petStoreRestClient.post(body, null, REST_PATH);
+        if (response.statusCode() != HttpStatus.SC_OK) {
+            throw new FunctionalTestsException("Pet can not be added. Expected {}, but actual {}. Response message: {}",
+                HttpStatus.SC_OK, response.statusCode(), response.getBody().prettyPrint());
+        }
+
+        final PetEntity pet = PetEntity.builder()
+            .id(body.getId())
+            .name(body.getName())
+            .status(PENDING)
             .build();
-        
-        storage.get{Resource}s().add(entity);
-        
-        log.info("{Resource} created with ID: {}", entity.getId());
+
+        storage.getPets().add(pet);
     }
 }
 ```
 
-**Key points**:
-- Always use `@Slf4j` for logging
-- Use `@Autowired` for dependency injection
-- Use `@Scope("cucumber-glue")` for scenario-scoped lifecycle
-- Validate responses with AssertJ assertions using `.as()` for descriptive messages
+**Real example from RoomService (uses OpenAPI generated model):**
+```java
+@Slf4j
+@Component
+@Scope("cucumber-glue")
+public class RoomService {
+
+    public static final String REST_PATH = "room/";
+
+    private final RestfulBookerRestClient restfulBookerRestClient;
+    private final BookingService bookingService;
+    private final Storage storage;
+
+    @Autowired
+    public RoomService(final RestfulBookerRestClient restfulBookerRestClient, final BookingService bookingService, final Storage storage) {
+        this.restfulBookerRestClient = restfulBookerRestClient;
+        this.bookingService = bookingService;
+        this.storage = storage;
+    }
+
+    public void createRoom(final String roomName, final RoomType roomType, final boolean accessible,
+        final String roomPrice, final RoomAmenities roomAmenities) {
+
+        // Uses OpenAPI-generated Room model, not a hand-crafted DSO
+        final Room body = Room.builder()
+            .roomName(roomName)
+            .roomPrice(Integer.parseInt(roomPrice))
+            .type(roomType.getValue())
+            .description("Created with Java Cucumber E2E Test Automation Framework")
+            .accessible(accessible)
+            .features(roomAmenities.getAmenitiesAsList())
+            .image(getImageUrl(roomType))
+            .build();
+
+        final Response response = restfulBookerRestClient.post(body, null, REST_PATH);
+        if (response.statusCode() != HttpStatus.SC_CREATED) {
+            throw new FunctionalTestsException("Room can not be created. Expected {}, but actual {}. Response message: {}",
+                HttpStatus.SC_OK, response.statusCode(), response.getBody().prettyPrint());
+        }
+
+        final Room createdRoom = response.as(Room.class);
+        final RoomEntity roomEntity = new RoomEntity(body);
+        roomEntity.setRoomId(createdRoom.getRoomid());
+
+        storage.getRooms().add(roomEntity);
+    }
+}
+```
+
+**Key patterns for services:**
+- Always use `@Slf4j`, `@Component`, `@Scope("cucumber-glue")`
+- **Constructor injection** with `@Autowired` on constructor, storing dependencies in `private final` fields
+- **Throw `FunctionalTestsException`** on unexpected status codes — do NOT use AssertJ assertions in services
+- Use `HttpStatus.SC_OK`, `HttpStatus.SC_CREATED`, `HttpStatus.SC_ACCEPTED`, etc. from `org.apache.http.HttpStatus`
+- Use `response.getBody().prettyPrint()` in exception messages for debugging
+- `public static final String REST_PATH` constant for endpoint base path
 - Update Storage with entities after successful operations
 - Log important actions and results
 
@@ -180,75 +266,35 @@ public class {Domain}Service {
 
 Page objects extend `BasePage<T>` and use wait-based Selenium interactions.
 
-**Template**:
+**Real example from AdminPage:**
 ```java
 @Slf4j
 @Component
 @Scope("cucumber-glue")
-public class {Page}Page extends BasePage<{Page}Page> {
-    
-    // Page locator for load/isLoaded checks
-    private final By page = By.xpath("//*[@data-testid='{page}-header']");
-    
-    // Locators as private final fields
-    private final By fieldInput = By.id("fieldId");
-    private final By submitButton = By.cssSelector(".submit-btn");
-    private final By successMessage = By.xpath("//div[@class='success']");
-    private final By errorMessages = By.cssSelector("div.alert.alert-danger");
-    
-    protected {Page}Page(final BaseDriver baseDriver) {
+public class AdminPage extends BasePage<AdminPage> {
+
+    private final By page = By.xpath("//*[@data-testid='login-header']");
+    private final By usernameField = By.id("username");
+    private final By passwordField = By.id("password");
+    private final By loginButton = By.id("doLogin");
+
+    protected AdminPage(final BaseDriver baseDriver) {
         super(baseDriver);
     }
-    
-    /**
-     * Checks if page is loaded.
-     *
-     * @return true if yes, otherwise false
-     */
+
     public boolean isLoaded() {
         return isElementVisible(page, 5);
     }
-    
-    /**
-     * Load Page.
-     */
+
     public void load() {
-        openPage(getRestfulBookerPlatformUrl() + "#/{path}", page);
+        openPage(getRestfulBookerPlatformUrl() + "#/admin", page);
     }
-    
-    /**
-     * Fills the form with provided data. Null parameters skip the field (for negative tests).
-     *
-     * @param field field value, nullable for validation tests
-     */
-    public void fillForm(@Nullable final String field) {
-        if (null != field) {
-            waitAndSendKeys(fieldInput, field);
-        }
-    }
-    
-    /**
-     * Clicks submit button
-     */
-    public void clickSubmit() {
-        waitAndClick(submitButton);
-        log.info("Clicked submit button");
-    }
-    
-    /**
-     * Checks if success message is displayed
-     */
-    public boolean isSuccessMessageDisplayed() {
-        return isElementVisible(successMessage, 10);
-    }
-    
-    /**
-     * Get list of error messages displayed on the page.
-     *
-     * @return list of error message strings
-     */
-    public List<String> getErrorMessages() {
-        return waitAndGetWebElement(errorMessages).findElements(By.cssSelector("p")).stream().map(WebElement::getText).toList();
+
+    public void login(final String username, final String password) {
+        waitAndSendKeys(usernameField, username);
+        waitAndSendKeys(passwordField, password);
+        waitAndClick(loginButton);
+        log.info("Login via UI using username: '{}' and password '{}'", username, password);
     }
 }
 ```
@@ -259,15 +305,66 @@ public class {Page}Page extends BasePage<{Page}Page> {
 - **Every page MUST have**: `isLoaded()` (calls `isElementVisible(pageLocator, 5)`) and `load()` (calls `openPage(url, pageLocator)`)
 - Use `getRestfulBookerPlatformUrl()` for base URL (provided by BasePage via `@Value`)
 - Use descriptive locator names as `private final By` fields
-- Use wait-based methods from BasePage: `waitAndClick()`, `waitAndSendKeys()`, `waitAndSelectByValue()`, `waitAndGetText()`, `waitAndGetAttribute()`, etc.
+- Use wait-based methods from BasePage: `waitAndClick()`, `waitAndSendKeys()`, `waitAndSelectByValue()`, `waitAndSelectByVisibleText()`, `waitAndSelectByIndex()`, `waitAndGetText()`, `waitAndGetAttribute()`, `waitAndGetWebElement()`, etc.
 - **Return type**: Use `void` for action methods (this project's convention, not fluent API)
-- Use `@Nullable` on parameters for methods used in negative/validation tests (skip interaction when null)
+- Use `@Nullable` (from `javax.annotation.Nullable`) on parameters for methods used in negative/validation tests (skip interaction when null)
 - Error messages: retrieve via `findElements(By.cssSelector("p")).stream().map(WebElement::getText).toList()`
 - Log actions for debugging
+- For drag-and-drop use `getActionsHelper().dragAndDrop(fromElement, toElement)` (from BasePage)
 
-### 3. DSO (Data Service Object) Pattern
+### 3. BaseRestClient Method Signatures
 
-DSOs are request/response DTOs using Lombok.
+All REST clients extend `BaseRestClient`. The **actual** method signatures are:
+
+```java
+Response post(Object body, Map<String, String> parameters, String path)
+Response put(Object body, Map<String, String> parameters, String path)
+Response get(Map<String, String> parameters, String path)
+Response delete(Map<String, String> parameters, String path)
+Response uploadFile(File file, Map<String, String> parameters, String path)
+```
+
+Pass `null` for `parameters` when query parameters are not needed. Pass `null` for `body` when no request body is needed.
+
+**Example with query parameters (from BookingService):**
+```java
+final Map<String, String> parameters = new HashMap<>();
+parameters.put("roomId", Integer.toString(room.getRoomId()));
+final Response response = restfulBookerRestClient.get(parameters, REST_PATH);
+```
+
+**Example without parameters (most common):**
+```java
+final Response response = petStoreRestClient.post(body, null, REST_PATH);
+final Response response = petStoreRestClient.get(null, REST_PATH + pet.getId());
+final Response response = petStoreRestClient.delete(null, REST_PATH + pet.getId());
+```
+
+### 4. REST Client Pattern
+
+REST clients are simple wrappers that extend `BaseRestClient` and pass the base URL from properties:
+
+```java
+@Component
+@Scope("cucumber-glue")
+public class PetStoreRestClient extends BaseRestClient {
+
+    public PetStoreRestClient(@Value("${pet-store.url}") final String serviceUrl) {
+        super(serviceUrl);
+    }
+}
+```
+
+Base URLs are defined in `src/test/resources/application-{env}.properties`:
+```properties
+restful-booker-platform.url=http://localhost/
+pet-store.url=https://petstore.swagger.io/
+random.dog.url=https://random.dog/
+```
+
+### 5. DSO (Data Service Object) Pattern
+
+DSOs are request/response DTOs using Lombok. Used for Pet Store and some Restful Booker classes.
 
 **Template**:
 ```java
@@ -277,12 +374,12 @@ DSOs are request/response DTOs using Lombok.
 @AllArgsConstructor
 @Builder(toBuilder = true)
 public class {Action}{Resource}DSO {
-    
+
     @JsonProperty("field_name")
     private String fieldName;
-    
+
     private Integer count;
-    
+
     private List<String> items;
 }
 ```
@@ -292,36 +389,117 @@ public class {Action}{Resource}DSO {
 - Use `@JsonProperty` when JSON field names differ from Java conventions
 - Use `@Builder(toBuilder = true)` for immutability patterns
 
-### 4. Entity Pattern
+### 6. Enum Pattern
+
+Enums follow a consistent pattern with a `String` value and a `getEnum()` factory method:
+
+```java
+public enum RoomType {
+    SINGLE("Single"),
+    TWIN("Twin"),
+    DOUBLE("Double"),
+    FAMILY("Family"),
+    SUITE("Suite");
+
+    @Getter(AccessLevel.PUBLIC)
+    private final String value;
+
+    RoomType(final String value) {
+        this.value = value;
+    }
+
+    public static RoomType getEnum(final String value) {
+        for (final RoomType roomType : values()) {
+            if (roomType.getValue().equals(value)) {
+                return roomType;
+            }
+        }
+        throw new FunctionalTestsException("Room Type Enum with value {} not found!", value);
+    }
+}
+```
+
+### 7. Entity Pattern
 
 Entities represent test-side domain objects stored in Storage.
 
-**Template**:
+**Pet Store entities use builder pattern:**
 ```java
 @Getter
 @Setter
-@Builder(toBuilder = true)
 @NoArgsConstructor
 @AllArgsConstructor
-public class {Resource}Entity {
-    
+@Builder(toBuilder = true)
+public class PetEntity {
+
     private Integer id;
+    private CategoryDSO category;
     private String name;
-    private {Status}Enum status;  // Use enums for status fields
-    
-    @Builder.Default
+    private List<String> photoUrls;
+    private List<TagDSO> tags;
+    private PetStatus status;
+    @Default
     private boolean deleted = false;
 }
 ```
 
-**Key points**:
-- Use `@Builder.Default` for default values
-- Use enums for status/type fields (not Strings)
-- Include a `deleted` flag if the resource can be deleted
+**Restful Booker entities may have a constructor from generated model:**
+```java
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder(toBuilder = true)
+public class RoomEntity {
 
-### 5. Storage Pattern
+    private Integer roomId;
+    private String roomName;
+    private Integer roomPrice;
+    private String description;
+    private RoomType type;
+    private Boolean accessible;
+    private String image;
+    private RoomAmenities amenities;
+
+    // Constructor from OpenAPI-generated model
+    public RoomEntity(final Room room) {
+        this.roomId = room.getRoomid();
+        this.roomName = room.getRoomName();
+        // ... mapping from generated model fields
+    }
+}
+```
+
+### 8. Storage Pattern
 
 `Storage` is a Spring `@Component` with `@Scope("cucumber-glue")` that maintains test state. It uses Lombok `@Getter` to auto-generate getters — there are no explicit getter or add methods.
+
+**Current Storage fields:**
+```java
+@Getter
+@Component
+@Scope("cucumber-glue")
+public class Storage {
+
+    // Test Scenario
+    private final ScenarioEntity testScenario = new ScenarioEntity();
+
+    // Used for REST API tests
+    private final List<PetEntity> pets = new ArrayList<>();
+    private final List<OrderEntity> orders = new ArrayList<>();
+
+    // Used for UI tests
+    private final List<RoomEntity> rooms = new ArrayList<>();
+
+    public PetEntity getLastPet() {
+        return pets.stream().reduce((first, last) -> last)
+            .orElseThrow(() -> new FunctionalTestsException("Last Pet not found!"));
+    }
+
+    public OrderEntity getLastOrder() { /* same pattern */ }
+    public RoomEntity getLastRoom() { /* same pattern */ }
+}
+```
 
 **Adding a new entity to Storage**:
 
@@ -340,7 +518,19 @@ public {Resource}Entity getLast{Resource}() {
 storage.get{Resource}s().add(entity);
 ```
 
-### 6. Step Definitions
+### 9. ScenarioEntity — Embedding Artifacts
+
+`ScenarioEntity` provides methods to embed artifacts into Cucumber reports. Step definitions call these to attach PDFs, images, or HTML:
+
+```java
+storage.getTestScenario().embedPdfToScenario();    // Embeds a static dummy PDF
+storage.getTestScenario().embedPicture(imageUrl);   // Embeds an image from URL
+storage.getTestScenario().embedHtml(htmlContent);   // Embeds HTML content
+```
+
+These are used in stepdefs with the `@pdf`, `@image`, `@html` tags to demonstrate report embedding.
+
+### 10. Step Definitions
 
 Step definitions are in `src/test/java/com/levi9/functionaltests/stepdefs/{system}/`.
 
@@ -348,22 +538,34 @@ This project uses **two step annotation styles**:
 
 #### Style A: Cucumber Expressions (Restful Booker tests)
 
-Used with `{string}`, `{int}`, and custom types like `{roomType}`, `{accessible}`. Gherkin uses **single quotes** for `{string}` values.
+Used with `{string}`, `{int}`, and custom types like `{roomType}`, `{accessible}`. Gherkin uses **single quotes** for `{string}` values. Supports alternative text with `/` (e.g., `Validation/Mandatory`).
 
 ```java
 @Slf4j
-public class {Domain}Stepdef {
-    
+public class RoomManagementStepdef {
+
     @Autowired
     private Storage storage;
-    
+
     @Autowired
-    private {Domain}Service service;
-    
+    private RoomService roomService;
+
+    @Autowired
+    private RoomsPage roomsPage;
+
+    @Autowired
+    private BannerPage bannerPage;
+
     @Given("User has created {roomType} type {accessible} room {string} priced at {int} GBP with {string}")
     public void userCreatedRoom(final RoomType roomType, final boolean accessible, final String roomName, final int roomPrice, final String features) {
-        log.info("Step: user created room '{}'", roomName);
-        service.createRoom(roomName, roomType, accessible, Integer.toString(roomPrice), new RoomAmenities(features));
+        final RoomAmenities roomAmenities = new RoomAmenities(features);
+        roomService.createRoom(roomName, roomType, accessible, Integer.toString(roomPrice), roomAmenities);
+    }
+
+    @Then("User will get validation/mandatory error message: {string}")
+    public void assertValidationOrMandatoryErrorMessage(final String message) {
+        assertThat(roomsPage.getValidationOrMandatoryErrorMessages()).as("Message '" + message + "' is not displayed!").contains(message);
+        log.info("Room Creation Validation / Mandatory Error Message '{}' is displayed", message);
     }
 }
 ```
@@ -371,7 +573,17 @@ public class {Domain}Stepdef {
 Matching Gherkin (single quotes):
 ```gherkin
 Given User has created Single type Accessible room '1408' priced at 50 GBP with 'WiFi, TV and Safe'
+Then User will get mandatory error message: 'Room name must be set'
 ```
+
+**Cucumber Expression alternative text**: Use `/` to match either word in Gherkin. Example:
+- Step: `@Then("Visitor will get Booking Validation/Mandatory Error Message: {string}")`
+- Gherkin: `Then Visitor will get Booking Validation Error Message: 'some error'`
+- Or: `Then Visitor will get Booking Mandatory Error Message: 'some error'`
+
+**Cucumber Expression optional text**: Use `(invalid )` (with space inside parentheses) to optionally match text:
+- Step: `@When("Visitor {string} {string} with an (invalid )email {string} and phone number {string} tries to book a room {string}")`
+- Matches both: `with an email 'x@y.com'` and `with an invalid email 'bad'`
 
 #### Style B: Regex patterns (Pet Store tests)
 
@@ -379,23 +591,30 @@ Used with `^...$` anchors, `"([^"]*)"` or `(.*)` for captures. Gherkin uses **do
 
 ```java
 @Slf4j
-public class {Domain}Stepdef {
-    
+public class PetStepdef {
+
     @Autowired
     private Storage storage;
-    
+
     @Autowired
-    private {Domain}Service service;
-    
+    private PetService petService;
+
     @Given("^[Uu]ser add(?:s|ed) pet \"(.*)\" to the pet store$")
     public void addPet(final String petName) {
-        log.info("Step: user adds pet '{}'", petName);
-        service.addPetToStore(petName);
+        petService.addPetToStore(petName);
+        log.info("Pet " + petName + " added to the store.");
     }
-    
+
+    @When("^[Pp]et status is set to \"(available|pending|sold)\"$")
+    public void setPetStatus(final String petStatus) {
+        final PetEntity pet = storage.getLastPet();
+        final PetStatus status = PetStatus.getEnum(petStatus);
+        petService.updatePetStatus(pet, status);
+        log.info("Pet status is set to " + petStatus);
+    }
+
     @Then("^[Ii]t (?:will be|is)? possible to sell it$")
     public void validatePossibleToSell() {
-        log.info("Step: validate possible to sell");
         final PetEntity expectedPet = storage.getLastPet();
         final PetDSO actualPet = petService.getPet(expectedPet);
         assertThat(actualPet.getStatus()).as("Pet is not available!").isEqualTo(AVAILABLE.getValue());
@@ -403,30 +622,33 @@ public class {Domain}Stepdef {
 }
 ```
 
-Matching Gherkin (double quotes):
-```gherkin
-Given User added pet "Beagle" to the pet store
-```
-
 **Both styles are equally valid.** Match the style of the system you're extending.
 
-### 7. Custom Parameter Types
+**Pet Store regex patterns**: Use `[Uu]`, `[Pp]`, `[Ii]`, `[Oo]`, `[Rr]` for case-insensitive first letter. Use `(?:s|ed)` for tense flexibility. Use `(?:will be|is)?` for assertion flexibility.
+
+### 11. Custom Parameter Types
 
 Define custom parameter types in `src/test/java/com/levi9/functionaltests/typeregistry/ParameterTypes.java`.
 
-**Template**:
+**Current types:**
 ```java
-@ParameterType("Value1|Value2|Value3")
-public {Type} {type}(final String value) {
-    return {Type}.getEnum(value);
+public class ParameterTypes {
+
+    @ParameterType("Single|Twin|Double|Family|Suite")
+    public RoomType roomType(final String roomType) {
+        return RoomType.getEnum(roomType);
+    }
+
+    @ParameterType("Accessible|Not Accessible")
+    public boolean accessible(final String accessible) {
+        return !accessible.toLowerCase().contains("not");
+    }
 }
 ```
 
-**Note**: The method parameter is always `String` — the conversion to the target type happens inside the method body.
+This allows Gherkin steps like: `When user creates a Single type Accessible room` where `Single` → `RoomType.SINGLE` and `Accessible` → `true`.
 
-This allows Gherkin steps like: `When user creates a Single type room` where `Single` is auto-converted to `RoomType.SINGLE`.
-
-### 8. FunctionalTestsException
+### 12. FunctionalTestsException
 
 The project's custom exception uses SLF4J-style `{}` placeholder formatting:
 
@@ -435,7 +657,12 @@ throw new FunctionalTestsException("Order with ID {} not found!", orderId);
 throw new FunctionalTestsException("Expected status {} but got {}", expectedStatus, actualStatus);
 ```
 
-### 9. Soft Assertions
+Also supports wrapping another exception:
+```java
+throw new FunctionalTestsException(e);
+```
+
+### 13. Soft Assertions
 
 Use `assertSoftly` for multi-field validations — all assertions run even if early ones fail:
 
@@ -447,29 +674,40 @@ assertSoftly(softly -> {
 });
 ```
 
-### 10. BaseRestClient Methods
+### 14. FakeUtil and RandomStringUtils
 
-All REST clients extend `BaseRestClient` which provides:
+For generating test data, use the existing utility classes:
+
+**FakeUtil** (`com.levi9.functionaltests.util.FakeUtil`):
+```java
+FakeUtil.getRandomEmail()       // e.g., "abcXyz123@mail.com"
+FakeUtil.getRandomPhoneNumber() // e.g., "123-456-7890"
+```
+
+**RandomStringUtils** (`org.apache.commons.lang3.RandomStringUtils`) — used directly in stepdefs:
+```java
+RandomStringUtils.randomAlphabetic(firstNameLength)   // Random letters
+RandomStringUtils.randomAlphanumeric(200)              // Random letters+digits
+RandomStringUtils.randomNumeric(phoneNumberLength)     // Random digits
+```
+
+### 15. RoomAmenities Helper
+
+`RoomAmenities` is a helper class that converts between string representations and structured amenity data:
 
 ```java
-Response post(Object requestBody, CookieFilter auth, String path)
-Response put(Object requestBody, CookieFilter auth, String path)
-Response get(CookieFilter auth, String path)
-Response delete(CookieFilter auth, String path)
-Response uploadFile(String filePath, CookieFilter auth, String path)
+// From comma-separated string (used in Gherkin steps)
+final RoomAmenities amenities = new RoomAmenities("WiFi, TV and Safe");
+amenities.isWifi();  // true
+amenities.isTv();    // true
+amenities.isSafe();  // true
+
+// To list of strings (for API requests)
+amenities.getAmenitiesAsList();  // ["WiFi", "TV", "Safe"]
+
+// To display string (for UI assertions)
+amenities.getRoomDetailsFromAmenities();  // "WiFi, TV, Safe" or "No features added to the room"
 ```
-
-Pass `null` for `auth` when authentication is not needed.
-
-### 11. Cucumber Alternative Text
-
-Gherkin supports `validation/mandatory` syntax to match either word:
-
-```gherkin
-Then User will get validation/mandatory error message: 'Room name must be set'
-```
-
-This matches step definition: `@Then("User will get validation/mandatory error message: {string}")`
 
 ## Naming Conventions
 
@@ -506,12 +744,12 @@ Feature: {Domain} Management
     Given user creates a {resource} with name "Test {Resource}"
     When user retrieves the {resource}
     Then the {resource} should have status "ACTIVE"
-  
+
   @critical
   Scenario Outline: User can create multiple {resource}s
     Given user creates a {resource} with name "<name>"
     Then the {resource} should be created successfully
-    
+
     Examples:
       | name      |
       | Resource1 |
@@ -524,120 +762,20 @@ Feature: {Domain} Management
 
 Location: `src/test/java/com/levi9/functionaltests/stepdefs/{system}/{Domain}Stepdef.java`
 
-```java
-@Slf4j
-public class {Domain}Stepdef {
-    
-    @Autowired
-    private Storage storage;
-    
-    @Autowired
-    private {Domain}Service service;
-    
-    @Given("^user creates a {resource} with name \"([^\"]*)\"$")
-    public void userCreates{Resource}(String name) {
-        log.info("Step: user creates a {resource} with name '{}'", name);
-        service.create{Resource}(name);
-    }
-    
-    @When("^user retrieves the {resource}$")
-    public void userRetrievesThe{Resource}() {
-        log.info("Step: user retrieves the {resource}");
-        {Resource}Entity entity = storage.getLast{Resource}();
-        service.retrieve{Resource}(entity.getId());
-    }
-    
-    @Then("^the {resource} should have status \"([^\"]*)\"$")
-    public void the{Resource}ShouldHaveStatus(String status) {
-        log.info("Step: the {resource} should have status '{}'", status);
-        {Resource}Entity entity = storage.getLast{Resource}();
-        
-        assertThat(entity.getStatus().getValue())
-            .as("{Resource} status should be {}", status)
-            .isEqualTo(status);
-    }
-    
-    @Then("^the {resource} should be created successfully$")
-    public void the{Resource}ShouldBeCreatedSuccessfully() {
-        log.info("Step: the {resource} should be created successfully");
-        {Resource}Entity entity = storage.getLast{Resource}();
-        
-        assertThat(entity.getId())
-            .as("{Resource} should have an ID")
-            .isNotNull();
-    }
-}
-```
+Match the annotation style of the system:
+- **Pet Store**: Regex patterns with `^...$`, double-quoted strings in Gherkin
+- **Restful Booker**: Cucumber Expressions with `{string}`, `{int}`, single-quoted strings in Gherkin
 
 **Step 3: Create service**
 
 Location: `src/main/java/com/levi9/functionaltests/rest/service/{system}/{Domain}Service.java`
 
-```java
-@Slf4j
-@Component
-@Scope("cucumber-glue")
-public class {Domain}Service {
-    
-    private static final String {RESOURCE}_PATH = "/api/{resources}";
-    
-    @Autowired
-    private {System}RestClient client;
-    
-    @Autowired
-    private Storage storage;
-    
-    public void create{Resource}(String name) {
-        log.info("Creating {resource} with name: {}", name);
-        
-        Create{Resource}DSO requestBody = Create{Resource}DSO.builder()
-            .name(name)
-            .status({Status}.PENDING.getValue())
-            .build();
-        
-        Response response = client.post(requestBody, null, {RESOURCE}_PATH);
-        
-        assertThat(response.statusCode())
-            .as("Status code should be 201")
-            .isEqualTo(201);
-        
-        {Resource}DSO responseBody = response.as({Resource}DSO.class);
-        
-        {Resource}Entity entity = {Resource}Entity.builder()
-            .id(responseBody.getId())
-            .name(responseBody.getName())
-            .status({Status}.getEnum(responseBody.getStatus()))
-            .build();
-        
-        storage.get{Resource}s().add(entity);
-        
-        log.info("{Resource} created successfully with ID: {}", entity.getId());
-    }
-    
-    public void retrieve{Resource}(Integer id) {
-        log.info("Retrieving {resource} with ID: {}", id);
-        
-        Response response = client.get(null, {RESOURCE}_PATH + "/" + id);
-        
-        assertThat(response.statusCode())
-            .as("Status code should be 200")
-            .isEqualTo(200);
-        
-        {Resource}DSO responseBody = response.as({Resource}DSO.class);
-        
-        // Update storage with retrieved data
-        {Resource}Entity entity = storage.getLast{Resource}();
-        entity.setName(responseBody.getName());
-        entity.setStatus({Status}.getEnum(responseBody.getStatus()));
-        
-        log.info("Retrieved {resource}: {}", responseBody);
-    }
-}
-```
+Follow the constructor injection pattern. Throw `FunctionalTestsException` on bad status codes, NOT AssertJ assertions. Use the appropriate REST client for the system.
 
-**Step 4: Create DSOs**
+**Step 4: Create DSOs (if Pet Store) or use generated models (if Restful Booker)**
 
-Location: `src/main/java/com/levi9/functionaltests/rest/data/{system}/`
+For Pet Store: create DSOs in `src/main/java/com/levi9/functionaltests/rest/data/petstore/`
+For Restful Booker: check if OpenAPI-generated models exist in `restfulbooker.model.*`. If not, either add to the OpenAPI spec and regenerate, or create a hand-crafted DSO in `src/main/java/com/levi9/functionaltests/rest/data/restfulbooker/`.
 
 **Tip**: If the API has an OpenAPI spec, use the helper script to generate DSO templates:
 ```bash
@@ -647,67 +785,11 @@ python3 .github/skills/functional-tests-skill/scripts/openapi_helper.py generate
   com.levi9.functionaltests.rest.data.{system}
 ```
 
-```java
-// Create{Resource}DSO.java
-@Getter
-@Setter
-@NoArgsConstructor
-@AllArgsConstructor
-@Builder(toBuilder = true)
-public class Create{Resource}DSO {
-    private String name;
-    private String status;
-}
-
-// {Resource}DSO.java
-@Getter
-@Setter
-@NoArgsConstructor
-@AllArgsConstructor
-@Builder(toBuilder = true)
-public class {Resource}DSO {
-    private Integer id;
-    private String name;
-    private String status;
-}
-```
-
 **Step 5: Create entity and add to Storage**
 
 Location: `src/main/java/com/levi9/functionaltests/storage/domain/{system}/{Resource}Entity.java`
 
-```java
-@Getter
-@Setter
-@Builder(toBuilder = true)
-@NoArgsConstructor
-@AllArgsConstructor
-public class {Resource}Entity {
-    private Integer id;
-    private String name;
-    private {Status} status;
-    
-    @Builder.Default
-    private boolean deleted = false;
-}
-```
-
-Then update `Storage.java`:
-```java
-private final List<{Resource}Entity> {resource}s = new ArrayList<>();
-
-// @Getter generates get{Resource}s() automatically — do NOT add explicit getter
-
-public {Resource}Entity getLast{Resource}() {
-    return {resource}s.stream().reduce((first, last) -> last)
-        .orElseThrow(() -> new FunctionalTestsException("Last {Resource} not found!"));
-}
-```
-
-Callers add entities via:
-```java
-storage.get{Resource}s().add(entity);
-```
+Then update `Storage.java` with the new entity list and `getLast{Resource}()` convenience method.
 
 **Step 6: Verify step definitions are properly linked (dry-run)**
 
@@ -715,7 +797,7 @@ storage.get{Resource}s().add(entity);
 mvn test -Dtest=DryRunRunnerIT
 ```
 
-This validates that all Gherkin steps have matching step definitions with correct regex patterns. Fix any "Undefined step" errors.
+This validates that all Gherkin steps have matching step definitions. Fix any "Undefined step" errors.
 
 **Step 7: Run the test**
 
@@ -729,15 +811,15 @@ If the test fails, investigate the failure, fix the issue, and run again.
 
 **Step 1: Create feature file**
 
-Location: `src/test/resources/features/{system}/{domain}.feature`
+Location: `src/test/resources/features/{system}/{subdirectory}/{domain}.feature`
 
 ```gherkin
 @ui @{domain}
 Feature: {Domain} UI
 
-  Background: User is on the {Page} Page
+  Background: {Descriptive background title}
     Given user is on the {Page} Page
-  
+
   @blocker @sanity
   Scenario: User can perform action via UI
     When user fills form with 'Test Data'
@@ -751,104 +833,23 @@ Feature: {Domain} UI
 
 Location: `src/main/java/com/levi9/functionaltests/ui/pages/{system}/{Page}Page.java`
 
-```java
-@Slf4j
-@Component
-@Scope("cucumber-glue")
-public class {Page}Page extends BasePage<{Page}Page> {
-    
-    private final By page = By.xpath("//*[@data-testid='{page}-header']");
-    private final By formInput = By.id("input-id");
-    private final By submitButton = By.cssSelector(".submit-btn");
-    private final By successMessage = By.xpath("//div[@class='success']");
-    
-    protected {Page}Page(final BaseDriver baseDriver) {
-        super(baseDriver);
-    }
-    
-    /**
-     * Checks if page is loaded.
-     *
-     * @return true if yes, otherwise false
-     */
-    public boolean isLoaded() {
-        return isElementVisible(page, 5);
-    }
-    
-    /**
-     * Load Page.
-     */
-    public void load() {
-        openPage(getRestfulBookerPlatformUrl() + "#/{path}", page);
-    }
-    
-    /**
-     * Fills the form with provided data
-     */
-    public void fillForm(final String data) {
-        log.info("Filling form with: {}", data);
-        waitAndSendKeys(formInput, data);
-    }
-    
-    /**
-     * Clicks the submit button
-     */
-    public void clickSubmit() {
-        log.info("Clicking submit button");
-        waitAndClick(submitButton);
-    }
-    
-    /**
-     * Checks if success message is displayed
-     */
-    public boolean isSuccessMessageDisplayed() {
-        return isElementVisible(successMessage, 10);
-    }
-}
-```
+Follow the `BasePage<T>` pattern. Every page needs `isLoaded()` and `load()`. Use `@Nullable` on parameters for negative/validation tests.
 
 **Step 3: Create step definitions**
 
 Location: `src/test/java/com/levi9/functionaltests/stepdefs/{system}/{Domain}Stepdef.java`
 
+**Important**: Always inject `BannerPage` and call `bannerPage.closeBanner()` after loading any Restful Booker page — the welcome banner blocks interactions.
+
 ```java
-@Slf4j
-public class {Domain}Stepdef {
-    
-    @Autowired
-    private {Page}Page page;
-    
-    @Autowired
-    private BannerPage bannerPage;
-    
-    @Given("User is on the {Page} Page")
-    public void userIsOnPage() {
-        page.load();
-        bannerPage.closeBanner();
-        assertThat(page.isLoaded()).as("User is not on the {Page} Page!").isTrue();
-        log.info("User is on {Page} Page");
-    }
-    
-    @When("User fills form with {string}")
-    public void userFillsForm(final String data) {
-        log.info("Step: user fills form with '{}'", data);
-        page.fillForm(data);
-    }
-    
-    @When("User clicks submit")
-    public void userClicksSubmit() {
-        page.clickSubmit();
-    }
-    
-    @Then("Success message should be displayed")
-    public void successMessageShouldBeDisplayed() {
-        assertThat(page.isSuccessMessageDisplayed()).as("Success message is not displayed!").isTrue();
-        log.info("Success message is displayed");
-    }
+@Given("User is on the {Page} Page")
+public void userIsOnPage() {
+    page.load();
+    bannerPage.closeBanner();
+    assertThat(page.isLoaded()).as("User is not on the {Page} Page!").isTrue();
+    log.info("User is on {Page} Page");
 }
 ```
-
-**Important**: Always inject `BannerPage` and call `bannerPage.closeBanner()` after loading any Restful Booker page — the welcome banner blocks interactions.
 
 **Step 4: Verify step definitions (dry-run)**
 
@@ -860,114 +861,6 @@ mvn test -Dtest=DryRunRunnerIT
 
 ```bash
 mvn clean verify -Dtags='@{domain} and @ui'
-```
-
-### Testing Error Handling and Validation
-
-When creating tests for error scenarios and validation:
-
-**Negative API Tests**:
-```gherkin
-@api @validation @{domain}
-Feature: {Domain} Validation
-
-  @critical
-  Scenario Outline: API rejects invalid {resource} data
-    When user attempts to create a {resource} with <field> "<value>"
-    Then the API should return status code <statusCode>
-    And the error message should contain "<errorText>"
-    
-    Examples:
-      | field       | value           | statusCode | errorText        |
-      | empty name  |                 | 400        | name is required |
-      | invalid status | INVALID_STATUS | 400        | invalid status   |
-      | null ID     | null            | 400        | ID cannot be null|
-```
-
-**Service layer error handling**:
-```java
-public void createResourceWithInvalidData(String field, String value) {
-    log.info("Attempting to create resource with invalid {}: {}", field, value);
-    
-    // Build invalid request
-    RequestDSO request = buildInvalidRequest(field, value);
-    
-    try {
-        Response response = client.post(request, null, RESOURCE_PATH);
-        
-        // For negative tests, expect 400
-        if (response.statusCode() == HttpStatus.SC_BAD_REQUEST) {
-            log.info("Received expected 400 error: {}", response.body().asString());
-            storage.setLastErrorResponse(response);  // Store for assertion
-        } else {
-            throw new FunctionalTestsException(
-                "Expected 400 Bad Request but got {}", response.statusCode());
-        }
-    } catch (Exception e) {
-        log.error("Error during invalid request: {}", e.getMessage());
-        throw new FunctionalTestsException("Failed to handle invalid request: {}", e.getMessage());
-    }
-}
-```
-
-**Step definition for error cases**:
-```java
-@When("^user attempts to create a {resource} with (.*) \"([^\"]*)\"$")
-public void userAttemptsInvalidCreate(String field, String value) {
-    log.info("Step: user attempts to create {resource} with {} '{}'", field, value);
-    service.createResourceWithInvalidData(field, value);
-}
-
-@Then("^the API should return status code (\\d+)$")
-public void apiShouldReturnStatusCode(int expectedStatus) {
-    log.info("Step: verifying API returned status code {}", expectedStatus);
-    Response errorResponse = storage.getLastErrorResponse();
-    
-    assertThat(errorResponse.statusCode())
-        .as("API should return status code {}", expectedStatus)
-        .isEqualTo(expectedStatus);
-}
-
-@Then("^the error message should contain \"([^\"]*)\"$")
-public void errorMessageShouldContain(String expectedText) {
-    log.info("Step: verifying error message contains '{}'", expectedText);
-    Response errorResponse = storage.getLastErrorResponse();
-    String errorBody = errorResponse.body().asString();
-    
-    assertThat(errorBody.toLowerCase())
-        .as("Error message should contain '{}'", expectedText)
-        .contains(expectedText.toLowerCase());
-}
-```
-
-**UI validation testing**:
-```gherkin
-@ui @validation @{domain}
-Feature: {Page} Form Validation
-
-  Background:
-    Given user is on {page} page
-  
-  @critical
-  Scenario: Required fields show validation errors
-    When user clicks submit without filling required fields
-    Then validation error "Name is required" should be displayed
-    And validation error "Email is required" should be displayed
-    And the form should not be submitted
-```
-
-**Page object validation methods**:
-```java
-public void clickSubmitWithoutFilling() {
-    log.info("Clicking submit without filling required fields");
-    waitAndClick(submitButton);
-}
-
-public boolean isValidationErrorDisplayed(String errorMessage) {
-    log.info("Checking if validation error '{}' is displayed", errorMessage);
-    By errorLocator = By.xpath(String.format("//span[contains(text(), '%s')]", errorMessage));
-    return isElementDisplayed(errorLocator);
-}
 ```
 
 ### Debugging Failing Tests
@@ -986,11 +879,12 @@ When a test fails, follow this systematic approach:
    ```
 
 5. **Common issues**:
-   - **Undefined steps**: Step definition regex doesn't match Gherkin
+   - **Undefined steps**: Step definition regex/expression doesn't match Gherkin
    - **NullPointerException**: Storage entity not created or autowiring failed
    - **Assertion failure**: Response/UI state doesn't match expectation
    - **Timeout**: Element not found (UI) or slow response (API)
    - **404/500 errors**: Wrong endpoint path or server issue
+   - **Banner blocking**: Forgot `bannerPage.closeBanner()` after loading page
 
 6. **Fix and verify** — After fixing, run the specific test again:
    ```bash
@@ -1018,11 +912,13 @@ When reviewing test code, verify:
 
 **Services** (API):
 - [ ] Annotated with `@Component` and `@Scope("cucumber-glue")`
-- [ ] Uses `@Autowired` for dependencies
-- [ ] Validates response status codes
+- [ ] Uses **constructor injection** with `@Autowired` on constructor (not field injection)
+- [ ] Dependencies stored in `private final` fields
+- [ ] **Throws `FunctionalTestsException`** on bad status codes (not AssertJ assertions)
+- [ ] Uses `HttpStatus.SC_*` constants from `org.apache.http.HttpStatus`
 - [ ] Updates Storage after operations
 - [ ] Logs important actions and results
-- [ ] Constants for endpoint paths
+- [ ] `public static final String REST_PATH` constant for endpoint paths
 
 **Page Objects** (UI):
 - [ ] Extends `BasePage<T>` with self-type
@@ -1032,7 +928,7 @@ When reviewing test code, verify:
 - [ ] Uses wait-based methods (`waitAndClick`, `waitAndSendKeys`, etc.)
 - [ ] Action methods return `void` (project convention — not fluent API)
 - [ ] Verification methods return `boolean` or specific types
-- [ ] Uses `@Nullable` on parameters for negative/validation test methods
+- [ ] Uses `@Nullable` (`javax.annotation.Nullable`) on parameters for negative/validation test methods
 - [ ] Assertions done in step definitions, not page objects
 
 **DSOs**:
@@ -1042,8 +938,9 @@ When reviewing test code, verify:
 
 **Entities**:
 - [ ] Uses enums for status/type fields (not Strings)
-- [ ] Includes `deleted` flag if applicable
+- [ ] Includes `deleted` flag if applicable (Pet Store entities)
 - [ ] Uses `@Builder.Default` for defaults
+- [ ] Consider constructor from generated model (Restful Booker entities)
 
 **General**:
 - [ ] Consistent naming conventions
@@ -1083,11 +980,11 @@ mvn clean verify -DparallelCount=10
 ### Environment Selection
 
 ```bash
-# Use development environment
+# Use development environment (default)
 mvn clean verify -Denv=development
 
-# Use staging environment
-mvn clean verify -Denv=staging
+# Use local environment
+mvn clean verify -Denv=local
 ```
 
 ### Browser Configuration (UI tests)
@@ -1155,13 +1052,7 @@ python3 .github/skills/functional-tests-skill/scripts/openapi_helper.py generate
   Room \
   com.levi9.functionaltests.rest.data.restfulbooker
 ```
-This generates a complete Java DSO class with:
-- Lombok annotations (`@Getter`, `@Setter`, `@Builder`, `@NoArgsConstructor`, `@AllArgsConstructor`)
-- Correct Java types based on OpenAPI schema (String, Integer, List, etc.)
-- `@JsonProperty` annotations for non-standard field names
-- JavaDoc comments from OpenAPI descriptions
-
-Use this when creating new DSOs — it ensures consistency with the OpenAPI spec and saves time.
+This generates a complete Java DSO class with Lombok annotations and correct types.
 
 ### Adding New OpenAPI Specs
 
@@ -1200,6 +1091,154 @@ mvn clean compile
 - Right-click `target/generated-sources/generated`
 - Select "Mark Directory as" → "Generated Sources Root"
 
+## Jira & GitHub Ticket Integration
+
+The skill includes a script to fetch ticket details from **Jira** or **GitHub Issues** and extract feature requirements, acceptance criteria, and linked issues — so you can generate tests directly from tickets.
+
+### Setup
+
+Copy the `.env.example` file and fill in your credentials:
+
+```bash
+cp .github/skills/functional-tests-skill/scripts/.env.example \
+   .github/skills/functional-tests-skill/scripts/.env
+```
+
+Or set environment variables directly — see `.env.example` for the full list.
+
+**Jira:**
+```bash
+export JIRA_BASE_URL=https://yourcompany.atlassian.net
+export JIRA_USER_EMAIL=your-email@company.com
+export JIRA_API_TOKEN=your-api-token
+# OR for on-prem: export JIRA_PAT=your-personal-access-token
+```
+
+**GitHub:**
+```bash
+export GITHUB_TOKEN=ghp_your-personal-access-token
+```
+
+### Usage
+
+The script auto-detects the source from the ticket reference format:
+- **Jira**: `PROJ-123`
+- **GitHub**: `owner/repo#123`
+
+**Fetch ticket details** (description, acceptance criteria, subtasks, linked issues):
+```bash
+python3 .github/skills/functional-tests-skill/scripts/jira_ticket_fetcher.py fetch PROJ-123
+python3 .github/skills/functional-tests-skill/scripts/jira_ticket_fetcher.py fetch owner/repo#42
+```
+
+**Fetch with all child/subtask details expanded** (Jira only):
+```bash
+python3 .github/skills/functional-tests-skill/scripts/jira_ticket_fetcher.py fetch PROJ-123 --include-children
+```
+
+**Output as JSON** (useful for piping into other tools):
+```bash
+python3 .github/skills/functional-tests-skill/scripts/jira_ticket_fetcher.py fetch PROJ-123 --format json
+```
+
+**Generate a Gherkin feature skeleton** from the ticket's acceptance criteria:
+```bash
+python3 .github/skills/functional-tests-skill/scripts/jira_ticket_fetcher.py generate-gherkin PROJ-123
+python3 .github/skills/functional-tests-skill/scripts/jira_ticket_fetcher.py generate-gherkin owner/repo#42
+```
+
+### Workflow: From Ticket to Tests
+
+When the user provides a ticket reference (e.g., "write tests for PROJ-123" or "write tests for owner/repo#42"):
+
+1. **Check if credentials are configured** — Run the fetch script. If it fails with an authentication or missing env var error, **do NOT ask the user to provide tokens or credentials to you**. Instead, give them clear setup instructions:
+
+   **If Python is not installed** (script fails with "command not found" or similar):
+
+   > The ticket fetcher script requires **Python 3.10+**. It doesn't appear to be installed. Here's how to install it:
+   >
+   > **macOS** (using Homebrew):
+   > ```bash
+   > brew install python3
+   > ```
+   > If you don't have Homebrew: https://brew.sh
+   >
+   > **Windows**:
+   > Download from https://www.python.org/downloads/ and run the installer. Make sure to check "Add Python to PATH".
+   >
+   > **Linux (Debian/Ubuntu)**:
+   > ```bash
+   > sudo apt update && sudo apt install python3
+   > ```
+   >
+   > After installing, verify with `python3 --version` and try again.
+
+   **Do NOT install Python for the user** — only provide the instructions above and let them do it.
+
+   **If Jira/GitHub credentials are missing:**
+
+   > For **Jira** tickets, you need to set up credentials before I can fetch ticket data. Here's how:
+   >
+   > 1. Copy the example env file:
+   >    ```bash
+   >    cp .github/skills/functional-tests-skill/scripts/.env.example .github/skills/functional-tests-skill/scripts/.env
+   >    ```
+   > 2. Edit `.github/skills/functional-tests-skill/scripts/.env` and fill in your Jira credentials:
+   >    ```
+   >    JIRA_BASE_URL=https://yourcompany.atlassian.net
+   >    JIRA_USER_EMAIL=your-email@company.com
+   >    JIRA_API_TOKEN=your-api-token
+   >    ```
+   >    Generate an API token at: https://id.atlassian.com/manage-profile/security/api-tokens
+   >
+   > Once configured, ask me again and I'll fetch the ticket.
+
+   > For **GitHub** issues (private repos), you need a GitHub token:
+   >
+   > 1. Copy the example env file (if not already done):
+   >    ```bash
+   >    cp .github/skills/functional-tests-skill/scripts/.env.example .github/skills/functional-tests-skill/scripts/.env
+   >    ```
+   > 2. Edit `.github/skills/functional-tests-skill/scripts/.env` and add:
+   >    ```
+   >    GITHUB_TOKEN=ghp_your-personal-access-token
+   >    ```
+   >    Generate a token at: https://github.com/settings/tokens (needs `repo` scope for private repos)
+   >
+   > For public repos, no token is needed — the script works without it.
+
+   **Important**: Never ask the user to paste tokens or credentials into the chat. Always direct them to edit the `.env` file themselves.
+
+2. **Fetch the ticket** using the script to get the full context — summary, description, acceptance criteria, subtasks, and linked issues.
+3. **Analyze the output** to understand what feature is being described, what the expected behavior is, and what edge cases exist.
+4. **Optionally generate a Gherkin skeleton** as a starting point using `generate-gherkin`.
+5. **Follow the standard test creation workflow** (described in the Workflows section) to implement the full test — feature file, step definitions, services, page objects, etc.
+6. **Map acceptance criteria to scenarios** — each acceptance criterion should become at least one scenario (happy path), plus rainy-day variants where applicable.
+
+The script supports Jira Cloud, Jira Server/Data Center (via PAT), and GitHub Issues (public and private repos). For GitHub, it also fetches issue comments and parses task list checkboxes as subtasks.
+
+## Spring Configuration
+
+The Spring context is configured in `src/test/java/com/levi9/functionaltests/config/SpringConfig.java`:
+
+```java
+@Configuration
+@Scope("cucumber-glue")
+@PropertySource("classpath:application-${env:development}.properties")
+@ComponentScan({ "com.levi9.functionaltests" })
+public class SpringConfig {
+    @Bean
+    public static PropertySourcesPlaceholderConfigurer propertySourcesPlaceholderConfigurer() {
+        return new PropertySourcesPlaceholderConfigurer();
+    }
+}
+```
+
+The `env` system property defaults to `development`. Property files are in `src/test/resources/`:
+- `application-development.properties`
+- `application-local.properties`
+- `application-acceptance.properties`
+
 ## Best Practices Summary
 
 1. **Always run tests after creation/modification** — Verify they work, fix if they fail.
@@ -1228,7 +1267,9 @@ mvn clean compile
 
 13. **Match step annotation style** — Use Cucumber Expressions (with single-quoted strings) for Restful Booker, regex (with double-quoted strings) for Pet Store.
 
-14. **Minimal effort maintenance** — Write code that's easy to understand and modify.
+14. **Constructor injection in services** — Use `@Autowired` on constructor with `private final` fields. Throw `FunctionalTestsException` on failures (not AssertJ assertions).
+
+15. **Minimal effort maintenance** — Write code that's easy to understand and modify.
 
 ## When to Use This Skill
 
@@ -1250,8 +1291,10 @@ Use this skill whenever working with tests in this project:
 - Extending REST clients
 - Working with OpenAPI models
 - Improving test architecture
+- Fetching Jira or GitHub ticket details to generate tests
+- Creating tests from Jira/GitHub tickets or acceptance criteria
 
-Even if the user just mentions "write a test", "add coverage", "this test is failing", or "review this test", trigger this skill immediately.
+Even if the user just mentions "write a test", "add coverage", "this test is failing", "review this test", "write tests for PROJ-123", "write tests for owner/repo#42", or references any ticket key, trigger this skill immediately.
 
 ## Final Note
 
