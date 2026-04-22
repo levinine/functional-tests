@@ -23,6 +23,7 @@ gradle.bat
 /out
 **/classes
 *.iws
+__pycache__
 
 # STS CONFIG
 .springBeans

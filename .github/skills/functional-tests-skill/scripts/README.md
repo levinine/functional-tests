@@ -1,7 +1,7 @@
 # Functional Tests Skill — Scripts
 
 Helper scripts for the `functional-tests-skill`. No external dependencies required — all scripts use Python standard library only (PyYAML optional for YAML OpenAPI specs).
-
+ 
 ## Scripts
 
 | Script | Purpose |

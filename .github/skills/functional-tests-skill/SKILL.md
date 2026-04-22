@@ -569,7 +569,7 @@ public class RoomManagementStepdef {
     }
 }
 ```
-
+ 
 Matching Gherkin (single quotes):
 ```gherkin
 Given User has created Single type Accessible room '1408' priced at 50 GBP with 'WiFi, TV and Safe'
