@@ -49,7 +49,7 @@
 		<rest-assured.version>6.3.0</rest-assured.version>
 		<commons-codec.version>1.23.0</commons-codec.version>
 		<awaitility.version>4.3.0</awaitility.version>
-		<selenium.version>4.51.0</selenium.version>
+		<selenium.version>4.52.0</selenium.version>
 		<logback.version>1.6.6</logback.version>
 		<lombok.version>1.18.48</lombok.version>
 		<junit.version>4.13.2</junit.version>
